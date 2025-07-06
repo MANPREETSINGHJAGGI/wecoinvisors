@@ -3,4 +3,8 @@ module.exports = {
     tailwindcss: {},
     autoprefixer: {},
   },
+ HEAD
 }
+
+}
+ ec29ab9 (Replace with files from wecoinvisors.zip)
