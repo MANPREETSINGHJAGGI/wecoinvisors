@@ -1,0 +1,17 @@
+// utils/firebase.js
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCttQMbSYoZFiLnBYGL-IC1woDsobCkdUE",
+  authDomain: "wecoinvisors-b4f67.firebaseapp.com",
+  projectId: "wecoinvisors-b4f67",
+  storageBucket: "wecoinvisors-b4f67.appspot.com",
+  messagingSenderId: "111649159422",
+  appId: "1:111649159422:web:YOUR_APP_ID_HERE" // ← Replace with real App ID from Firebase after Web App creation
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+export { auth };

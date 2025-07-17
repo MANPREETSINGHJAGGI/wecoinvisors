@@ -1,0 +1,4 @@
+{
+  "/dashboard/stocks/page": "app/dashboard/stocks/page.js",
+  "/api/market/route": "app/api/market/route.js"
+}
