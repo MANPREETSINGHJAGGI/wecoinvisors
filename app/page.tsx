@@ -13,7 +13,7 @@ export default function HomePage() {
 
       {/* Heading */}
       <h1 className="text-4xl font-bold mb-4 text-gray-800">
-        Welcome to WeCoinvisors 🚀
+        WeCoinVisors Leads to Upgrade People With Stock & Education 🚀
       </h1>
 
       {/* Subheading */}
