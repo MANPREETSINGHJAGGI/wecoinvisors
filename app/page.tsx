@@ -1,32 +1,24 @@
 // app/page.tsx
+"use client";
 
-'use client';
-
-import Link from 'next/link';
-import Image from 'next/image';
-
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen px-4 py-12 bg-gradient-to-br from-blue-100 to-white text-center">
-      {/* Logo */}
-      <Image src="/logo.png" alt="WeCoinvisors Logo" width={100} height={100} className="mb-6" />
-
-      {/* Heading */}
-      <h1 className="text-4xl font-bold mb-4 text-gray-800">
-        WeCoinVisors Leads to Upgrade People With Stock & Education 🚀
-      </h1>
-
-      {/* Subheading */}
-      <p className="text-lg text-gray-600 mb-8 max-w-xl">
-        Your gateway to smart stock insights, live dashboards, and data-driven investment strategies.
-      </p>
-
-      {/* Button */}
-      <Link href="/dashboard/stocks">
-        <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
-          Go to Live Stock Dashboard
-        </button>
-      </Link>
+    <main className="min-h-screen bg-gray-50 text-gray-900">
+      {/* Hero Section */}
+      <section className="flex flex-col items-center justify-center py-24 px-6 text-center bg-gradient-to-r from-blue-100 to-purple-100">
+        <h1 className="text-5xl font-bold mb-4 text-blue-900">
+          Welcome to <span className="text-purple-700">WeCoinvisors</span> 🚀
+        </h1>
+        <p className="text-xl max-w-2xl mb-8">
+           WeCoinVisors Leads Cohart of People With Stock & Education 🚀
+        </p>
+        <a
+          href="/dashboard/stocks"
+          className="px-6 py-3 bg-purple-600 text-white rounded shadow hover:bg-purple-700 transition"
+        >
+          Explore Dashboard
+        </a>
+      </section>
     </main>
   );
 }
