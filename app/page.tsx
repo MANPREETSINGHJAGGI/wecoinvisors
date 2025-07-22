@@ -38,6 +38,24 @@ export default function Home() {
           </div>
         </div>
       </section>
+{/* 🗣 Testimonials */}
+<section className="py-16 px-6 bg-gradient-to-r from-gray-50 to-gray-100 text-center">
+  <h2 className="text-3xl font-semibold mb-12 text-gray-800">What Our Users Say</h2>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    <div className="bg-white p-6 rounded-lg shadow text-left">
+      <p className="text-gray-700 italic">"WeCoinvisors helped me understand the stock market with ease!"</p>
+      <div className="mt-4 font-bold text-purple-700">— Priya, Student</div>
+    </div>
+    <div className="bg-white p-6 rounded-lg shadow text-left">
+      <p className="text-gray-700 italic">"Live stock dashboard is fast and accurate. I love it."</p>
+      <div className="mt-4 font-bold text-purple-700">— Rajesh, Retail Investor</div>
+    </div>
+    <div className="bg-white p-6 rounded-lg shadow text-left">
+      <p className="text-gray-700 italic">"The educational content is perfect for beginners like me."</p>
+      <div className="mt-4 font-bold text-purple-700">— Aisha, Aspiring Analyst</div>
+    </div>
+  </div>
+</section>
 
       {/* 🧾 Footer */}
       <footer className="bg-gray-800 text-white text-center py-8">
