@@ -46,12 +46,12 @@ export default function StocksDashboard() {
         <table className="w-full text-sm text-left border-collapse">
           <thead className="bg-gray-200 text-gray-700">
             <tr>
-              <th className="p-2">Symbol</th>
-              <th className="p-2">Name</th>
-              <th className="p-2">Price</th>
-              <th className="p-2">Volume</th>
-              <th className="p-2">% Change</th>
-              <th className="p-2">Sector</th>
+              <th className="p-2">Symbol</th></span>
+              <th className="p-2">Name</th></span>
+              <th className="p-2">Price</th></span>
+              <th className="p-2">Volume</th></span>
+              <th className="p-2">% Change</th></span>
+              <th className="p-2">Sector</th></span>
             </tr>
           </thead>
           <tbody>
