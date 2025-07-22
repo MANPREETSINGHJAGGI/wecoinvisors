@@ -56,6 +56,39 @@ export default function Home() {
     </div>
   </div>
 </section>
+{/* 📰 Latest Blog Posts */}
+<section className="py-16 px-6 bg-white text-center">
+  <h2 className="text-3xl font-semibold mb-12 text-gray-800">Latest Updates</h2>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    <div className="border rounded-lg p-6 shadow hover:shadow-md transition">
+      <h3 className="text-xl font-bold text-purple-700 mb-2">📈 Understanding Nifty & Sensex</h3>
+      <p className="text-gray-700 text-sm mb-4">
+        Learn the basics of India’s major indices and how they affect your investments.
+      </p>
+      <a href="#" className="text-purple-600 font-semibold hover:underline">
+        Read more →
+      </a>
+    </div>
+    <div className="border rounded-lg p-6 shadow hover:shadow-md transition">
+      <h3 className="text-xl font-bold text-purple-700 mb-2">🧠 Why FPI Matters</h3>
+      <p className="text-gray-700 text-sm mb-4">
+        Understand Foreign Portfolio Investment and how it influences Indian markets.
+      </p>
+      <a href="#" className="text-purple-600 font-semibold hover:underline">
+        Read more →
+      </a>
+    </div>
+    <div className="border rounded-lg p-6 shadow hover:shadow-md transition">
+      <h3 className="text-xl font-bold text-purple-700 mb-2">🚀 Getting Started with Stock Analysis</h3>
+      <p className="text-gray-700 text-sm mb-4">
+        A quick guide for beginners to dive into stock analysis using our tools.
+      </p>
+      <a href="#" className="text-purple-600 font-semibold hover:underline">
+        Read more →
+      </a>
+    </div>
+  </div>
+</section>
 
       {/* 🧾 Footer */}
       <footer className="bg-gray-800 text-white text-center py-8">
