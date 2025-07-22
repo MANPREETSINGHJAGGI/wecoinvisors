@@ -10,7 +10,7 @@ export default function Home() {
           <span className="text-purple-700">WeCoinvisors</span> 🚀
         </h1>
         <p className="text-xl max-w-2xl mb-8">
-          WeCoinVisors Leads Cohart of People With Stock & Education
+          WeCoinVisors Leads Cohort of People With Stock & Education 🚀
         </p>
         <a
           href="/dashboard/stocks"
@@ -20,28 +20,33 @@ export default function Home() {
         </a>
       </section>
 
-      {/* Features Section */}
-      <section className="py-16 px-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold mb-8 text-center">What We Offer</h2>
-        <div className="grid md:grid-cols-3 gap-8 text-center">
-          <div className="bg-white p-6 rounded shadow hover:shadow-md">
-            <h3 className="text-xl font-semibold text-purple-700">Live Stock Dashboard</h3>
-            <p className="text-gray-600 mt-2">Real-time market insights and stock data for informed decisions.</p>
+      {/* 📦 Features Grid */}
+      <section className="py-16 px-6 bg-white text-center">
+        <h2 className="text-3xl font-semibold mb-12 text-gray-800">Features</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="p-6 bg-gray-100 rounded-lg shadow">
+            <h3 className="text-xl font-bold text-purple-600 mb-2">Live Stock Data</h3>
+            <p className="text-gray-700">Track real-time stock movements from the NSE market.</p>
           </div>
-          <div className="bg-white p-6 rounded shadow hover:shadow-md">
-            <h3 className="text-xl font-semibold text-purple-700">Education Resources</h3>
-            <p className="text-gray-600 mt-2">Learn finance and stock market from basics to advanced.</p>
+          <div className="p-6 bg-gray-100 rounded-lg shadow">
+            <h3 className="text-xl font-bold text-purple-600 mb-2">Educational Resources</h3>
+            <p className="text-gray-700">Learn stock market concepts through interactive lessons and guides.</p>
           </div>
-          <div className="bg-white p-6 rounded shadow hover:shadow-md">
-            <h3 className="text-xl font-semibold text-purple-700">Student Doubt Solver</h3>
-            <p className="text-gray-600 mt-2">Ask questions and get answers via our intelligent bots like Zed.</p>
+          <div className="p-6 bg-gray-100 rounded-lg shadow">
+            <h3 className="text-xl font-bold text-purple-600 mb-2">AI-Powered Insights</h3>
+            <p className="text-gray-700">Get personalized investment insights using machine learning tools.</p>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-100 text-center py-6 text-sm text-gray-600">
-        © {new Date().getFullYear()} WeCoinvisors. All rights reserved.
+      {/* 🧾 Footer */}
+      <footer className="bg-gray-800 text-white text-center py-8">
+        <div className="mb-2 text-sm">© {new Date().getFullYear()} WeCoinvisors Pvt Ltd. All rights reserved.</div>
+        <div className="space-x-4 text-sm">
+          <a href="/about" className="hover:underline">About</a>
+          <a href="/contact" className="hover:underline">Contact</a>
+          <a href="/terms" className="hover:underline">Terms</a>
+        </div>
       </footer>
     </main>
   );
