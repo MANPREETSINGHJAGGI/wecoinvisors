@@ -1,36 +1,24 @@
-import { db } from "@/utils/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-
-export async function POST(req: Request) {
+export async function GET() {
   try {
-    const data = await req.json();
-
-    if (!data || !data.date) {
-      return Response.json(
-        { success: false, error: "Invalid payload." },
-        { status: 400 }
-      );
-    }
-
-    const fpiData = {
-      ...data,
-      createdAt: serverTimestamp(),
+    // Simulated FPI Data for Dev Mode
+    const dummyFpi = {
+      date: "2025-07-18",
+      equityPurchase: 100000000,
+      equitySale: 50000000,
+      netInvestment: 50000000,
     };
 
-    try {
-      await addDoc(collection(db, "fpiData"), fpiData);
-      return Response.json({ success: true });
-    } catch (error) {
-      console.error("Firestore write failed:", error);
-      return Response.json(
-        { success: false, error: "Failed to store FPI data" },
-        { status: 500 }
-      );
-    }
-  } catch (err) {
-    console.error("FPI API Error:", err);
-    return Response.json(
-      { success: false, error: "Failed to parse request." },
+    return new Response(
+      JSON.stringify({
+        success: true,
+        data: dummyFpi,
+      }),
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("FPI API Error:", error);
+    return new Response(
+      JSON.stringify({ success: false, error: "Server error fetching FPI data" }),
       { status: 500 }
     );
   }

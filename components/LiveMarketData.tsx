@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+type Props = {
+  provider: string;
+};
 export default function LiveMarketData() {
   const [nifty, setNifty] = useState("22,000");
   const [sensex, setSensex] = useState("72,000");
