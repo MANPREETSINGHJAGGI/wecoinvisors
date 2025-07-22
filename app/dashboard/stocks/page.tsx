@@ -1,81 +1,75 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-export default function StocksDashboardPage() {
-  const [companies, setCompanies] = useState<any[]>([]);
-  const [search, setSearch] = useState("");
+type Stock = {
+  symbol: string;
+  name: string;
+  price: number;
+  volume: number;
+  change: number;
+  percentChange: number;
+  sector: string;
+};
+
+export default function StocksDashboard() {
+  const [stocks, setStocks] = useState<Stock[]>([]);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    async function fetchCompanies() {
-      try {
-        let url = "/api/live-stock-data";
-
-        if (search.trim()) {
-          url += `?symbols=${search.trim().toUpperCase()}`;
-        } else {
-          url += `?top=75`;
-        }
-
-        const res = await fetch(url);
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data)) {
-          setCompanies(json.data);
-        } else {
-          setCompanies([]);
-        }
-      } catch (err) {
-        console.error("Error fetching companies", err);
-        setCompanies([]);
-      }
+    async function fetchStocks() {
+      const res = await fetch('/api/live-stock-data?symbols=NSE:RELIANCE,NSE:TCS,NSE:INFY,NSE:HDFCBANK');
+      const json = await res.json();
+      setStocks(json.data || []);
     }
+    fetchStocks();
+  }, []);
 
-    const timeout = setTimeout(fetchCompanies, 500);
-    return () => clearTimeout(timeout);
-  }, [search]);
+  const filteredStocks = stocks.filter(stock =>
+    stock.name.toLowerCase().includes(search.toLowerCase()) ||
+    stock.symbol.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <main className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">📈 Stock Market Dashboard</h1>
+    <main className="p-6 bg-gray-50 min-h-screen">
+      <h1 className="text-3xl font-semibold mb-4 text-purple-700">📊 Live Stocks Dashboard</h1>
 
       <input
         type="text"
-        placeholder="Search by name or symbol"
+        placeholder="Search stock..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="border p-2 rounded mb-4 w-full"
+        className="w-full max-w-sm border rounded px-4 py-2 mb-4"
       />
 
-      <table className="w-full border text-sm">
-        <thead className="bg-gray-100 text-left">
-          <tr>
-            <th className="p-2">Symbol</th>
-            <th className="p-2">Company</th>
-            <th className="p-2">Price</th>
-            <th className="p-2">Change</th>
-          </tr>
-        </thead>
-        <tbody>
-          {companies.map((company, idx) => (
-            <tr key={idx} className="border-t">
-              <td className="p-2">{company.symbol}</td>
-              <td className="p-2">{company.name}</td>
-              <td className="p-2">₹{company.price}</td>
-              <td className={`p-2 ${company.change >= 0 ? "text-green-600" : "text-red-600"}`}>
-                {company.change} ({company.percentChange}%)
-              </td>
-            </tr>
-          ))}
-
-          {companies.length === 0 && (
+      <div className="overflow-x-auto bg-white rounded shadow">
+        <table className="w-full text-sm text-left border-collapse">
+          <thead className="bg-gray-200 text-gray-700">
             <tr>
-              <td colSpan={4} className="p-4 text-center text-gray-500">
-                No stock data found. Either the symbol is incorrect or the data provider has rate-limited the request.
-              </td>
+              <th className="p-2">Symbol</th>
+              <th className="p-2">Name</th>
+              <th className="p-2">Price</th>
+              <th className="p-2">Volume</th>
+              <th className="p-2">% Change</th>
+              <th className="p-2">Sector</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredStocks.map((stock) => (
+              <tr key={stock.symbol} className="border-t hover:bg-gray-100">
+                <td className="p-2 font-medium">{stock.symbol}</td>
+                <td className="p-2">{stock.name}</td>
+                <td className="p-2">₹{stock.price.toFixed(2)}</td>
+                <td className="p-2">{stock.volume.toLocaleString()}</td>
+                <td className={`p-2 ${stock.percentChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {stock.percentChange.toFixed(2)}%
+                </td>
+                <td className="p-2">{stock.sector}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </main>
   );
 }
