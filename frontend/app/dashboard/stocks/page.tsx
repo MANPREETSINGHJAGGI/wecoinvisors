@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -27,12 +27,14 @@ export default function StocksPage() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // ✅ Redirect unauthenticated users
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
     }
   }, [user, loading]);
 
+  // ✅ Load stock data and watchlist
   useEffect(() => {
     const fetchStocks = async () => {
       setIsLoading(true);
@@ -53,9 +55,14 @@ export default function StocksPage() {
 
     if (user) {
       fetchStocks();
+      const savedWatchlist = localStorage.getItem("watchlist");
+      if (savedWatchlist) {
+        setWatchlist(JSON.parse(savedWatchlist));
+      }
     }
   }, [user]);
 
+  // ✅ Sector filtering
   const handleFilter = (selectedSector: string) => {
     if (selectedSector === "All") {
       setFilteredStocks(stocks);
