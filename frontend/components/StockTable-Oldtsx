@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -21,9 +22,14 @@ interface Props {
   setWatchlist: (list: string[]) => void;
 }
 
-export default function StockTable({ stocks, loading, watchlist, setWatchlist }: Props) {
+export default function StockTable({
+  stocks,
+  loading,
+  watchlist,
+  setWatchlist,
+}: Props) {
   const toggleWatchlist = (symbol: string) => {
-    let updated = watchlist.includes(symbol)
+    const updated = watchlist.includes(symbol)
       ? watchlist.filter((s) => s !== symbol)
       : [...watchlist, symbol];
 
@@ -35,13 +41,21 @@ export default function StockTable({ stocks, loading, watchlist, setWatchlist }:
     return (
       <div className="mt-6 space-y-4">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="animate-pulse bg-dark border border-gray-800 rounded p-4">
+          <div
+            key={i}
+            className="animate-pulse bg-dark border border-gray-800 rounded p-4"
+          >
             <div className="h-4 bg-gray-800 w-1/3 mb-2 rounded" />
             <div className="h-3 bg-gray-700 w-2/3 rounded" />
           </div>
         ))}
       </div>
     );
+  }
+
+  // ✅ Defensive check: make sure stocks is an array
+  if (!Array.isArray(stocks)) {
+    return <div className="text-red-500">⚠️ Invalid stock data received.</div>;
   }
 
   return (
@@ -60,21 +74,42 @@ export default function StockTable({ stocks, loading, watchlist, setWatchlist }:
         </thead>
         <tbody>
           {stocks.map((stock) => (
-            <tr key={stock.symbol} className="border-b border-gray-800 hover:bg-gray-900 transition">
+            <tr
+              key={stock.symbol}
+              className="border-b border-gray-800 hover:bg-gray-900 transition"
+            >
               <td className="px-4 py-2">
-                <button onClick={() => toggleWatchlist(stock.symbol)}>
+                <button
+                  onClick={() => toggleWatchlist(stock.symbol)}
+                  className="text-lg"
+                >
                   {watchlist.includes(stock.symbol) ? "★" : "☆"}
                 </button>
               </td>
-              <td className="px-4 py-2 font-bold text-gold">{stock.symbol}</td>
+              <td className="px-4 py-2 font-bold text-gold">
+                <Link
+                  href={`/dashboard/charts?symbol=${stock.symbol}`}
+                  className="hover:underline"
+                >
+                  {stock.symbol}
+                </Link>
+              </td>
               <td className="px-4 py-2">{stock.name}</td>
-              <td className="px-4 py-2">{stock.price.toFixed(2)}</td>
+              <td className="px-4 py-2">
+                {typeof stock.price === "number"
+                  ? stock.price.toFixed(2)
+                  : "N/A"}
+              </td>
               <td
                 className={`px-4 py-2 ${
-                  stock.percentChange >= 0 ? "text-green-400" : "text-red-400"
+                  stock.percentChange >= 0
+                    ? "text-green-400"
+                    : "text-red-400"
                 }`}
               >
-                {stock.percentChange.toFixed(2)}%
+                {typeof stock.percentChange === "number"
+                  ? `${stock.percentChange.toFixed(2)}%`
+                  : "N/A"}
               </td>
               <td className="px-4 py-2">{stock.sector}</td>
               <td className="px-4 py-2">
