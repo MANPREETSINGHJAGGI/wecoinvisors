@@ -1,17 +1,27 @@
-// utils/firebase.js
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCttQMbSYoZFiLnBYGL-IC1woDsobCkdUE",
-  authDomain: "wecoinvisors-b4f67.firebaseapp.com",
-  projectId: "wecoinvisors-b4f67",
-  storageBucket: "wecoinvisors-b4f67.appspot.com",
-  messagingSenderId: "111649159422",
-  appId: "1:111649159422:web:YOUR_APP_ID_HERE" // ← Replace with real App ID from Firebase after Web App creation
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-export { auth };
+wecoinvisors/
+├── backend/                 # FastAPI backend for stock data API
+│   ├── main.py              # FastAPI entry point
+│   ├── services/            # Data fetch logic (Finnhub, Alpha Vantage, etc.)
+│   ├── utils/               # Helper functions
+│   ├── models/              # Pydantic models (optional)
+│   ├── requirements.txt     # Python dependencies
+│   └── .env                 # API keys and config
+│
+├── frontend/                # Next.js frontend (React + Tailwind)
+│   ├── app/
+│   │   ├── page.tsx         # Homepage
+│   │   ├── dashboard/
+│   │   │   └── stocks/
+│   │   │       └── page.tsx # Live stock dashboard UI
+│   │   └── api/
+│   │       └── live-stock-data/
+│   │           └── route.ts # Frontend fetch proxy to FastAPI
+│   ├── components/          # Reusable React components
+│   ├── public/              # Static assets (e.g., logo, icons)
+│   ├── styles/              # Global styles (Tailwind / custom)
+│   ├── .env.local           # Frontend-specific env (FastAPI URL)
+│   ├── next.config.js       # Next.js config
+│   └── package.json         # NPM dependencies
+│
+├── README.md
+└── .gitignore
