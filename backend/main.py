@@ -1,12 +1,12 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import httpx
 import os
-from typing import List
 
 app = FastAPI()
 
-# CORS
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,49 +20,74 @@ ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY", "TE8DYXRJ2A8NFOX3")
 TWELVE_DATA_API_KEY = os.getenv("TWELVE_DATA_API_KEY", "abe50c45515a4d489c9cb03de847801e")
 FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", "d216ms9r01qkduphvddgd216ms9r01qkduphvde0")
 
-# --- Live Stock Data Endpoint ---
 @app.get("/api/live-stock-data")
 async def get_live_stock_data(symbols: str = Query(...)):
-
     result = []
     symbol_list = symbols.split(",")
 
     async with httpx.AsyncClient() as client:
         for symbol in symbol_list:
-            # Alpha Vantage price
-            price_url = f"https://www.alphavantage.co/query"
-            price_params = {
+            # Alpha Vantage attempt
+            av_url = "https://www.alphavantage.co/query"
+            av_params = {
                 "function": "GLOBAL_QUOTE",
                 "symbol": symbol,
                 "apikey": ALPHA_VANTAGE_API_KEY,
             }
-            price_response = await client.get(price_url, params=price_params)
-            price_data = price_response.json()
-            quote = price_data.get("Global Quote", {})
+            av_res = await client.get(av_url, params=av_params)
+            av_data = av_res.json()
+            quote = av_data.get("Global Quote", {})
 
-            # Finnhub fundamentals
-            profile_url = f"https://finnhub.io/api/v1/stock/profile2"
+            # Finnhub profile
+            profile_url = "https://finnhub.io/api/v1/stock/profile2"
             profile_params = {"symbol": symbol, "token": FINNHUB_API_KEY}
-            profile_response = await client.get(profile_url, params=profile_params)
-            profile_data = profile_response.json()
+            profile_res = await client.get(profile_url, params=profile_params)
+            profile_data = profile_res.json()
 
             if not quote or "05. price" not in quote:
+                # Fallback: Twelve Data
+                td_url = "https://api.twelvedata.com/quote"
+                td_params = {
+                    "symbol": symbol,
+                    "exchange": "NSE",  # or "NYSE" for US stocks
+                    "apikey": TWELVE_DATA_API_KEY,
+                }
+                td_res = await client.get(td_url, params=td_params)
+                td_data = td_res.json()
+
+                if "price" in td_data:
+                    result.append({
+                        "symbol": symbol,
+                        "name": td_data.get("name", symbol),
+                        "price": float(td_data.get("price", 0)),
+                        "change": float(td_data.get("change", 0)),
+                        "percentChange": float(td_data.get("percent_change", 0)),
+                        "volume": int(float(td_data.get("volume", 0))),
+                        "sector": td_data.get("sector", "UNKNOWN"),
+                        "marketCap": float(td_data.get("market_cap", 0)),
+                        "peRatio": float(td_data.get("pe", 0)),
+                        "eps": float(td_data.get("eps", 0)),
+                    })
                 continue
 
-            result.append({
-                "symbol": symbol,
-                "name": profile_data.get("name", symbol),
-                "price": float(quote["05. price"]),
-                "change": float(quote["09. change"]),
-                "percentChange": float(quote["10. change percent"].replace("%", "")),
-                "volume": int(float(quote.get("06. volume", 0))),
-                "sector": profile_data.get("finnhubIndustry", "N/A").upper(),
-                "marketCap": profile_data.get("marketCapitalization", 0) * 1e6,
-                "peRatio": profile_data.get("peBasicExclExtraTTM", 0),
-                "eps": profile_data.get("epsTTM", 0),
-            })
+            try:
+                result.append({
+                    "symbol": symbol,
+                    "name": profile_data.get("name", symbol),
+                    "price": float(quote["05. price"]),
+                    "change": float(quote["09. change"]),
+                    "percentChange": float(quote["10. change percent"].replace("%", "")),
+                    "volume": int(float(quote.get("06. volume", 0))),
+                    "sector": profile_data.get("finnhubIndustry", "N/A"),
+                    "marketCap": profile_data.get("marketCapitalization", 0) * 1e6,
+                    "peRatio": profile_data.get("peBasicExclExtraTTM", 0),
+                    "eps": profile_data.get("epsTTM", 0),
+                })
+            except Exception as e:
+                print(f"Error parsing data for {symbol}: {e}")
+                continue
 
-    return {"data": result}
+    return JSONResponse(content=result)
 
 
 # --- Sector Heatmap Endpoint ---
@@ -71,7 +96,8 @@ async def sector_heatmap():
     response = await get_live_stock_data("AAPL,MSFT,AMZN,GOOGL,TSLA,IBM,NFLX,META")
     sector_map = {}
 
-    for stock in response["data"]:
+    for stock in response.body:
+        stock = stock if isinstance(stock, dict) else eval(stock)
         sector = stock["sector"]
         change = stock["percentChange"]
 
@@ -81,8 +107,8 @@ async def sector_heatmap():
 
     heatmap_data = []
     for sector, changes in sector_map.items():
-        avg_change = sum(changes) / len(changes)
-        heatmap_data.append({"sector": sector, "avgChange": round(avg_change, 2)})
+        avg = sum(changes) / len(changes)
+        heatmap_data.append({"sector": sector, "avgChange": round(avg, 2)})
 
     return {"data": heatmap_data}
 
@@ -110,7 +136,6 @@ async def historical_chart(symbol: str = Query(...), range: str = Query("1M")):
 
     params = RANGE_MAP[range]
     url = "https://api.twelvedata.com/time_series"
-
     query_params = {
         "symbol": symbol,
         "interval": params["interval"],
