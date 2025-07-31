@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import LiveMarketData from "@/components/LiveMarketData";
+import ProtectedRoute from "@/components/ProtectedRoute"; // ✅ Authentication wrapper
 import { useEffect, useState } from "react";
 import {
   LineChart,
@@ -19,7 +20,7 @@ import {
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 
-export default function StocksPage() {
+function StocksContent() {
   const [fpiData, setFpiData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [fpiTrend, setFpiTrend] = useState<any[]>([]);
@@ -41,7 +42,7 @@ export default function StocksPage() {
           setFpiData(json.data);
           setFpiTrend(json.trend || []);
 
-          // Store in Firestore
+          // Store in Firestore (Optional)
           await fetch("/api/store-fpi", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -94,10 +95,11 @@ export default function StocksPage() {
 
   return (
     <main
-      className={`$${
+      className={`${
         isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-800"
       } flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 md:px-12 py-12`}
     >
+      {/* 🌙 Dark Mode Toggle */}
       <button
         onClick={() => setIsDarkMode(!isDarkMode)}
         className="absolute top-4 right-4 px-3 py-1 text-sm border rounded hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -114,7 +116,9 @@ export default function StocksPage() {
 
       {/* Live Market Data Section */}
       <div className="bg-green-100 dark:bg-green-900 p-6 rounded-lg shadow-md hover:shadow-lg transition w-full max-w-4xl mb-8">
-        <h2 className="text-xl font-semibold text-green-800 dark:text-green-300 mb-2">Live Market Data</h2>
+        <h2 className="text-xl font-semibold text-green-800 dark:text-green-300 mb-2">
+          Live Market Data
+        </h2>
         <p className="text-gray-700 dark:text-gray-300 mb-4">
           Stay updated with real-time stock prices, charts, and FPI investment trends.
         </p>
@@ -124,11 +128,15 @@ export default function StocksPage() {
         {marketData && (
           <div className="grid grid-cols-2 gap-4 mt-4 text-center">
             <div className="bg-white dark:bg-gray-800 p-4 rounded border">
-              <h4 className="text-green-700 dark:text-green-300 font-semibold">Nifty</h4>
+              <h4 className="text-green-700 dark:text-green-300 font-semibold">
+                Nifty
+              </h4>
               <p className="text-xl">{marketData.nifty}</p>
             </div>
             <div className="bg-white dark:bg-gray-800 p-4 rounded border">
-              <h4 className="text-green-700 dark:text-green-300 font-semibold">Sensex</h4>
+              <h4 className="text-green-700 dark:text-green-300 font-semibold">
+                Sensex
+              </h4>
               <p className="text-xl">{marketData.sensex}</p>
             </div>
           </div>
@@ -145,16 +153,20 @@ export default function StocksPage() {
                 <strong>Date:</strong> {fpiData.date}
               </li>
               <li>
-                <strong>Equity Purchase:</strong> {formatAmount(fpiData.equityPurchase)}
+                <strong>Equity Purchase:</strong>{" "}
+                {formatAmount(fpiData.equityPurchase)}
               </li>
               <li>
-                <strong>Equity Sale:</strong> {formatAmount(fpiData.equitySale)}
+                <strong>Equity Sale:</strong>{" "}
+                {formatAmount(fpiData.equitySale)}
               </li>
               <li>
                 <strong>Net Investment:</strong>{" "}
                 <span
                   className={`font-semibold ${
-                    isPositive(fpiData.netInvestment) ? "text-green-600" : "text-red-600"
+                    isPositive(fpiData.netInvestment)
+                      ? "text-green-600"
+                      : "text-red-600"
                   }`}
                 >
                   {formatAmount(fpiData.netInvestment)}
@@ -202,7 +214,10 @@ export default function StocksPage() {
                   label
                 >
                   {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -215,7 +230,9 @@ export default function StocksPage() {
 
       {/* Investment Tips Section */}
       <div className="bg-yellow-100 dark:bg-yellow-900 p-6 rounded-lg shadow-md hover:shadow-lg transition w-full max-w-4xl">
-        <h2 className="text-xl font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Investment Tips</h2>
+        <h2 className="text-xl font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+          Investment Tips
+        </h2>
         <ul className="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-2">
           <li>Invest for the long term to build stable returns.</li>
           <li>Diversify your portfolio to manage risk.</li>
@@ -225,10 +242,21 @@ export default function StocksPage() {
       </div>
 
       <div className="mt-12 text-center">
-        <Link href="/" className="text-blue-600 dark:text-blue-300 hover:underline text-sm">
+        <Link
+          href="/"
+          className="text-blue-600 dark:text-blue-300 hover:underline text-sm"
+        >
           ← Back to Homepage
         </Link>
       </div>
     </main>
+  );
+}
+
+export default function StocksPage() {
+  return (
+    <ProtectedRoute>
+      <StocksContent />
+    </ProtectedRoute>
   );
 }

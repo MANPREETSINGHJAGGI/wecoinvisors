@@ -1,21 +1,39 @@
-// app/api/live-stock-data/route.ts
-import { NextRequest, NextResponse } from "next/server";
+// File: app/api/live-stock-data/route.ts
 
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const symbols = searchParams.get("symbols") || "AAPL,MSFT";
+  const symbols = searchParams.get("symbols");
+
+  if (!symbols) {
+    return new Response(JSON.stringify({ error: "Missing 'symbols' parameter" }), {
+      status: 400,
+    });
+  }
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/live-stock-data?symbols=${symbols}`);
-    if (!response.ok) {
-      console.error(`[API Error]: Failed to fetch from FastAPI. Status: ${response.status}`);
-      return NextResponse.json({ error: "Failed to fetch from FastAPI" }, { status: response.status });
+    const res = await fetch(`http://127.0.0.1:8000/api/live-stock-data?symbols=${symbols}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Backend Error:", errorText);
+      return new Response(JSON.stringify({ error: "Backend API error" }), {
+        status: res.status,
+      });
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    const data = await res.json();
+    return new Response(JSON.stringify(data), {
+      status: 200,
+    });
   } catch (error) {
-    console.error("[API Error]:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Fetch failed:", error);
+    return new Response(JSON.stringify({ error: "Failed to fetch stock data" }), {
+      status: 500,
+    });
   }
 }

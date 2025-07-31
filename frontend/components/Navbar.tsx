@@ -1,27 +1,51 @@
 "use client";
+
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    window.location.href = "/"; // Redirect to home after logout
+  };
 
   return (
-    <nav className="bg-dark text-grayText shadow-gold px-6 py-4 flex justify-between items-center animate-fadeInUp">
-      <a href="/" className="text-gold text-xl font-bold hover:underline">WeCoinvisors</a>
+    <nav className="bg-white shadow-md dark:bg-gray-900 py-4 px-6 flex justify-between items-center">
+      <Link href="/" className="text-xl font-bold text-purple-600">
+        🚀 WeCoinvisors
+      </Link>
 
-      <div className="flex gap-4 items-center">
-        <a href="/dashboard/stocks" className="hover:text-gold transition">Stocks</a>
-        <a href="/dashboard/charts" className="hover:text-gold transition">Charts</a>
+      <div className="flex items-center space-x-4">
+        <Link
+          href="/dashboard/stocks"
+          className="text-gray-700 dark:text-gray-200 hover:text-purple-600"
+        >
+          Dashboard
+        </Link>
 
-        {user && (
+        {!user ? (
+          <Link
+            href="/login"
+            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
+          >
+            Login
+          </Link>
+        ) : (
           <>
-            <a href="/dashboard/profile" className="hover:text-gold transition">Profile</a>
-            <span className="text-sm text-gray-400">{user.email}</span>
-            <button onClick={logout} className="text-red-500 hover:underline">Sign Out</button>
+            <span className="text-sm text-gray-600 dark:text-gray-300">
+              {user.email}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Logout
+            </button>
           </>
-        )}
-
-        {!user && (
-          <a href="/login" className="text-gold hover:underline">Login</a>
         )}
       </div>
     </nav>

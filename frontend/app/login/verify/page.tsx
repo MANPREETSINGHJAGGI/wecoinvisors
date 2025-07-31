@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { getAuth, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
-import { auth } from '@/firebase/firebase';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
+import { auth } from "@/lib/firebase"; // ✅ Correct import
 
 export default function VerifyPage() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function VerifyPage() {
 
       // Check if this is a valid email link
       if (isSignInWithEmailLink(auth, url)) {
-        const email = window.localStorage.getItem('emailForSignIn');
+        const email = window.localStorage.getItem("emailForSignIn");
 
         if (!email) {
           alert("Missing email. Please go back and enter your email again.");
@@ -24,8 +24,8 @@ export default function VerifyPage() {
 
         try {
           await signInWithEmailLink(auth, email, url);
-          window.localStorage.removeItem('emailForSignIn');
-          router.push('/dashboard/stocks');
+          window.localStorage.removeItem("emailForSignIn");
+          router.push("/dashboard/stocks");
         } catch (error) {
           console.error("Sign-in error:", error);
           alert("Failed to sign in. Please try again.");

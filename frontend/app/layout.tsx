@@ -1,5 +1,5 @@
-// frontend/app/layout.tsx
 import { AuthProvider } from "@/context/AuthContext";
+import Navbar from "@/components/Navbar"; // ✅ Import Navbar
 import "./globals.css";
 
 export const metadata = {
@@ -17,7 +17,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="bg-dark text-grayText font-sans min-h-screen">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <Navbar /> {/* ✅ Navbar always visible */}
+          {children} {/* ✅ Page content */}
+        </AuthProvider>
       </body>
     </html>
   );
