@@ -17,7 +17,20 @@ import {
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const SYMBOLS = ["AAPL", "MSFT", "TSLA", "GOOGL", "META"];
+interface Stock {
+  symbol: string;
+  name: string;
+  price: number;
+  percentChange: number;
+  volume: number;
+  sector: string;
+  marketCap: number;
+  peRatio: number;
+  eps: number;
+  isGolden?: boolean;
+}
+
+const SYMBOLS = ["AAPL", "MSFT", "TSLA", "GOOGL", "META", "TCS.NS"];
 const RANGES = ["1D", "3D", "5D", "1M", "3M", "6M", "1Y", "2Y", "3Y", "4Y", "5Y"];
 
 export default function ChartPage() {
@@ -27,19 +40,30 @@ export default function ChartPage() {
   const [symbol, setSymbol] = useState(initialSymbol);
   const [range, setRange] = useState("1M");
   const [data, setData] = useState<any>(null);
+  const [stockInfo, setStockInfo] = useState<Stock | null>(null);
   const [loading, setLoading] = useState(false);
-  const chartRef = useRef(null);
+  const chartRef = useRef<HTMLDivElement>(null);
 
+  // Fetch chart data
   useEffect(() => {
     const fetchChartData = async () => {
       setLoading(true);
       try {
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
-        const res = await fetch(`${baseUrl}/api/historical-chart?symbol=${symbol}&range=${range}`);
-        const json = await res.json();
-        setData(json);
+
+        // 1️⃣ Fetch historical chart
+        const chartRes = await fetch(`${baseUrl}/api/historical-chart?symbol=${symbol}&range=${range}`);
+        const chartJson = await chartRes.json();
+        setData(chartJson);
+
+        // 2️⃣ Fetch live stock data with highlight detection
+        const stockRes = await fetch(`${baseUrl}/api/live-stock-data?symbols=${symbol}&highlight=${symbol}`);
+        const stockJson = await stockRes.json();
+        if (Array.isArray(stockJson) && stockJson.length > 0) {
+          setStockInfo(stockJson[0]);
+        }
       } catch (err) {
-        console.error("Error fetching chart:", err);
+        console.error("Error fetching chart or stock:", err);
       } finally {
         setLoading(false);
       }
@@ -48,6 +72,7 @@ export default function ChartPage() {
     fetchChartData();
   }, [symbol, range]);
 
+  // Export as PNG
   const downloadPNG = async () => {
     if (!chartRef.current) return;
     const canvas = await html2canvas(chartRef.current);
@@ -57,6 +82,7 @@ export default function ChartPage() {
     link.click();
   };
 
+  // Export as CSV
   const downloadCSV = () => {
     if (!data) return;
     const rows = [["Date", "Price"], ...data.labels.map((label: string, i: number) => [label, data.prices[i]])];
@@ -68,6 +94,17 @@ export default function ChartPage() {
     link.download = `${symbol}_${range}.csv`;
     link.click();
   };
+
+  const priceColor =
+    stockInfo?.percentChange! > 0
+      ? "text-green-400"
+      : stockInfo?.percentChange! < 0
+      ? "text-red-400"
+      : "text-gray-400";
+
+  const cardClass = stockInfo?.isGolden
+    ? "border-2 border-yellow-500 shadow-yellow-500/50 shadow-lg"
+    : "border border-gray-700";
 
   return (
     <div className="p-6 text-white">
@@ -106,7 +143,17 @@ export default function ChartPage() {
         </button>
       </div>
 
-      <div ref={chartRef} className="bg-dark p-4 rounded-lg border border-gold shadow-md">
+      <div ref={chartRef} className={`bg-dark p-4 rounded-lg shadow-md ${cardClass}`}>
+        {stockInfo && (
+          <div className="mb-4">
+            <h2 className="text-lg font-bold text-gold">{stockInfo.symbol}</h2>
+            <p className="text-gray-300">
+              Price: {stockInfo.price.toFixed(2)} |{" "}
+              <span className={priceColor}>{stockInfo.percentChange.toFixed(2)}%</span>
+            </p>
+          </div>
+        )}
+
         {loading ? (
           <p className="text-grayText">Loading chart...</p>
         ) : data && data.labels ? (
@@ -127,12 +174,8 @@ export default function ChartPage() {
             options={{
               responsive: true,
               scales: {
-                x: {
-                  ticks: { color: "#b0b0b0" },
-                },
-                y: {
-                  ticks: { color: "#b0b0b0" },
-                },
+                x: { ticks: { color: "#b0b0b0" } },
+                y: { ticks: { color: "#b0b0b0" } },
               },
             }}
           />

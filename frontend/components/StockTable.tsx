@@ -13,6 +13,7 @@ interface Stock {
   marketCap: number;
   peRatio: number;
   eps: number;
+  isGolden?: boolean;
 }
 
 interface Props {
@@ -53,7 +54,6 @@ export default function StockTable({
     );
   }
 
-  // ✅ Defensive check: make sure stocks is an array
   if (!Array.isArray(stocks)) {
     return <div className="text-red-500">⚠️ Invalid stock data received.</div>;
   }
@@ -73,55 +73,60 @@ export default function StockTable({
           </tr>
         </thead>
         <tbody>
-          {stocks.map((stock) => (
-            <tr
-              key={stock.symbol}
-              className="border-b border-gray-800 hover:bg-gray-900 transition"
-            >
-              <td className="px-4 py-2">
-                <button
-                  onClick={() => toggleWatchlist(stock.symbol)}
-                  className="text-lg"
-                >
-                  {watchlist.includes(stock.symbol) ? "★" : "☆"}
-                </button>
-              </td>
-              <td className="px-4 py-2 font-bold text-gold">
-                <Link
-                  href={`/dashboard/charts?symbol=${stock.symbol}`}
-                  className="hover:underline"
-                >
-                  {stock.symbol}
-                </Link>
-              </td>
-              <td className="px-4 py-2">{stock.name}</td>
-              <td className="px-4 py-2">
-                {typeof stock.price === "number"
-                  ? stock.price.toFixed(2)
-                  : "N/A"}
-              </td>
-              <td
-                className={`px-4 py-2 ${
-                  stock.percentChange >= 0
-                    ? "text-green-400"
-                    : "text-red-400"
-                }`}
+          {stocks.map((stock) => {
+            const changeColor =
+              stock.percentChange > 0
+                ? "text-green-400"
+                : stock.percentChange < 0
+                ? "text-red-400"
+                : "text-gray-400";
+
+            const rowClass = stock.isGolden
+              ? "bg-yellow-900/20 border-yellow-500"
+              : "border-gray-800";
+
+            return (
+              <tr
+                key={stock.symbol}
+                className={`border-b hover:bg-gray-900 transition ${rowClass}`}
               >
-                {typeof stock.percentChange === "number"
-                  ? `${stock.percentChange.toFixed(2)}%`
-                  : "N/A"}
-              </td>
-              <td className="px-4 py-2">{stock.sector}</td>
-              <td className="px-4 py-2">
-                <Link
-                  href={`/dashboard/charts?symbol=${stock.symbol}`}
-                  className="text-blue-500 hover:underline"
-                >
-                  View Chart
-                </Link>
-              </td>
-            </tr>
-          ))}
+                <td className="px-4 py-2 text-center">
+                  <button
+                    onClick={() => toggleWatchlist(stock.symbol)}
+                    className={stock.isGolden ? "text-yellow-400 text-lg" : "text-lg"}
+                  >
+                    {watchlist.includes(stock.symbol) ? "★" : "☆"}
+                  </button>
+                </td>
+                <td className="px-4 py-2 font-bold text-gold">
+                  <Link
+                    href={`/dashboard/charts?symbol=${stock.symbol}`}
+                    className="hover:underline"
+                  >
+                    {stock.symbol}
+                  </Link>
+                </td>
+                <td className="px-4 py-2">{stock.name}</td>
+                <td className="px-4 py-2">
+                  {typeof stock.price === "number" ? stock.price.toFixed(2) : "N/A"}
+                </td>
+                <td className={`px-4 py-2 ${changeColor}`}>
+                  {typeof stock.percentChange === "number"
+                    ? `${stock.percentChange.toFixed(2)}%`
+                    : "N/A"}
+                </td>
+                <td className="px-4 py-2">{stock.sector}</td>
+                <td className="px-4 py-2">
+                  <Link
+                    href={`/dashboard/charts?symbol=${stock.symbol}`}
+                    className="text-blue-500 hover:underline"
+                  >
+                    View Chart
+                  </Link>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
