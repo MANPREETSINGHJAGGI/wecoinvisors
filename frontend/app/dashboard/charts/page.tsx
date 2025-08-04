@@ -1,8 +1,9 @@
 // frontend/app/dashboard/charts/page.tsx
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import dynamic from "next/dynamic";
 import html2canvas from "html2canvas";
 import { Line } from "react-chartjs-2";
 import {
@@ -33,7 +34,7 @@ interface Stock {
 const SYMBOLS = ["AAPL", "MSFT", "TSLA", "GOOGL", "META", "TCS.NS"];
 const RANGES = ["1D", "3D", "5D", "1M", "3M", "6M", "1Y", "2Y", "3Y", "4Y", "5Y"];
 
-export default function ChartPage() {
+function ChartContent() {
   const searchParams = useSearchParams();
   const initialSymbol = searchParams.get("symbol") || "AAPL";
 
@@ -44,20 +45,22 @@ export default function ChartPage() {
   const [loading, setLoading] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
 
-  // Fetch chart data
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+
+  // Fetch chart data and stock info
   useEffect(() => {
     const fetchChartData = async () => {
       setLoading(true);
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
-
-        // 1️⃣ Fetch historical chart
-        const chartRes = await fetch(`${baseUrl}/api/historical-chart?symbol=${symbol}&range=${range}`);
+        const chartRes = await fetch(
+          `${baseUrl}/api/historical-chart?symbol=${symbol}&range=${range}`
+        );
         const chartJson = await chartRes.json();
         setData(chartJson);
 
-        // 2️⃣ Fetch live stock data with highlight detection
-        const stockRes = await fetch(`${baseUrl}/api/live-stock-data?symbols=${symbol}&highlight=${symbol}`);
+        const stockRes = await fetch(
+          `${baseUrl}/api/live-stock-data?symbols=${symbol}&highlight=${symbol}`
+        );
         const stockJson = await stockRes.json();
         if (Array.isArray(stockJson) && stockJson.length > 0) {
           setStockInfo(stockJson[0]);
@@ -85,7 +88,7 @@ export default function ChartPage() {
   // Export as CSV
   const downloadCSV = () => {
     if (!data) return;
-    const rows = [["Date", "Price"], ...data.labels.map((label: string, i: number) => [label, data.prices[i]])];
+    const rows = [["Date", "Price"], ...data.labels.map((l: string, i: number) => [l, data.prices[i]])];
     const csvContent = rows.map((r) => r.join(",")).join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -184,5 +187,14 @@ export default function ChartPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// ✅ Wrap with Suspense to handle useSearchParams
+export default function ChartPageWrapper() {
+  return (
+    <Suspense fallback={<div className="p-6 text-white">Loading Chart Viewer...</div>}>
+      <ChartContent />
+    </Suspense>
   );
 }
