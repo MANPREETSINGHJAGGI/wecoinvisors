@@ -1,6 +1,5 @@
 "use client";
 
-
 export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
@@ -12,12 +11,16 @@ export default function Home() {
         <p className="text-xl max-w-2xl mb-8">
           WeCoinVisors Leads Cohort of People With Stock & Education 🚀
         </p>
+
+        {/* Directly goes to dashboard without login */}
         <a
           href="/dashboard/stocks"
           className="px-6 py-3 bg-purple-600 text-white rounded shadow hover:bg-purple-700 transition"
         >
           Explore Dashboard
-        
+        </a>
+      </section>
+
       {/* 📦 Features Grid */}
       <section className="py-16 px-6 bg-white text-center">
         <h2 className="text-3xl font-semibold mb-12 text-gray-800">Features</h2>
