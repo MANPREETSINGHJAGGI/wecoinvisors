@@ -153,12 +153,10 @@ function StocksContent() {
                 <strong>Date:</strong> {fpiData.date}
               </li>
               <li>
-                <strong>Equity Purchase:</strong>{" "}
-                {formatAmount(fpiData.equityPurchase)}
+                <strong>Equity Purchase:</strong> {formatAmount(fpiData.equityPurchase)}
               </li>
               <li>
-                <strong>Equity Sale:</strong>{" "}
-                {formatAmount(fpiData.equitySale)}
+                <strong>Equity Sale:</strong> {formatAmount(fpiData.equitySale)}
               </li>
               <li>
                 <strong>Net Investment:</strong>{" "}
@@ -253,5 +251,7 @@ function StocksContent() {
   );
 }
 
-export default function StocksPage() ;
+// ✅ Correct default export
+export default function Page() {
+  return <StocksContent />;
 }
