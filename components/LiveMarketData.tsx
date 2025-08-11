@@ -2,67 +2,71 @@
 
 import { useEffect, useState } from "react";
 
-export default function LiveMarketData() {
-  const [nifty, setNifty] = useState("22,000");
-  const [sensex, setSensex] = useState("72,000");
+interface LiveMarketDataProps {
+  provider?: string; // Optional prop
+}
 
-  const [fpiData, setFpiData] = useState<{
-    date: string;
-    equityPurchase: number;
-    equitySale: number;
-    netInvestment: number;
-  } | null>(null);
+export default function LiveMarketData({ provider = "dual" }: LiveMarketDataProps) {
+  const [stocks, setStocks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchFPI() {
+    const fetchData = async () => {
       try {
-        const res = await fetch("/api/fpi");
+        const res = await fetch(`/api/live-stock-data?provider=${provider}`);
+        if (!res.ok) throw new Error("Failed to fetch market data");
         const json = await res.json();
-        if (json.success) {
-          setFpiData(json.data);
-        }
-      } catch (err) {
-        console.error("Error fetching FPI data:", err);
+        setStocks(Array.isArray(json) ? json : json.data || []);
+        setError(null);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
-    fetchFPI();
-  }, []);
+    fetchData();
+    const interval = setInterval(fetchData, 30000); // Refresh every 30s
+    return () => clearInterval(interval);
+  }, [provider]);
+
+  if (loading) return <p className="text-gray-500">Loading market data...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div className="space-y-6">
-      {/* Nifty & Sensex */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
-        <div className="bg-white rounded p-4 border">
-          <h3 className="font-semibold text-green-700">Nifty</h3>
-          <p className="text-xl text-gray-800">{nifty}</p>
-        </div>
-        <div className="bg-white rounded p-4 border">
-          <h3 className="font-semibold text-green-700">Sensex</h3>
-          <p className="text-xl text-gray-800">{sensex}</p>
-        </div>
-      </div>
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-sm text-left text-gray-700 dark:text-gray-200">
+        <thead className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100">
+          <tr>
+            <th className="px-3 py-2">Symbol</th>
+            <th className="px-3 py-2">Price</th>
+            <th className="px-3 py-2">% Change</th>
+            <th className="px-3 py-2">Volume</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stocks.map((stock, idx) => {
+            const changeColor =
+              stock.percentChange > 0
+                ? "text-green-500"
+                : stock.percentChange < 0
+                ? "text-red-500"
+                : "text-gray-400";
 
-      {/* FPI Investment Data */}
-      {fpiData ? (
-        <div className="bg-white p-4 rounded border text-sm">
-          <h4 className="text-green-800 font-semibold mb-2">
-            🏦 FPI Activity (as of {fpiData.date})
-          </h4>
-          <ul className="list-disc list-inside text-gray-700 space-y-1">
-            <li>Equity Purchase: ₹{fpiData.equityPurchase.toLocaleString()}</li>
-            <li>Equity Sale: ₹{fpiData.equitySale.toLocaleString()}</li>
-            <li>
-              Net Investment:{" "}
-              <span className={fpiData.netInvestment >= 0 ? "text-green-700" : "text-red-600"}>
-                ₹{fpiData.netInvestment.toLocaleString()}
-              </span>
-            </li>
-          </ul>
-        </div>
-      ) : (
-        <p className="text-gray-500 text-sm">Loading FPI data...</p>
-      )}
+            return (
+              <tr key={idx} className="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                <td className="px-3 py-2 font-bold">{stock.symbol}</td>
+                <td className="px-3 py-2">{stock.price?.toFixed(2) ?? "N/A"}</td>
+                <td className={`px-3 py-2 ${changeColor}`}>
+                  {stock.percentChange?.toFixed(2) ?? 0}%
+                </td>
+                <td className="px-3 py-2">{stock.volume?.toLocaleString() ?? "-"}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }

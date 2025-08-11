@@ -1,15 +1,96 @@
-# Installation
-> `npm install --save @types/node`
+# WeCoinvisors 🚀  
+Empowering Investors with Education and Insights
 
-# Summary
-This package contains type definitions for node (https://nodejs.org/).
+---
 
-# Details
-Files were exported from https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node.
+## 🔧 Project Structure
 
-### Additional Details
- * Last updated: Sat, 19 Jul 2025 00:47:11 GMT
- * Dependencies: [undici-types](https://npmjs.com/package/undici-types)
+```
+wecoinvisors/
+├── backend/               # FastAPI backend
+│   ├── main.py            # Main server entry
+│   ├── requirements.txt   # Python dependencies
+│   └── venv/              # Virtual environment
+│
+├── frontend/              # Next.js frontend
+│   ├── app/               # App router structure
+│   │   ├── (main)/        # Layout group for login/dashboard pages
+│   │   ├── api/           # Next.js API routes
+│   ├── components/        # Reusable UI components
+│   ├── context/           # Firebase auth context
+│   ├── lib/               # Firebase config
+│   └── public/            # Static assets like favicon
+│
+├── .env.local             # Environment variables
+├── package.json           # Node dependencies
+├── tsconfig.json          # TypeScript config
+├── tailwind.config.js     # Tailwind CSS setup
+└── start_wecoinvisors.bat # Helper to launch both servers
+```
 
-# Credits
-These definitions were written by [Microsoft TypeScript](https://github.com/Microsoft), [Alberto Schiabel](https://github.com/jkomyno), [Andrew Makarov](https://github.com/r3nya), [Benjamin Toueg](https://github.com/btoueg), [David Junger](https://github.com/touffy), [Mohsen Azimi](https://github.com/mohsen1), [Nikita Galkin](https://github.com/galkin), [Sebastian Silbermann](https://github.com/eps1lon), [Wilco Bakker](https://github.com/WilcoBakker), [Marcin Kopacz](https://github.com/chyzwar), [Trivikram Kamat](https://github.com/trivikr), [Junxiao Shi](https://github.com/yoursunny), [Ilia Baryshnikov](https://github.com/qwelias), [ExE Boss](https://github.com/ExE-Boss), [Piotr Błażejewicz](https://github.com/peterblazejewicz), [Anna Henningsen](https://github.com/addaleax), [Victor Perin](https://github.com/victorperin), [NodeJS Contributors](https://github.com/NodeJS), [Linus Unnebäck](https://github.com/LinusU), [wafuwafu13](https://github.com/wafuwafu13), [Matteo Collina](https://github.com/mcollina), [Dmitry Semigradsky](https://github.com/Semigradsky), [René](https://github.com/Renegade334), and [Yagiz Nizipli](https://github.com/anonrig).
+---
+
+## 🔑 Features
+
+- 📈 **Live NSE & US Stock Data** (via Alpha Vantage, Twelve Data, and Finnhub)
+- 🔒 **Firebase Email Magic Link Login**
+- 💡 **Stock Insights Dashboard**
+- 📊 **Dynamic Charting** (yfinance-based)
+- 🔐 **FastAPI Token Verification**
+- 📂 **Modular, Clean Codebase**
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/your-username/wecoinvisors.git
+cd wecoinvisors
+```
+
+### 2. Setup Backend
+```bash
+cd backend
+python -m venv venv
+source venv/Scripts/activate  # On Windows
+pip install -r requirements.txt
+uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+
+### 3. Setup Frontend
+```bash
+cd ../frontend
+npm install
+npm run dev
+```
+
+---
+
+## 🔐 Firebase Setup
+
+Ensure `.env.local` contains:
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+NEXT_PUBLIC_FIREBASE_APP_ID=...
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
+```
+
+---
+
+## 📞 Contact
+
+Built by **WeCoinvisors**  
+Email: `info@wecoinvisors.com`  
+Website: [www.wecoinvisors.com](https://www.wecoinvisors.com)
+
+---
+
+## ✅ License
+
+MIT © 2025 WeCoinvisors

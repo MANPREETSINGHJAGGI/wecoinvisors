@@ -3,6 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Optional: font setup */
 body {
-  @apply antialiased;
+  font-family: 'Inter', sans-serif;
 }

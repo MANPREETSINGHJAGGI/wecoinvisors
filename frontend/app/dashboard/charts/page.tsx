@@ -1,4 +1,4 @@
-// frontend/app/dashboard/charts/page.tsx
+// frontend/app/(main)/dashboard/charts/page.tsx
 "use client";
 
 import { useEffect, useState, useRef, Suspense } from "react";
