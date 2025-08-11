@@ -18,14 +18,7 @@ export default function Home() {
           className="px-6 py-3 bg-purple-600 text-white rounded shadow hover:bg-purple-700 transition"
         >
           Explore Dashboard
-        </a>
-
-        {/* 🔹 Login / Logout Buttons */}
-        <div className="mt-6">
-          <AuthButtons />
-        </div>
-      </section>
-
+        
       {/* 📦 Features Grid */}
       <section className="py-16 px-6 bg-white text-center">
         <h2 className="text-3xl font-semibold mb-12 text-gray-800">Features</h2>

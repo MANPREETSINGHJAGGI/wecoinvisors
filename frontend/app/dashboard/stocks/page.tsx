@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import LiveMarketData from "@/components/LiveMarketData";
-import ProtectedRoute from "@/components/ProtectedRoute"; // ✅ Authentication wrapper
+
 import { useEffect, useState } from "react";
 import {
   LineChart,
@@ -253,10 +253,5 @@ function StocksContent() {
   );
 }
 
-export default function StocksPage() {
-  return (
-    <ProtectedRoute>
-      <StocksContent />
-    </ProtectedRoute>
-  );
+export default function StocksPage() ;
 }
