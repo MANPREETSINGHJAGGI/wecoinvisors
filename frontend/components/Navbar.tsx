@@ -1,27 +1,22 @@
+// components/Navbar.tsx
 "use client";
-import { useAuth } from "@/context/AuthContext";
-import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 
 import Link from "next/link";
-
-export const useAuth = () => useContext(AuthContext);
+import React from "react";
 
 export default function Navbar() {
-  const { user } = useAuth();
-
-  const handleLogout = async () => {
-    await signOut(auth);
-    window.location.href = "/"; // Redirect to home after logout
-  };
-
   return (
-    <nav className="bg-white shadow-md dark:bg-gray-900 py-4 px-6 flex justify-between items-center">
-      <Link href="/" className="text-xl font-bold text-purple-600">
-        🚀 WeCoinvisors
+    <nav className="w-full flex items-center justify-between p-4 bg-white shadow-md">
+      <Link href="/" className="text-xl font-bold text-blue-700">
+        WeCoinvisors
       </Link>
-
-              )}
+      <div>
+        <Link href="/login" className="mr-4 text-gray-600 hover:text-blue-700">
+          Login
+        </Link>
+        <Link href="/register" className="text-gray-600 hover:text-blue-700">
+          Register
+        </Link>
       </div>
     </nav>
   );

@@ -1,32 +1,31 @@
+// context/AuthContext.tsx
 "use client";
 
-import { useAuth } from "@/context/AuthContext";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-export default function AuthButtons() {
-  const { user, logout } = useAuth();
+type AuthContextType = {
+  user: any;
+  loading: boolean;
+};
+
+const AuthContext = createContext<AuthContextType>({ user: null, loading: false });
+
+export const useAuth = () => useContext(AuthContext);
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Example guest mode
+    setLoading(true);
+    setUser({ name: "Guest User" });
+    setLoading(false);
+  }, []);
 
   return (
-    <div className="flex flex-col items-center space-y-3 w-full">
-      {user ? (
-        <>
-          <p className="text-green-600 font-semibold text-center">
-            Welcome, {user.name}
-          </p>
-          <button
-            onClick={logout}
-            className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
-          >
-            Logout
-          </button>
-        </>
-      ) : (
-        <button
-          onClick={() => console.log("Login disabled in guest mode.")}
-          className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-        >
-          Sign in
-        </button>
-      )}
-    </div>
+    <AuthContext.Provider value={{ user, loading }}>
+      {children}
+    </AuthContext.Provider>
   );
-}
+};
