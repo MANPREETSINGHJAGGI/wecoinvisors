@@ -1,9 +1,11 @@
 "use client";
+import { useAuth } from "@/context/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
 import Link from "next/link";
 
+export const useAuth = () => useContext(AuthContext);
 
 export default function Navbar() {
   const { user } = useAuth();
