@@ -1,12 +1,19 @@
-"use client";
+"use client"; // Needed if using hooks like usePathname in a layout
 
+import React from "react";
+import { usePathname } from "next/navigation";
 
-
-import Navbar from "@/components/Navbar";
-
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
 
- 
+  return (
+    <div>
+      {/* You can use pathname here if needed */}
+      {children}
+    </div>
   );
 }

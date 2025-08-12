@@ -6,6 +6,7 @@
     "strict": false,
     "noEmit": true,
     "incremental": true,
+    "target": "es2017",                // ✅ Added for top-level await
     "module": "esnext",
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -14,7 +15,7 @@
     "jsx": "preserve",
     "baseUrl": ".",                    // ✅ Required for path alias
     "paths": {
-      "@/*": ["./*"]                  // ✅ This enables '@/...' imports
+      "@/*": ["./*"]                   // ✅ Enables '@/...' imports
     },
     "plugins": [
       {
