@@ -1,16 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 
 export default function Navbar() {
-  const { user } = useAuth();
+  const user = null; // No auth now
 
   const handleLogout = async () => {
-    await signOut(auth);
-    window.location.href = "/"; // Redirect to home after logout
+    window.location.href = "/";
   };
 
   return (
@@ -29,7 +25,7 @@ export default function Navbar() {
 
         {!user ? (
           <Link
-            href="/login"
+            href="#"
             className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
           >
             Login
