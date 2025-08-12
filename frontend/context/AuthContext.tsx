@@ -1,35 +1,32 @@
 "use client";
 
-import { createContext, useContext, ReactNode } from "react";
+import { useAuth } from "@/context/AuthContext";
 
-// 🚀 Fake Auth Context — always "logged in"
-interface AuthContextType {
-  user: { name: string } | null;
-  loading: boolean;
-  logout: () => void;
-}
+export default function AuthButtons() {
+  const { user, logout } = useAuth();
 
-// Always provide a fake user object
-const AuthContext = createContext<AuthContextType>({
-  user: { name: "Guest User" },
-  loading: false,
-  logout: () => {},
-});
-
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return (
-    <AuthContext.Provider
-      value={{
-        user: { name: "Guest User" },
-        loading: false,
-        logout: () => {
-          console.log("Logout disabled in guest mode.");
-        },
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <div className="flex flex-col items-center space-y-3 w-full">
+      {user ? (
+        <>
+          <p className="text-green-600 font-semibold text-center">
+            Welcome, {user.name}
+          </p>
+          <button
+            onClick={logout}
+            className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+          >
+            Logout
+          </button>
+        </>
+      ) : (
+        <button
+          onClick={() => console.log("Login disabled in guest mode.")}
+          className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        >
+          Sign in
+        </button>
+      )}
+    </div>
   );
-};
-
-export const useAuth = () => useContext(AuthContext);
+}
