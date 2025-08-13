@@ -267,7 +267,10 @@ async def get_live_stock_data(
     highlight: str = Query("", description="Comma-separated symbols to highlight")
 ):
     results = []
+    # Clean list and auto-append .NS for Indian stocks
     symbol_list = [s.strip().upper() for s in symbols.split(",") if s.strip()]
+    symbol_list = [s if s.endswith(".NS") else f"{s}.NS" for s in symbol_list]
+
     highlight_list = [s.strip().upper() for s in highlight.split(",")] if highlight else []
 
     if not symbol_list:
@@ -276,6 +279,8 @@ async def get_live_stock_data(
     async with httpx.AsyncClient(timeout=10) as client:
         for symbol in symbol_list:
             is_golden = symbol in highlight_list
+
+            # Try Alpha Vantage first
             av_data = await fetch_from_alpha_vantage(client, symbol)
             if av_data and "05. price" in av_data:
                 try:
@@ -296,6 +301,7 @@ async def get_live_stock_data(
                 except Exception:
                     pass
 
+            # Try yfinance for NSE stocks
             if is_indian_stock(symbol):
                 try:
                     ticker = yf.Ticker(symbol)
@@ -325,6 +331,7 @@ async def get_live_stock_data(
                 except Exception as e:
                     print(f"⚠️ yfinance error for {symbol}: {e}")
 
+            # Try Twelve Data
             td_data = await fetch_from_twelve_data(client, symbol)
             if td_data.get("price"):
                 results.append({
@@ -342,6 +349,7 @@ async def get_live_stock_data(
                 })
                 continue
 
+            # Try Finnhub last
             fh_data = await fetch_from_finnhub(client, symbol)
             if fh_data.get("c"):
                 results.append({
