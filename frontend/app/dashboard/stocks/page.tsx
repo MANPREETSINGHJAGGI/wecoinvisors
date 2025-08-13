@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import LiveMarketData from "@/components/LiveMarketData";
-
+import ProtectedRoute from "@/components/ProtectedRoute"; // ✅ Authentication wrapper
 import { useEffect, useState } from "react";
 import {
   LineChart,
@@ -153,10 +153,12 @@ function StocksContent() {
                 <strong>Date:</strong> {fpiData.date}
               </li>
               <li>
-                <strong>Equity Purchase:</strong> {formatAmount(fpiData.equityPurchase)}
+                <strong>Equity Purchase:</strong>{" "}
+                {formatAmount(fpiData.equityPurchase)}
               </li>
               <li>
-                <strong>Equity Sale:</strong> {formatAmount(fpiData.equitySale)}
+                <strong>Equity Sale:</strong>{" "}
+                {formatAmount(fpiData.equitySale)}
               </li>
               <li>
                 <strong>Net Investment:</strong>{" "}
@@ -251,7 +253,10 @@ function StocksContent() {
   );
 }
 
-// ✅ Correct default export
-export default function Page() {
-  return <StocksContent />;
+export default function StocksPage() {
+  return (
+    <ProtectedRoute>
+      <StocksContent />
+    </ProtectedRoute>
+  );
 }
