@@ -3,11 +3,12 @@
 
 "use client";
 
-import { usePathname } from "next/navigation";
-import { AuthProvider } from "@/context/AuthContext";
+import { ReactNode } from "react";
 import Navbar from "@/components/Navbar";
+import AuthProvider from "@/components/AuthProvider";
+import { usePathname } from "next/navigation";
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default function MainLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   return (
