@@ -1,39 +1,88 @@
 "use client";
 
+import { useState } from "react";
+
 export default function Home() {
+  const [symbols, setSymbols] = useState("");
+  const [mode, setMode] = useState<"default" | "custom">("default");
+
+  const handleExplore = () => {
+    const base = "/dashboard/stocks";
+    if (mode === "custom" && symbols.trim()) {
+      window.location.href = `${base}?symbols=${encodeURIComponent(symbols)}`;
+    } else {
+      window.location.href = base;
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
       {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center py-24 px-6 text-center bg-gradient-to-r from-blue-100 to-purple-100">
-        <h1 className="text-5xl font-bold mb-4 text-blue-900">
-          <span className="text-purple-700">WeCoinvisors</span> 🚀
+      <section className="flex flex-col items-center justify-center py-24 px-6 text-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">
+        <h1 className="text-6xl font-extrabold mb-4 drop-shadow-lg">
+          <span className="text-yellow-300">WeCoinvisors</span> 🚀
         </h1>
-        <p className="text-xl max-w-2xl mb-8">
-          WeCoinVisors Leads Cohort of People With Stock & Education 🚀
+        <p className="text-2xl max-w-2xl mb-8 opacity-90">
+          Leading a Cohort of People in Stocks & Education — Live, Interactive, AI-powered 🚀
         </p>
 
-        {/* Directly goes to dashboard without login */}
-        <a
-          href="/dashboard/stocks"
-          className="px-6 py-3 bg-purple-600 text-white rounded shadow hover:bg-purple-700 transition"
+        {/* Mode selection */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <button
+            onClick={() => setMode("default")}
+            className={`px-5 py-2 rounded font-semibold shadow-md transition ${
+              mode === "default"
+                ? "bg-yellow-300 text-gray-900"
+                : "bg-white text-gray-900 hover:bg-gray-200"
+            }`}
+          >
+            📊 Default List
+          </button>
+          <button
+            onClick={() => setMode("custom")}
+            className={`px-5 py-2 rounded font-semibold shadow-md transition ${
+              mode === "custom"
+                ? "bg-yellow-300 text-gray-900"
+                : "bg-white text-gray-900 hover:bg-gray-200"
+            }`}
+          >
+            ✏️ Custom Symbols
+          </button>
+        </div>
+
+        {/* Input for custom mode */}
+        {mode === "custom" && (
+          <input
+            type="text"
+            placeholder="Enter symbols e.g. AAPL,MSFT,TSLA"
+            value={symbols}
+            onChange={(e) => setSymbols(e.target.value)}
+            className="px-4 py-2 rounded text-gray-900 w-80 shadow-inner border border-gray-300"
+          />
+        )}
+
+        {/* Explore button */}
+        <button
+          onClick={handleExplore}
+          className="mt-6 px-8 py-3 bg-yellow-400 text-gray-900 font-bold rounded-lg shadow-lg hover:bg-yellow-500 transition"
         >
           Explore Dashboard
-        </a>
+        </button>
       </section>
 
       {/* 📦 Features Grid */}
       <section className="py-16 px-6 bg-white text-center">
         <h2 className="text-3xl font-semibold mb-12 text-gray-800">Features</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="p-6 bg-gray-100 rounded-lg shadow">
+          <div className="p-6 bg-gray-100 rounded-lg shadow hover:shadow-lg transition">
             <h3 className="text-xl font-bold text-purple-600 mb-2">Live Stock Data</h3>
             <p className="text-gray-700">Track real-time stock movements from the NSE market.</p>
           </div>
-          <div className="p-6 bg-gray-100 rounded-lg shadow">
+          <div className="p-6 bg-gray-100 rounded-lg shadow hover:shadow-lg transition">
             <h3 className="text-xl font-bold text-purple-600 mb-2">Educational Resources</h3>
             <p className="text-gray-700">Learn stock market concepts through interactive lessons and guides.</p>
           </div>
-          <div className="p-6 bg-gray-100 rounded-lg shadow">
+          <div className="p-6 bg-gray-100 rounded-lg shadow hover:shadow-lg transition">
             <h3 className="text-xl font-bold text-purple-600 mb-2">AI-Powered Insights</h3>
             <p className="text-gray-700">Get personalized investment insights using machine learning tools.</p>
           </div>
@@ -95,7 +144,9 @@ export default function Home() {
 
       {/* 🧾 Footer */}
       <footer className="bg-gray-800 text-white text-center py-8">
-        <div className="mb-2 text-sm">© {new Date().getFullYear()} WeCoinvisors Pvt Ltd. All rights reserved.</div>
+        <div className="mb-2 text-sm">
+          © {new Date().getFullYear()} WeCoinvisors Pvt Ltd. All rights reserved.
+        </div>
         <div className="space-x-4 text-sm">
           <a href="/about" className="hover:underline">About</a>
           <a href="/contact" className="hover:underline">Contact</a>
