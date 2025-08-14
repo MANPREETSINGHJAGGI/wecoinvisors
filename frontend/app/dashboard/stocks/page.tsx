@@ -11,6 +11,9 @@ export default function StocksDashboard() {
   const [stocks, setStocks] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // ✅ Added missing state for watchlist
+  const [watchlist, setWatchlist] = useState<string[]>([]);
+
   // Fetch default stock data every 30s
   useEffect(() => {
     if (mode === "default") {
@@ -122,7 +125,12 @@ export default function StocksDashboard() {
         {loading ? (
           <div className="py-6 text-center animate-pulse">⏳ Loading stock prices...</div>
         ) : (
-          <StockTable stocks={stocks} />
+          <StockTable
+            stocks={stocks}
+            loading={loading}
+            watchlist={watchlist}
+            setWatchlist={setWatchlist}
+          />
         )}
       </div>
 
@@ -130,14 +138,12 @@ export default function StocksDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-black border border-gold rounded-lg p-4 shadow-lg">
           <h2 className="text-xl font-semibold mb-3">📊 FPI Trends</h2>
-          {/* Line chart component here */}
           <div className="h-48 flex items-center justify-center text-gold/50">
             Line Chart Placeholder
           </div>
         </div>
         <div className="bg-black border border-gold rounded-lg p-4 shadow-lg">
           <h2 className="text-xl font-semibold mb-3">💰 FPI Allocation</h2>
-          {/* Pie chart component here */}
           <div className="h-48 flex items-center justify-center text-gold/50">
             Pie Chart Placeholder
           </div>
