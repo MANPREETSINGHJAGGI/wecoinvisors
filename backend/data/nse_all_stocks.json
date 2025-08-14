@@ -1,0 +1,6 @@
+[
+  { "symbol": "RELIANCE.NS", "sector": "Energy" },
+  { "symbol": "TCS.NS", "sector": "IT" },
+  { "symbol": "HDFCBANK.NS", "sector": "Banking" }
+  // ... full NSE list here
+]

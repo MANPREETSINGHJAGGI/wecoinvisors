@@ -19,6 +19,11 @@ load_dotenv()
 
 # Initialize FastAPI app
 app = FastAPI(title="WeCoinvisors API", version="1.0.0")
+origins = [
+    "http://localhost:3000",     # local frontend
+    "https://wecoinvisors.com",
+    "https://wecoinvisors-frontend.vercel.app"
+]
 
 # Mount static files if folder exists
 static_dir = os.path.join(os.path.dirname(__file__), "..", "static")

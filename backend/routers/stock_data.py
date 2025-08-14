@@ -1,48 +1,59 @@
-from fastapi import APIRouter, HTTPException, Query
-from ..utils.stock_fetcher import (
-    fetch_live_price,
-    fetch_historical_data,
-    fetch_gainers_losers
+# backend/app/routers/stocks.py
+
+from fastapi import APIRouter, Query
+from app.utils import stock_tracker
+import json
+from pathlib import Path
+
+router = APIRouter(
+    prefix="/stocks",
+    tags=["Stocks"]
 )
 
-router = APIRouter(prefix="/stock", tags=["Stock Data"])
+# Path to NSE All Stocks JSON
+DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "nse_all_stocks.json"
 
-@router.get("/live/{symbol}")
-async def get_live_stock_price(symbol: str):
-    """Get live stock price for a symbol."""
-    try:
-        price_data = await fetch_live_price(symbol)
-        if not price_data:
-            raise HTTPException(status_code=404, detail="Stock data not found")
-        return price_data
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/history/{symbol}")
-async def get_stock_history(
-    symbol: str,
-    days: int = Query(30, ge=1, le=365)
+@router.get("/live")
+def get_live_price(
+    symbol: str = Query(..., description="Stock symbol e.g. RELIANCE.BSE")
 ):
-    """Get historical stock price data for a symbol."""
-    try:
-        history_data = await fetch_historical_data(symbol, days)
-        if not history_data:
-            raise HTTPException(status_code=404, detail="No historical data found")
-        return history_data
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    """
+    Fetch live stock price from available APIs (Alpha Vantage → Twelve Data → Finnhub).
+    """
+    return stock_tracker.get_live_price(symbol)
 
-
-@router.get("/market/gainers-losers")
-async def get_gainers_losers(
-    exchange: str = Query("NSE", regex="^(NSE|BSE)$")
+@router.get("/history")
+def get_historical_data(
+    symbol: str = Query(..., description="Stock symbol e.g. RELIANCE.BSE"),
+    start_date: str = Query(..., description="Start date YYYY-MM-DD"),
+    end_date: str = Query(..., description="End date YYYY-MM-DD")
 ):
-    """Get top gainers and losers for NSE or BSE."""
+    """
+    Fetch historical daily stock data between start_date and end_date.
+    Uses Alpha Vantage TIME_SERIES_DAILY.
+    """
+    return stock_tracker.get_historical_data(symbol, start_date, end_date)
+
+@router.get("/gainers-losers")
+def get_gainers_losers():
+    """
+    Get top market gainers and losers.
+    (Currently dummy data — replace with NSE/BSE API when available.)
+    """
+    return stock_tracker.get_top_gainers_losers()
+
+@router.get("/nse-all")
+def get_nse_all_stocks():
+    """
+    Returns all NSE stocks with sectors from the static JSON file.
+    """
     try:
-        data = await fetch_gainers_losers(exchange)
-        if not data:
-            raise HTTPException(status_code=404, detail="No data found")
-        return data
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            stocks = json.load(f)
+        return {"success": True, "data": stocks}
+    except FileNotFoundError:
+        return {"success": False, "error": "nse_all_stocks.json not found"}
+    except json.JSONDecodeError:
+        return {"success": False, "error": "Invalid JSON format in nse_all_stocks.json"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {"success": False, "error": str(e)}
