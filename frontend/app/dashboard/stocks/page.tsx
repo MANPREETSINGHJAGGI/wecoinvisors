@@ -10,11 +10,8 @@ export default function StocksDashboard() {
   const [symbols, setSymbols] = useState("");
   const [stocks, setStocks] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-
-  // ✅ Added missing state for watchlist
   const [watchlist, setWatchlist] = useState<string[]>([]);
 
-  // Fetch default stock data every 30s
   useEffect(() => {
     if (mode === "default") {
       fetchDefault();
@@ -53,13 +50,15 @@ export default function StocksDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-gold p-6 font-sans">
-      {/* Header */}
+    <div className="min-h-screen bg-black-glossy text-blue-glow p-6 font-sans">
+      {/* Header with Golden Tabs */}
       <div className="flex items-center justify-between border-b border-gold pb-4 mb-6">
-        <h1 className="text-3xl font-bold text-gold">📈 Stock Market Insights</h1>
+        <h1 className="text-3xl font-bold text-blue-glow">
+          📈 Stock Market Insights
+        </h1>
         <Link
           href="/"
-          className="text-sm border border-gold px-3 py-1 rounded hover:bg-gold hover:text-black transition"
+          className="text-sm border border-gold text-gold px-3 py-1 rounded hover:bg-gold hover:text-black transition"
         >
           ⬅ Back to Home
         </Link>
@@ -71,10 +70,10 @@ export default function StocksDashboard() {
       </div>
 
       {/* Stock Mode Toggle */}
-      <div className="bg-black border border-gold rounded-lg p-4 shadow-lg mb-8">
+      <div className="bg-black-glossy border border-gold rounded-lg p-4 shadow-lg mb-8">
         <div className="flex items-center justify-between mb-4">
           <div className="space-x-6">
-            <label className="cursor-pointer">
+            <label className="cursor-pointer text-gold">
               <input
                 type="radio"
                 name="stockMode"
@@ -84,7 +83,7 @@ export default function StocksDashboard() {
               />{" "}
               Live Refresh Mode
             </label>
-            <label className="cursor-pointer">
+            <label className="cursor-pointer text-gold">
               <input
                 type="radio"
                 name="stockMode"
@@ -103,7 +102,7 @@ export default function StocksDashboard() {
                 placeholder="RELIANCE.NS,TCS.NS"
                 value={symbols}
                 onChange={(e) => setSymbols(e.target.value)}
-                className="bg-black border border-gold rounded px-3 py-1 text-gold placeholder-gold/50 focus:outline-none"
+                className="bg-black-glossy border border-gold rounded px-3 py-1 text-gold placeholder-gold/50 focus:outline-none"
               />
               <button
                 onClick={fetchCustom}
@@ -121,7 +120,6 @@ export default function StocksDashboard() {
             : `Showing custom stocks: ${symbols || "None"}`}
         </div>
 
-        {/* Stock Table / Loader */}
         {loading ? (
           <div className="py-6 text-center animate-pulse">⏳ Loading stock prices...</div>
         ) : (
@@ -136,14 +134,14 @@ export default function StocksDashboard() {
 
       {/* FPI Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-black border border-gold rounded-lg p-4 shadow-lg">
-          <h2 className="text-xl font-semibold mb-3">📊 FPI Trends</h2>
+        <div className="bg-black-glossy border border-gold rounded-lg p-4 shadow-lg">
+          <h2 className="text-xl font-semibold mb-3 text-blue-glow">📊 FPI Trends</h2>
           <div className="h-48 flex items-center justify-center text-gold/50">
             Line Chart Placeholder
           </div>
         </div>
-        <div className="bg-black border border-gold rounded-lg p-4 shadow-lg">
-          <h2 className="text-xl font-semibold mb-3">💰 FPI Allocation</h2>
+        <div className="bg-black-glossy border border-gold rounded-lg p-4 shadow-lg">
+          <h2 className="text-xl font-semibold mb-3 text-blue-glow">💰 FPI Allocation</h2>
           <div className="h-48 flex items-center justify-center text-gold/50">
             Pie Chart Placeholder
           </div>
@@ -151,8 +149,8 @@ export default function StocksDashboard() {
       </div>
 
       {/* Investment Tips */}
-      <div className="bg-black border border-gold rounded-lg p-4 shadow-lg">
-        <h2 className="text-xl font-semibold mb-3">💡 Investment Tips</h2>
+      <div className="bg-black-glossy border border-gold rounded-lg p-4 shadow-lg">
+        <h2 className="text-xl font-semibold mb-3 text-blue-glow">💡 Investment Tips</h2>
         <ul className="list-disc list-inside space-y-1 text-gold/90">
           <li>Diversify your portfolio to reduce risk.</li>
           <li>Stay updated with company fundamentals.</li>
