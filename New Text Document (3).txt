@@ -1,0 +1,1510 @@
+which type of codes and AI used to built in.viewtrading.com and how can we built similar stock website with any good AI in vercel,github,squarespace or render using in it.(self.webpackChunktradingview = self.webpackChunktradingview || []).push([[85652], {
+    276773: e => {
+        e.exports = {
+            "default-drawer-min-top-distance": "100px",
+            wrap: "wrap-_HnK0UIN",
+            positionBottom: "positionBottom-_HnK0UIN",
+            backdrop: "backdrop-_HnK0UIN",
+            drawer: "drawer-_HnK0UIN",
+            positionLeft: "positionLeft-_HnK0UIN"
+        }
+    }
+    ,
+    205808: e => {
+        e.exports = {
+            menuWrap: "menuWrap-Kq3ruQo8",
+            isMeasuring: "isMeasuring-Kq3ruQo8",
+            scrollWrap: "scrollWrap-Kq3ruQo8",
+            momentumBased: "momentumBased-Kq3ruQo8",
+            menuBox: "menuBox-Kq3ruQo8",
+            isHidden: "isHidden-Kq3ruQo8"
+        }
+    }
+    ,
+    558590: e => {
+        e.exports = {
+            "tablet-small-breakpoint": "(max-width: 440px)",
+            item: "item-jFqVJoPk",
+            hovered: "hovered-jFqVJoPk",
+            isDisabled: "isDisabled-jFqVJoPk",
+            isActive: "isActive-jFqVJoPk",
+            shortcut: "shortcut-jFqVJoPk",
+            toolbox: "toolbox-jFqVJoPk",
+            withIcon: "withIcon-jFqVJoPk",
+            "round-icon": "round-icon-jFqVJoPk",
+            icon: "icon-jFqVJoPk",
+            startSlot: "startSlot-jFqVJoPk",
+            labelRow: "labelRow-jFqVJoPk",
+            label: "label-jFqVJoPk",
+            showOnHover: "showOnHover-jFqVJoPk",
+            "disclosure-item-circle-logo": "disclosure-item-circle-logo-jFqVJoPk",
+            showOnFocus: "showOnFocus-jFqVJoPk"
+        }
+    }
+    ,
+    686186: e => {
+        e.exports = {
+            icon: "icon-WB2y0EnP",
+            dropped: "dropped-WB2y0EnP"
+        }
+    }
+    ,
+    940194: (e, t, o) => {
+        "use strict";
+        function n(e, t, o, n, r) {
+            function i(r) {
+                if (e > r.timeStamp)
+                    return;
+                const i = r.target;
+                void 0 !== o && null !== t && null !== i && i.ownerDocument === n && (t.contains(i) || o(r))
+            }
+            return r.click && n.addEventListener("click", i, !1),
+            r.mouseDown && n.addEventListener("mousedown", i, !1),
+            r.touchEnd && n.addEventListener("touchend", i, !1),
+            r.touchStart && n.addEventListener("touchstart", i, !1),
+            () => {
+                n.removeEventListener("click", i, !1),
+                n.removeEventListener("mousedown", i, !1),
+                n.removeEventListener("touchend", i, !1),
+                n.removeEventListener("touchstart", i, !1)
+            }
+        }
+        o.d(t, {
+            addOutsideEventListener: () => n
+        })
+    }
+    ,
+    385806: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            useOutsideEvent: () => s
+        });
+        var n = o(50959)
+          , r = o(774218)
+          , i = o(940194);
+        function s(e) {
+            const {click: t, mouseDown: o, touchEnd: s, touchStart: a, handler: l, reference: c} = e
+              , u = (0,
+            n.useRef)(null)
+              , d = (0,
+            n.useRef)("undefined" == typeof window ? 0 : new window.CustomEvent("timestamp").timeStamp);
+            return (0,
+            r.useIsomorphicLayoutEffect)(( () => {
+                const e = {
+                    click: t,
+                    mouseDown: o,
+                    touchEnd: s,
+                    touchStart: a
+                }
+                  , n = c ? c.current : u.current;
+                return (0,
+                i.addOutsideEventListener)(d.current, n, l, document, e)
+            }
+            ), [t, o, s, a, l]),
+            c || u
+        }
+    }
+    ,
+    600586: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            MenuWidthContext: () => n
+        });
+        const n = o(50959).createContext({
+            setMenuMaxWidth: !1
+        })
+    }
+    ,
+    906481: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            SubmenuContext: () => r,
+            SubmenuHandler: () => i
+        });
+        var n = o(50959);
+        const r = n.createContext(null);
+        function i(e) {
+            const [t,o] = (0,
+            n.useState)(null)
+              , i = (0,
+            n.useRef)(null)
+              , s = (0,
+            n.useRef)(new Map);
+            return (0,
+            n.useEffect)(( () => () => {
+                null !== i.current && clearTimeout(i.current)
+            }
+            ), []),
+            n.createElement(r.Provider, {
+                value: {
+                    current: t,
+                    setCurrent: function(e) {
+                        null !== i.current && (clearTimeout(i.current),
+                        i.current = null);
+                        null === t ? o(e) : i.current = setTimeout(( () => {
+                            i.current = null,
+                            o(e)
+                        }
+                        ), 100)
+                    },
+                    registerSubmenu: function(e, t) {
+                        return s.current.set(e, t),
+                        () => {
+                            s.current.delete(e)
+                        }
+                    },
+                    isSubmenuNode: function(e) {
+                        return Array.from(s.current.values()).some((t => t(e)))
+                    }
+                }
+            }, e.children)
+        }
+    }
+    ,
+    8626: (e, t, o) => {
+        "use strict";
+        function n(e) {
+            return i(e, s)
+        }
+        function r(e) {
+            return i(e, a)
+        }
+        function i(e, t) {
+            const o = Object.entries(e).filter(t)
+              , n = {};
+            for (const [e,t] of o)
+                n[e] = t;
+            return n
+        }
+        function s(e) {
+            const [t,o] = e;
+            return 0 === t.indexOf("data-") && "string" == typeof o
+        }
+        function a(e) {
+            return 0 === e[0].indexOf("aria-")
+        }
+        o.d(t, {
+            filterAriaProps: () => r,
+            filterDataProps: () => n,
+            filterProps: () => i,
+            isAriaAttribute: () => a,
+            isDataAttribute: () => s
+        })
+    }
+    ,
+    531327: (e, t, o) => {
+        "use strict";
+        function n(e) {
+            return r() ? 0 : i() ? 45 : Math.min(Math.max(e, 45), 450)
+        }
+        o.d(t, {
+            getWidgetBarPadding: () => n,
+            isWidgetBarFullscreen: () => r
+        });
+        const r = () => !window.matchMedia("(min-width: 768px)").matches
+          , i = () => !window.matchMedia("(min-width: 1280px)").matches
+    }
+    ,
+    575658: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            setFixedBodyState: () => a
+        });
+        var n = o(76107)
+          , r = o(531327);
+        let i = 0
+          , s = !1;
+        function a(e) {
+            const {body: t} = document
+              , o = t.querySelector(".widgetbar-wrap");
+            if (e && 1 == ++i) {
+                const e = (0,
+                n.getCSSProperty)(t, "overflow")
+                  , r = (0,
+                n.getCSSPropertyNumericValue)(t, "padding-right");
+                "hidden" !== e.toLowerCase() && t.scrollHeight > t.offsetHeight && ((0,
+                n.setStyle)(o, "right", `${(0,
+                n.getScrollbarWidth)()}px`),
+                t.style.paddingRight = `${r + (0,
+                n.getScrollbarWidth)()}px`,
+                s = !0),
+                t.classList.add("i-no-scroll")
+            } else if (!e && i > 0 && 0 == --i && (t.classList.remove("i-no-scroll"),
+            s)) {
+                (0,
+                n.setStyle)(o, "right", "0px");
+                let e = 0;
+                e = o ? (0,
+                r.getWidgetBarPadding)((0,
+                n.getContentWidth)(o)) : 0,
+                t.scrollHeight <= t.clientHeight && (e -= (0,
+                n.getScrollbarWidth)()),
+                t.style.paddingRight = (e < 0 ? 0 : e) + "px",
+                s = !1
+            }
+        }
+    }
+    ,
+    495217: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            CircleLogo: () => n.CircleLogo,
+            hiddenCircleLogoClass: () => n.hiddenCircleLogoClass
+        });
+        var n = o(884566)
+    }
+    ,
+    332585: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            DrawerContext: () => s,
+            DrawerManager: () => i
+        });
+        var n = o(50959)
+          , r = o(575658);
+        class i extends n.PureComponent {
+            constructor(e) {
+                super(e),
+                this._isBodyFixed = !1,
+                this._addDrawer = e => {
+                    this.setState((t => ({
+                        stack: [...t.stack, e]
+                    })))
+                }
+                ,
+                this._removeDrawer = e => {
+                    this.setState((t => ({
+                        stack: t.stack.filter((t => t !== e))
+                    })))
+                }
+                ,
+                this.state = {
+                    stack: []
+                }
+            }
+            componentDidUpdate(e, t) {
+                !t.stack.length && this.state.stack.length && ((0,
+                r.setFixedBodyState)(!0),
+                this._isBodyFixed = !0),
+                t.stack.length && !this.state.stack.length && this._isBodyFixed && ((0,
+                r.setFixedBodyState)(!1),
+                this._isBodyFixed = !1)
+            }
+            componentWillUnmount() {
+                this.state.stack.length && this._isBodyFixed && (0,
+                r.setFixedBodyState)(!1)
+            }
+            render() {
+                return n.createElement(s.Provider, {
+                    value: {
+                        addDrawer: this._addDrawer,
+                        removeDrawer: this._removeDrawer,
+                        currentDrawer: this.state.stack.length ? this.state.stack[this.state.stack.length - 1] : null
+                    }
+                }, this.props.children)
+            }
+        }
+        const s = n.createContext(null)
+    }
+    ,
+    762852: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            Drawer: () => h
+        });
+        var n = o(50959)
+          , r = o(650151)
+          , i = o(497754)
+          , s = o(900608)
+          , a = o(707533)
+          , l = o(332585)
+          , c = o(320116)
+          , u = o(150881)
+          , d = o(276773);
+        function h(e) {
+            const {position: t="Bottom", onClose: o, children: u, reference: h, className: m, theme: f=d} = e
+              , g = (0,
+            r.ensureNotNull)((0,
+            n.useContext)(l.DrawerContext))
+              , [v] = (0,
+            n.useState)(( () => (0,
+            s.randomHash)()))
+              , b = (0,
+            n.useRef)(null)
+              , w = (0,
+            n.useContext)(c.CloseDelegateContext);
+            return (0,
+            n.useLayoutEffect)(( () => ((0,
+            r.ensureNotNull)(b.current).focus({
+                preventScroll: !0
+            }),
+            w.subscribe(g, o),
+            g.addDrawer(v),
+            () => {
+                g.removeDrawer(v),
+                w.unsubscribe(g, o)
+            }
+            )), []),
+            n.createElement(a.Portal, null, n.createElement("div", {
+                ref: h,
+                className: i(d.wrap, d[`position${t}`])
+            }, v === g.currentDrawer && n.createElement("div", {
+                className: d.backdrop,
+                onClick: o
+            }), n.createElement(p, {
+                className: i(f.drawer, d[`position${t}`], m),
+                ref: b,
+                "data-name": e["data-name"],
+                "data-qa-id": e["data-qa-id"]
+            }, u)))
+        }
+        const p = (0,
+        n.forwardRef)(( (e, t) => {
+            const {className: o, ...r} = e;
+            return n.createElement(u.TouchScrollContainer, {
+                className: i(d.drawer, o),
+                tabIndex: -1,
+                ref: t,
+                ...r
+            })
+        }
+        ))
+    }
+    ,
+    377318: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            MenuContext: () => n
+        });
+        const n = o(50959).createContext(null)
+    }
+    ,
+    175071: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            DEFAULT_MENU_THEME: () => g,
+            Menu: () => v
+        });
+        var n = o(50959)
+          , r = o(497754)
+          , i = o.n(r)
+          , s = o(650151)
+          , a = o(462140)
+          , l = o(982528)
+          , c = o(670797)
+          , u = o(224743)
+          , d = o(351290)
+          , h = o(799786)
+          , p = o(906481)
+          , m = o(377318)
+          , f = o(205808);
+        const g = f;
+        class v extends n.PureComponent {
+            constructor(e) {
+                super(e),
+                this._containerRef = null,
+                this._scrollWrapRef = null,
+                this._raf = null,
+                this._scrollRaf = null,
+                this._scrollTimeout = void 0,
+                this._manager = new d.OverlapManager,
+                this._hotkeys = null,
+                this._scroll = 0,
+                this._handleContainerRef = e => {
+                    this._containerRef = e,
+                    this.props.reference && ("function" == typeof this.props.reference && this.props.reference(e),
+                    "object" == typeof this.props.reference && (this.props.reference.current = e))
+                }
+                ,
+                this._handleScrollWrapRef = e => {
+                    this._scrollWrapRef = e,
+                    "function" == typeof this.props.scrollWrapReference && this.props.scrollWrapReference(e),
+                    "object" == typeof this.props.scrollWrapReference && (this.props.scrollWrapReference.current = e)
+                }
+                ,
+                this._handleCustomRemeasureDelegate = () => {
+                    this._resizeForced(),
+                    this._handleMeasure()
+                }
+                ,
+                this._handleMeasure = ({callback: e, forceRecalcPosition: t}={}) => {
+                    if (this.state.isMeasureValid && !t)
+                        return;
+                    const {position: o} = this.props
+                      , n = (0,
+                    s.ensureNotNull)(this._containerRef);
+                    let r = n.getBoundingClientRect();
+                    const i = document.documentElement.clientHeight
+                      , l = document.documentElement.clientWidth
+                      , c = this.props.closeOnScrollOutsideOffset ?? 0;
+                    let u = i - 0 - c;
+                    const d = r.height > u;
+                    if (d) {
+                        (0,
+                        s.ensureNotNull)(this._scrollWrapRef).style.overflowY = "scroll",
+                        r = n.getBoundingClientRect()
+                    }
+                    const {width: h, height: p} = r
+                      , m = "function" == typeof o ? o({
+                        contentWidth: h,
+                        contentHeight: p,
+                        availableWidth: l,
+                        availableHeight: i
+                    }) : o
+                      , f = m?.indentFromWindow?.left ?? 0
+                      , g = l - (m.overrideWidth ?? h) - (m?.indentFromWindow?.right ?? 0)
+                      , v = (0,
+                    a.clamp)(m.x, f, Math.max(f, g))
+                      , b = (m?.indentFromWindow?.top ?? 0) + c
+                      , w = i - (m.overrideHeight ?? p) - (m?.indentFromWindow?.bottom ?? 0);
+                    let C = (0,
+                    a.clamp)(m.y, b, Math.max(b, w));
+                    if (m.forbidCorrectYCoord && C < m.y && (u -= m.y - C,
+                    C = m.y),
+                    t && void 0 !== this.props.closeOnScrollOutsideOffset && m.y <= this.props.closeOnScrollOutsideOffset)
+                        return void this._handleGlobalClose(!0);
+                    const _ = m.overrideHeight ?? (d ? u : void 0);
+                    this.setState({
+                        appearingMenuHeight: t ? this.state.appearingMenuHeight : _,
+                        appearingMenuWidth: t ? this.state.appearingMenuWidth : m.overrideWidth,
+                        appearingPosition: {
+                            x: v,
+                            y: C
+                        },
+                        isMeasureValid: !0
+                    }, ( () => {
+                        this.props.doNotRestorePosition || this._restoreScrollPosition(),
+                        e && e()
+                    }
+                    ))
+                }
+                ,
+                this._restoreScrollPosition = () => {
+                    const e = document.activeElement
+                      , t = (0,
+                    s.ensureNotNull)(this._containerRef);
+                    if (null !== e && t.contains(e))
+                        try {
+                            e.scrollIntoView()
+                        } catch (e) {}
+                    else
+                        (0,
+                        s.ensureNotNull)(this._scrollWrapRef).scrollTop = this._scroll
+                }
+                ,
+                this._resizeForced = () => {
+                    this.setState({
+                        appearingMenuHeight: void 0,
+                        appearingMenuWidth: void 0,
+                        appearingPosition: void 0,
+                        isMeasureValid: void 0
+                    })
+                }
+                ,
+                this._resize = () => {
+                    null === this._raf && (this._raf = requestAnimationFrame(( () => {
+                        this.setState({
+                            appearingMenuHeight: void 0,
+                            appearingMenuWidth: void 0,
+                            appearingPosition: void 0,
+                            isMeasureValid: void 0
+                        }),
+                        this._raf = null
+                    }
+                    )))
+                }
+                ,
+                this._handleGlobalClose = e => {
+                    this.props.onClose(e)
+                }
+                ,
+                this._handleSlot = e => {
+                    this._manager.setContainer(e)
+                }
+                ,
+                this._handleScroll = () => {
+                    this._scroll = (0,
+                    s.ensureNotNull)(this._scrollWrapRef).scrollTop
+                }
+                ,
+                this._handleScrollOutsideEnd = () => {
+                    clearTimeout(this._scrollTimeout),
+                    this._scrollTimeout = setTimeout(( () => {
+                        this._handleMeasure({
+                            forceRecalcPosition: !0
+                        })
+                    }
+                    ), 80)
+                }
+                ,
+                this._handleScrollOutside = e => {
+                    e.target !== this._scrollWrapRef && (this._handleScrollOutsideEnd(),
+                    null === this._scrollRaf && (this._scrollRaf = requestAnimationFrame(( () => {
+                        this._handleMeasure({
+                            forceRecalcPosition: !0
+                        }),
+                        this._scrollRaf = null
+                    }
+                    ))))
+                }
+                ,
+                this.state = {}
+            }
+            componentDidMount() {
+                this._handleMeasure({
+                    callback: this.props.onOpen
+                });
+                const {customCloseDelegate: e=u.globalCloseDelegate, customRemeasureDelegate: t} = this.props;
+                e.subscribe(this, this._handleGlobalClose),
+                t?.subscribe(null, this._handleCustomRemeasureDelegate),
+                window.addEventListener("resize", this._resize);
+                const o = null !== this.context;
+                this._hotkeys || o || (this._hotkeys = h.createGroup({
+                    desc: "Popup menu"
+                }),
+                this._hotkeys.add({
+                    desc: "Close",
+                    hotkey: 27,
+                    handler: () => {
+                        this.props.onKeyboardClose && this.props.onKeyboardClose(),
+                        this._handleGlobalClose()
+                    }
+                })),
+                this.props.repositionOnScroll && window.addEventListener("scroll", this._handleScrollOutside, {
+                    capture: !0
+                })
+            }
+            componentDidUpdate() {
+                this._handleMeasure()
+            }
+            componentWillUnmount() {
+                const {customCloseDelegate: e=u.globalCloseDelegate, customRemeasureDelegate: t} = this.props;
+                e.unsubscribe(this, this._handleGlobalClose),
+                t?.unsubscribe(null, this._handleCustomRemeasureDelegate),
+                window.removeEventListener("resize", this._resize),
+                window.removeEventListener("scroll", this._handleScrollOutside, {
+                    capture: !0
+                }),
+                this._hotkeys && (this._hotkeys.destroy(),
+                this._hotkeys = null),
+                null !== this._raf && (cancelAnimationFrame(this._raf),
+                this._raf = null),
+                null !== this._scrollRaf && (cancelAnimationFrame(this._scrollRaf),
+                this._scrollRaf = null),
+                this._scrollTimeout && clearTimeout(this._scrollTimeout)
+            }
+            render() {
+                const {id: e, role: t, "aria-label": o, "aria-labelledby": r, "aria-activedescendant": s, "aria-hidden": a, "aria-describedby": u, "aria-invalid": d, children: h, minWidth: g, theme: v=f, className: w, maxHeight: C, onMouseOver: _, onMouseOut: E, onKeyDown: x, onFocus: M, onBlur: y} = this.props
+                  , {appearingMenuHeight: k, appearingMenuWidth: D, appearingPosition: R, isMeasureValid: O} = this.state
+                  , S = {
+                    "--ui-kit-menu-max-width": `${R && R.x}px`,
+                    maxWidth: "calc(100vw - var(--ui-kit-menu-max-width) - 6px)"
+                };
+                return n.createElement(m.MenuContext.Provider, {
+                    value: this
+                }, n.createElement(p.SubmenuHandler, null, n.createElement(c.SlotContext.Provider, {
+                    value: this._manager
+                }, n.createElement("div", {
+                    id: e,
+                    role: t,
+                    "aria-label": o,
+                    "aria-labelledby": r,
+                    "aria-activedescendant": s,
+                    "aria-hidden": a,
+                    "aria-describedby": u,
+                    "aria-invalid": d,
+                    className: i()(w, v.menuWrap, !O && v.isMeasuring),
+                    style: {
+                        height: k,
+                        left: R && R.x,
+                        minWidth: g,
+                        position: "fixed",
+                        top: R && R.y,
+                        width: D,
+                        ...this.props.limitMaxWidth && S
+                    },
+                    "data-name": this.props["data-name"],
+                    "data-qa-id": this.props.dataQaId,
+                    "data-tooltip-show-on-focus": this.props["data-tooltip-show-on-focus"],
+                    ref: this._handleContainerRef,
+                    onScrollCapture: this.props.onScroll,
+                    onContextMenu: l.preventDefaultForContextMenu,
+                    tabIndex: this.props.tabIndex,
+                    onMouseOver: _,
+                    onMouseOut: E,
+                    onKeyDown: x,
+                    onFocus: M,
+                    onBlur: y
+                }, n.createElement("div", {
+                    className: i()(v.scrollWrap, !this.props.noMomentumBasedScroll && v.momentumBased),
+                    style: {
+                        overflowY: void 0 !== k ? "scroll" : "auto",
+                        maxHeight: C
+                    },
+                    onScrollCapture: this._handleScroll,
+                    ref: this._handleScrollWrapRef
+                }, n.createElement(b, {
+                    className: v.menuBox
+                }, h)))), n.createElement(c.Slot, {
+                    reference: this._handleSlot
+                })))
+            }
+            update(e) {
+                e ? this._resizeForced() : this._resize()
+            }
+            focus(e) {
+                this._containerRef?.focus(e)
+            }
+            blur() {
+                this._containerRef?.blur()
+            }
+        }
+        function b(e) {
+            const t = (0,
+            s.ensureNotNull)((0,
+            n.useContext)(p.SubmenuContext))
+              , o = n.useRef(null);
+            return n.createElement("div", {
+                ref: o,
+                className: e.className,
+                onMouseOver: function(e) {
+                    if (!(null !== t.current && e.target instanceof Node && (n = e.target,
+                    o.current?.contains(n))))
+                        return;
+                    var n;
+                    t.isSubmenuNode(e.target) || t.setCurrent(null)
+                },
+                "data-name": "menu-inner",
+                "data-qa-id": "menu-inner"
+            }, e.children)
+        }
+        v.contextType = p.SubmenuContext
+    }
+    ,
+    634993: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            DEFAULT_POPUP_MENU_ITEM_THEME: () => u,
+            PopupMenuItem: () => h
+        });
+        var n = o(50959)
+          , r = o(497754)
+          , i = o(345848)
+          , s = o(224743)
+          , a = o(495217)
+          , l = o(184277)
+          , c = o(558590);
+        const u = c;
+        function d(e) {
+            e.stopPropagation()
+        }
+        function h(e) {
+            const {id: t, role: o, className: u, title: h, labelRowClassName: p, labelClassName: m, toolboxClassName: f, shortcut: g, forceShowShortcuts: v, icon: b, iconClassname: w, isActive: C, isDisabled: _, isHovered: E, appearAsDisabled: x, label: M, link: y, showToolboxOnHover: k, showToolboxOnFocus: D, target: R, rel: O, toolbox: S, toolboxRole: T, reference: N, onMouseOut: F, onMouseOver: B, onKeyDown: W, suppressToolboxClick: P=!0, theme: L=c, tabIndex: A, tagName: H, renderComponent: K, roundedIcon: I, iconAriaProps: q, circleLogo: z, dontClosePopup: V, onClick: j, onClickArg: U, trackEventObject: J, trackMouseWheelClick: Q, trackRightClick: G, startSlot: $, ...Y} = e
+              , X = (0,
+            n.useRef)(null)
+              , Z = (0,
+            n.useMemo)(( () => function(e) {
+                function t(t) {
+                    const {reference: o, ...r} = t
+                      , i = e ?? (r.href ? "a" : "div")
+                      , s = "a" === i ? r : function(e) {
+                        const {download: t, href: o, hrefLang: n, media: r, ping: i, rel: s, target: a, type: l, referrerPolicy: c, ...u} = e;
+                        return u
+                    }(r);
+                    return n.createElement(i, {
+                        ...s,
+                        ref: o
+                    })
+                }
+                return t.displayName = `DefaultComponent(${e})`,
+                t
+            }(H)), [H])
+              , ee = K ?? Z;
+            return n.createElement(ee, {
+                ...Y,
+                id: t,
+                role: o,
+                className: r(u, L.item, b && L.withIcon, {
+                    [L.isActive]: C,
+                    [L.isDisabled]: _ || x,
+                    [L.hovered]: E
+                }),
+                title: h,
+                href: y,
+                target: R,
+                rel: O,
+                reference: function(e) {
+                    X.current = e,
+                    "function" == typeof N && N(e);
+                    "object" == typeof N && (N.current = e)
+                },
+                onClick: function(e) {
+                    if (_)
+                        return;
+                    J && (0,
+                    i.trackEvent)(J.category, J.event, J.label);
+                    j && j(U, e);
+                    V || (e.currentTarget.dispatchEvent(new CustomEvent("popup-menu-close-event",{
+                        bubbles: !0,
+                        detail: {
+                            clickType: (0,
+                            l.isKeyboardClick)(e) ? "keyboard" : "mouse"
+                        }
+                    })),
+                    (0,
+                    s.globalCloseMenu)())
+                },
+                onContextMenu: function(e) {
+                    J && G && (0,
+                    i.trackEvent)(J.category, J.event, `${J.label}_rightClick`)
+                },
+                onMouseUp: function(e) {
+                    if (1 === e.button && y && J) {
+                        let e = J.label;
+                        Q && (e += "_mouseWheelClick"),
+                        (0,
+                        i.trackEvent)(J.category, J.event, e)
+                    }
+                },
+                onMouseOver: B,
+                onMouseOut: F,
+                onKeyDown: W,
+                tabIndex: A
+            }, z && n.createElement(a.CircleLogo, {
+                ...q,
+                className: c["disclosure-item-circle-logo"],
+                size: "xxxsmall",
+                logoUrl: z.logoUrl,
+                placeholderLetter: "placeholderLetter"in z ? z.placeholderLetter : void 0
+            }), $ && n.createElement("span", {
+                className: L.startSlot
+            }, $), b && n.createElement("span", {
+                "aria-label": q && q["aria-label"],
+                "aria-hidden": q && Boolean(q["aria-hidden"]),
+                className: r(L.icon, I && c["round-icon"], w),
+                dangerouslySetInnerHTML: {
+                    __html: b
+                }
+            }), n.createElement("span", {
+                className: r(L.labelRow, p)
+            }, n.createElement("span", {
+                className: r(L.label, m)
+            }, M)), (void 0 !== g || v) && n.createElement("span", {
+                className: L.shortcut
+            }, (te = g) && te.split("+").join(" + ")), void 0 !== S && n.createElement("span", {
+                role: T,
+                onClick: P ? d : void 0,
+                className: r(f, L.toolbox, {
+                    [L.showOnHover]: k,
+                    [L.showOnFocus]: D
+                })
+            }, S));
+            var te
+        }
+    }
+    ,
+    320116: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            CloseDelegateContext: () => i
+        });
+        var n = o(50959)
+          , r = o(224743);
+        const i = n.createContext(r.globalCloseDelegate)
+    }
+    ,
+    45968: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            PopupMenu: () => h
+        });
+        var n = o(50959)
+          , r = o(632227)
+          , i = o(688987)
+          , s = o(707533)
+          , a = o(175071)
+          , l = o(320116)
+          , c = o(685715)
+          , u = o(385806)
+          , d = o(600586);
+        function h(e) {
+            const {controller: t, children: o, isOpened: h, closeOnClickOutside: p=!0, doNotCloseOn: m, onClickOutside: f, onClose: g, onKeyboardClose: v, "data-name": b="popup-menu-container", closeOnScrollOutsideOffset: w, ...C} = e
+              , _ = (0,
+            n.useContext)(l.CloseDelegateContext)
+              , E = n.useContext(d.MenuWidthContext)
+              , x = (0,
+            n.useContext)(c.RemeasureDelegateContext)
+              , M = (0,
+            u.useOutsideEvent)({
+                handler: function(e) {
+                    f && f(e);
+                    if (!p)
+                        return;
+                    const t = (0,
+                    i.default)(m) ? m() : null == m ? [] : [m];
+                    if (t.length > 0 && e.target instanceof Node)
+                        for (const o of t) {
+                            const t = r.findDOMNode(o);
+                            if (t instanceof Node && t.contains(e.target))
+                                return
+                        }
+                    g()
+                },
+                mouseDown: !0,
+                touchStart: !0
+            });
+            return h ? n.createElement(s.Portal, {
+                top: "0",
+                left: "0",
+                right: "0",
+                bottom: "0",
+                pointerEvents: "none"
+            }, n.createElement("span", {
+                ref: M,
+                style: {
+                    pointerEvents: "auto"
+                }
+            }, n.createElement(a.Menu, {
+                ...C,
+                onClose: g,
+                onKeyboardClose: v,
+                onScroll: function(t) {
+                    const {onScroll: o} = e;
+                    o && o(t)
+                },
+                customCloseDelegate: _,
+                customRemeasureDelegate: x,
+                ref: t,
+                "data-name": b,
+                limitMaxWidth: E.setMenuMaxWidth,
+                "data-tooltip-show-on-focus": "true",
+                closeOnScrollOutsideOffset: w
+            }, o))) : null
+        }
+    }
+    ,
+    685715: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            RemeasureDelegateContext: () => n
+        });
+        const n = o(50959).createContext(void 0)
+    }
+    ,
+    670797: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            Slot: () => n.Slot,
+            SlotContext: () => n.SlotContext
+        });
+        var n = o(692822)
+    }
+    ,
+    416293: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            ToolWidgetCaret: () => l
+        });
+        var n = o(50959)
+          , r = o(497754)
+          , i = o(79205)
+          , s = o(686186)
+          , a = o(100578);
+        function l(e) {
+            const {dropped: t, className: o} = e;
+            return n.createElement(i.Icon, {
+                className: r(o, s.icon, {
+                    [s.dropped]: t
+                }),
+                icon: a
+            })
+        }
+    }
+    ,
+    150881: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            TouchScrollContainer: () => c
+        });
+        var n = o(50959)
+          , r = o(259142)
+          , i = o(650151)
+          , s = o(638456);
+        const a = CSS.supports("overscroll-behavior", "none");
+        let l = 0;
+        const c = (0,
+        n.forwardRef)(( (e, t) => {
+            const {children: o, ...i} = e
+              , c = (0,
+            n.useRef)(null);
+            return (0,
+            n.useImperativeHandle)(t, ( () => c.current)),
+            (0,
+            n.useLayoutEffect)(( () => {
+                if (s.CheckMobile.iOS())
+                    return l++,
+                    null !== c.current && (a ? 1 === l && (document.body.style.overscrollBehavior = "none") : (0,
+                    r.disableBodyScroll)(c.current, {
+                        allowTouchMove: u(c)
+                    })),
+                    () => {
+                        l--,
+                        null !== c.current && (a ? 0 === l && (document.body.style.overscrollBehavior = "") : (0,
+                        r.enableBodyScroll)(c.current))
+                    }
+            }
+            ), []),
+            n.createElement("div", {
+                ref: c,
+                ...i
+            }, o)
+        }
+        ));
+        function u(e) {
+            return t => {
+                const o = (0,
+                i.ensureNotNull)(e.current)
+                  , n = document.activeElement;
+                return !o.contains(t) || null !== n && o.contains(n) && n.contains(t)
+            }
+        }
+    }
+    ,
+    611098: e => {
+        e.exports = {
+            accessible: "accessible-NQERJsv9",
+            active: "active-NQERJsv9"
+        }
+    }
+    ,
+    163024: e => {
+        e.exports = {
+            button: "button-merBkM5y",
+            hover: "hover-merBkM5y",
+            clicked: "clicked-merBkM5y",
+            accessible: "accessible-merBkM5y",
+            arrow: "arrow-merBkM5y",
+            arrowWrap: "arrowWrap-merBkM5y",
+            isOpened: "isOpened-merBkM5y"
+        }
+    }
+    ,
+    914579: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            focusFirstMenuItem: () => u,
+            handleAccessibleMenuFocus: () => l,
+            handleAccessibleMenuKeyDown: () => c,
+            queryMenuElements: () => p
+        });
+        var n = o(887208)
+          , r = o(432438)
+          , i = o(470316)
+          , s = o(355734);
+        const a = [37, 39, 38, 40];
+        function l(e, t) {
+            if (!e.target)
+                return;
+            const o = e.relatedTarget?.getAttribute("aria-activedescendant");
+            if (e.relatedTarget !== t.current) {
+                const e = o && document.getElementById(o);
+                if (!e || e !== t.current)
+                    return
+            }
+            u(e.target)
+        }
+        function c(e) {
+            if (e.defaultPrevented)
+                return;
+            const t = (0,
+            i.hashFromEvent)(e);
+            if (!a.includes(t))
+                return;
+            const o = document.activeElement;
+            if (!(document.activeElement instanceof HTMLElement))
+                return;
+            const s = p(e.currentTarget).sort(n.navigationOrderComparator);
+            if (0 === s.length)
+                return;
+            const l = document.activeElement.closest('[data-role="menuitem"]') || document.activeElement.parentElement?.querySelector('[data-role="menuitem"]');
+            if (!(l instanceof HTMLElement))
+                return;
+            const c = s.indexOf(l);
+            if (-1 === c)
+                return;
+            const u = m(l)
+              , f = u.indexOf(document.activeElement)
+              , g = -1 !== f
+              , v = e => {
+                o && (0,
+                r.becomeSecondaryElement)(o),
+                (0,
+                r.becomeMainElement)(e),
+                e.focus()
+            }
+            ;
+            switch ((0,
+            n.mapKeyCodeToDirection)(t)) {
+            case "inlinePrev":
+                if (!u.length)
+                    return;
+                e.preventDefault(),
+                v(0 === f ? s[c] : g ? d(u, f, -1) : u[u.length - 1]);
+                break;
+            case "inlineNext":
+                if (!u.length)
+                    return;
+                e.preventDefault(),
+                f === u.length - 1 ? v(s[c]) : v(g ? d(u, f, 1) : u[0]);
+                break;
+            case "blockPrev":
+                {
+                    e.preventDefault();
+                    const t = d(s, c, -1);
+                    if (g) {
+                        const e = h(t, f);
+                        v(e || t);
+                        break
+                    }
+                    v(t);
+                    break
+                }
+            case "blockNext":
+                {
+                    e.preventDefault();
+                    const t = d(s, c, 1);
+                    if (g) {
+                        const e = h(t, f);
+                        v(e || t);
+                        break
+                    }
+                    v(t)
+                }
+            }
+        }
+        function u(e) {
+            const [t] = p(e);
+            t && ((0,
+            r.becomeMainElement)(t),
+            t.focus())
+        }
+        function d(e, t, o) {
+            return e[(t + e.length + o) % e.length]
+        }
+        function h(e, t) {
+            const o = m(e);
+            return o.length ? o[(t + o.length) % o.length] : null
+        }
+        function p(e) {
+            return Array.from(e.querySelectorAll('[data-role="menuitem"]:not([disabled]):not([aria-disabled])')).filter((0,
+            s.createScopedVisibleElementFilter)(e))
+        }
+        function m(e) {
+            return Array.from(e.querySelectorAll("[tabindex]:not([disabled]):not([aria-disabled])")).filter((0,
+            s.createScopedVisibleElementFilter)(e))
+        }
+    }
+    ,
+    884557: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            AccessibleMenuButton: () => a
+        });
+        var n = o(50959)
+          , r = o(267521)
+          , i = o(770426)
+          , s = o(914579);
+        const a = (0,
+        n.forwardRef)((function(e, t) {
+            const {tooltip: o, tag: a, buttonRef: l, reference: c, ...u} = e
+              , d = (0,
+            r.useFunctionalRefObject)(c ?? null);
+            return n.createElement(i.ToolWidgetMenu, {
+                "aria-label": o,
+                ...u,
+                ref: t,
+                tag: a ?? "button",
+                reference: l ?? d,
+                "data-tooltip": o,
+                onMenuKeyDown: s.handleAccessibleMenuKeyDown,
+                onMenuFocus: e => (0,
+                s.handleAccessibleMenuFocus)(e, l ?? d)
+            })
+        }
+        ))
+    }
+    ,
+    184981: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            AccessibleMenuItem: () => u
+        });
+        var n = o(50959)
+          , r = o(497754)
+          , i = o.n(r)
+          , s = o(591800)
+          , a = o(263361)
+          , l = o(634993)
+          , c = o(611098);
+        function u(e) {
+            const {className: t, ...o} = e
+              , [r,u] = (0,
+            a.useRovingTabindexElement)(null);
+            return n.createElement(l.PopupMenuItem, {
+                ...o,
+                className: i()(c.accessible, e.isActive && c.active, t),
+                reference: r,
+                tabIndex: u,
+                onKeyDown: function(e) {
+                    if (e.target !== e.currentTarget)
+                        return;
+                    const t = (0,
+                    s.hashFromEvent)(e);
+                    13 !== t && 32 !== t || (e.preventDefault(),
+                    r.current instanceof HTMLElement && r.current.click())
+                },
+                "data-role": "menuitem",
+                "aria-disabled": e.isDisabled || void 0,
+                toolboxRole: "toolbar"
+            })
+        }
+    }
+    ,
+    283336: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            HorizontalAttachEdge: () => r,
+            HorizontalDropDirection: () => s,
+            VerticalAttachEdge: () => n,
+            VerticalDropDirection: () => i,
+            getPopupPositioner: () => c
+        });
+        var n, r, i, s, a = o(650151);
+        !function(e) {
+            e[e.Top = 0] = "Top",
+            e[e.Bottom = 1] = "Bottom",
+            e[e.AutoStrict = 2] = "AutoStrict"
+        }(n || (n = {})),
+        function(e) {
+            e[e.Left = 0] = "Left",
+            e[e.Right = 1] = "Right"
+        }(r || (r = {})),
+        function(e) {
+            e[e.FromTopToBottom = 0] = "FromTopToBottom",
+            e[e.FromBottomToTop = 1] = "FromBottomToTop"
+        }(i || (i = {})),
+        function(e) {
+            e[e.FromLeftToRight = 0] = "FromLeftToRight",
+            e[e.FromRightToLeft = 1] = "FromRightToLeft"
+        }(s || (s = {}));
+        const l = {
+            verticalAttachEdge: n.Bottom,
+            horizontalAttachEdge: r.Left,
+            verticalDropDirection: i.FromTopToBottom,
+            horizontalDropDirection: s.FromLeftToRight,
+            verticalMargin: 0,
+            horizontalMargin: 0,
+            matchButtonAndListboxWidths: !1
+        };
+        function c(e, t) {
+            return o => {
+                const {contentWidth: c, contentHeight: u, availableHeight: d} = o
+                  , h = (0,
+                a.ensureNotNull)(e).getBoundingClientRect()
+                  , {horizontalAttachEdge: p=l.horizontalAttachEdge, horizontalDropDirection: m=l.horizontalDropDirection, horizontalMargin: f=l.horizontalMargin, verticalMargin: g=l.verticalMargin, matchButtonAndListboxWidths: v=l.matchButtonAndListboxWidths} = t;
+                let b = t.verticalAttachEdge ?? l.verticalAttachEdge
+                  , w = t.verticalDropDirection ?? l.verticalDropDirection;
+                b === n.AutoStrict && (d < h.y + h.height + g + u ? (b = n.Top,
+                w = i.FromBottomToTop) : (b = n.Bottom,
+                w = i.FromTopToBottom));
+                const C = b === n.Top ? -1 * g : g
+                  , _ = p === r.Right ? h.right : h.left
+                  , E = b === n.Top ? h.top : h.bottom
+                  , x = {
+                    x: _ - (m === s.FromRightToLeft ? c : 0) + f,
+                    y: E - (w === i.FromBottomToTop ? u : 0) + C
+                };
+                return v && (x.overrideWidth = h.width),
+                x
+            }
+        }
+    }
+    ,
+    770426: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            DEFAULT_TOOL_WIDGET_MENU_THEME: () => g,
+            ToolWidgetMenu: () => v
+        });
+        var n = o(50959)
+          , r = o(497754)
+          , i = o.n(r)
+          , s = o(591800)
+          , a = o(45968)
+          , l = o(416293)
+          , c = o(8626)
+          , u = o(332585)
+          , d = o(762852)
+          , h = o(283336)
+          , p = o(18182)
+          , m = o(184277)
+          , f = o(163024);
+        const g = f;
+        class v extends n.PureComponent {
+            constructor(e) {
+                super(e),
+                this._wrapperRef = null,
+                this._controller = n.createRef(),
+                this._onPopupCloseOnClick = e => {
+                    "keyboard" === e.detail.clickType && this.focus()
+                }
+                ,
+                this._handleMenuFocus = e => {
+                    e.relatedTarget === this._wrapperRef && this.setState((e => ({
+                        ...e,
+                        isOpenedByButton: !0
+                    }))),
+                    this.props.onMenuFocus?.(e)
+                }
+                ,
+                this._handleWrapperRef = e => {
+                    this._wrapperRef = e,
+                    this.props.reference && this.props.reference(e)
+                }
+                ,
+                this._handleOpen = () => {
+                    "div" !== this.props.tag && (this.setState((e => ({
+                        ...e,
+                        isOpenedByButton: !1
+                    }))),
+                    this.props.menuReference?.current?.addEventListener("popup-menu-close-event", this._onPopupCloseOnClick),
+                    this._controller.current?.focus())
+                }
+                ,
+                this._handleClick = e => {
+                    e.target instanceof Node && e.currentTarget.contains(e.target) && (this._handleToggleDropdown(void 0, (0,
+                    m.isKeyboardClick)(e)),
+                    this.props.onClick && this.props.onClick(e, !this.state.isOpened))
+                }
+                ,
+                this._handleToggleDropdown = (e, t=!1) => {
+                    const {onClose: o, onOpen: n} = this.props
+                      , {isOpened: r} = this.state
+                      , i = "boolean" == typeof e ? e : !r;
+                    this.setState({
+                        isOpened: i,
+                        shouldReturnFocus: !!i && t
+                    }),
+                    i && n && n(),
+                    !i && o && o()
+                }
+                ,
+                this._handleClose = () => {
+                    this.close()
+                }
+                ,
+                this._handleKeyDown = e => {
+                    const {orientation: t="horizontal"} = this.props;
+                    if (e.defaultPrevented)
+                        return;
+                    if (!(e.target instanceof Node))
+                        return;
+                    const o = (0,
+                    s.hashFromEvent)(e);
+                    if (e.currentTarget.contains(e.target))
+                        switch (o) {
+                        case 40:
+                            if ("div" === this.props.tag || "horizontal" !== t)
+                                return;
+                            if (this.state.isOpened)
+                                return;
+                            e.preventDefault(),
+                            this._handleToggleDropdown(!0, !0);
+                            break;
+                        case 27:
+                            if (!this.state.isOpened || !this.props.closeOnEsc)
+                                return;
+                            e.preventDefault(),
+                            e.stopPropagation(),
+                            this._handleToggleDropdown(!1)
+                        }
+                    else {
+                        if ("div" === this.props.tag)
+                            return;
+                        switch (o) {
+                        case 27:
+                            {
+                                e.preventDefault();
+                                const {shouldReturnFocus: t, isOpenedByButton: o} = this.state;
+                                this._handleToggleDropdown(!1),
+                                t && o && this._wrapperRef?.focus();
+                                break
+                            }
+                        }
+                    }
+                }
+                ,
+                this.state = {
+                    isOpened: !1,
+                    shouldReturnFocus: !1,
+                    isOpenedByButton: !1
+                }
+            }
+            render() {
+                const {tag: e="div", id: t, arrow: o, content: r, isDisabled: s, isDrawer: a, isShowTooltip: u, title: d, className: h, hotKey: m, theme: f, drawerBreakpoint: g, tabIndex: v, isClicked: w} = this.props
+                  , {isOpened: C} = this.state
+                  , _ = i()(h, f.button, {
+                    "apply-common-tooltip": u || !s,
+                    [f.isDisabled]: s,
+                    [f.isOpened]: C,
+                    [f.clicked]: w
+                })
+                  , E = b(r) ? r({
+                    isOpened: C
+                }) : r;
+                return "button" === e ? n.createElement("button", {
+                    type: "button",
+                    id: t,
+                    className: i()(_, f.accessible),
+                    disabled: s,
+                    onClick: this._handleClick,
+                    title: d,
+                    "data-tooltip-hotkey": m,
+                    ref: this._handleWrapperRef,
+                    onKeyDown: this._handleKeyDown,
+                    tabIndex: v,
+                    ...(0,
+                    c.filterDataProps)(this.props),
+                    ...(0,
+                    c.filterAriaProps)(this.props)
+                }, E, o && n.createElement("div", {
+                    className: f.arrow
+                }, n.createElement("div", {
+                    className: f.arrowWrap
+                }, n.createElement(l.ToolWidgetCaret, {
+                    dropped: C
+                }))), this.state.isOpened && (g ? n.createElement(p.MatchMedia, {
+                    rule: g
+                }, (e => this._renderContent(e))) : this._renderContent(a))) : n.createElement("div", {
+                    id: t,
+                    className: _,
+                    onClick: s ? void 0 : this._handleClick,
+                    title: d,
+                    "data-tooltip-hotkey": m,
+                    ref: this._handleWrapperRef,
+                    "data-role": "button",
+                    tabIndex: v,
+                    onKeyDown: this._handleKeyDown,
+                    "aria-haspopup": this.props["aria-haspopup"],
+                    ...(0,
+                    c.filterDataProps)(this.props)
+                }, E, o && n.createElement("div", {
+                    className: f.arrow
+                }, n.createElement("div", {
+                    className: f.arrowWrap
+                }, n.createElement(l.ToolWidgetCaret, {
+                    dropped: C
+                }))), this.state.isOpened && (g ? n.createElement(p.MatchMedia, {
+                    rule: g
+                }, (e => this._renderContent(e))) : this._renderContent(a)))
+            }
+            close() {
+                this.props.menuReference?.current?.removeEventListener("popup-menu-close-event", this._onPopupCloseOnClick),
+                this._handleToggleDropdown(!1)
+            }
+            focus() {
+                this._wrapperRef?.focus()
+            }
+            update() {
+                null !== this._controller.current && this._controller.current.update()
+            }
+            _renderContent(e) {
+                const {menuDataName: t, minWidth: o, menuClassName: r, menuRole: i, maxHeight: s, drawerPosition: l="Bottom", children: c, noMomentumBasedScroll: p} = this.props
+                  , {isOpened: m} = this.state
+                  , f = {
+                    horizontalMargin: this.props.horizontalMargin || 0,
+                    verticalMargin: this.props.verticalMargin || 2,
+                    verticalAttachEdge: this.props.verticalAttachEdge,
+                    horizontalAttachEdge: this.props.horizontalAttachEdge,
+                    verticalDropDirection: this.props.verticalDropDirection,
+                    horizontalDropDirection: this.props.horizontalDropDirection,
+                    matchButtonAndListboxWidths: this.props.matchButtonAndListboxWidths
+                }
+                  , g = Boolean(m && e && l)
+                  , v = b(c) ? c({
+                    isDrawer: g
+                }) : c;
+                return g ? n.createElement(u.DrawerManager, null, n.createElement(d.Drawer, {
+                    reference: this.props.drawerReference,
+                    onClose: this._handleClose,
+                    position: l,
+                    "data-name": t
+                }, v)) : n.createElement(a.PopupMenu, {
+                    reference: this.props.menuReference,
+                    role: i,
+                    controller: this._controller,
+                    closeOnClickOutside: this.props.closeOnClickOutside,
+                    doNotCloseOn: this,
+                    isOpened: m,
+                    minWidth: o,
+                    onClose: this._handleClose,
+                    position: (0,
+                    h.getPopupPositioner)(this._wrapperRef, f),
+                    className: r,
+                    maxHeight: s,
+                    "data-name": t,
+                    tabIndex: "div" !== this.props.tag ? -1 : void 0,
+                    onOpen: this._handleOpen,
+                    onKeyDown: this.props.onMenuKeyDown,
+                    onFocus: this._handleMenuFocus,
+                    noMomentumBasedScroll: p
+                }, v)
+            }
+        }
+        function b(e) {
+            return "function" == typeof e
+        }
+        v.defaultProps = {
+            arrow: !0,
+            closeOnClickOutside: !0,
+            theme: f
+        }
+    }
+    ,
+    721270: (e, t, o) => {
+        "use strict";
+        o.d(t, {
+            ToolbarMenuButton: () => l
+        });
+        var n = o(50959)
+          , r = o(267521)
+          , i = o(263361)
+          , s = o(375185)
+          , a = o(884557);
+        const l = (0,
+        n.forwardRef)((function(e, t) {
+            const {tooltip: o, menuReference: l=null, ...c} = e
+              , [u,d] = (0,
+            i.useRovingTabindexElement)(null)
+              , h = (0,
+            r.useFunctionalRefObject)(l);
+            return n.createElement(a.AccessibleMenuButton, {
+                "aria-label": o,
+                "aria-haspopup": "menu",
+                ...s.MouseClickAutoBlurHandler.attributes(),
+                ...c,
+                ref: t,
+                tag: "button",
+                buttonRef: u,
+                tabIndex: d,
+                menuReference: h,
+                tooltip: o
+            })
+        }
+        ))
+    }
+    ,
+    100578: e => {
+        e.exports = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 8" width="16" height="8"><path fill="currentColor" d="M0 1.475l7.396 6.04.596.485.593-.49L16 1.39 14.807 0 7.393 6.122 8.58 6.12 1.186.08z"/></svg>'
+    }
+}]);

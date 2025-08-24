@@ -1,0 +1,19 @@
+// FILE: next.config.mjs
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  experimental: { serverActions: true }
+};
+export default nextConfig;
+
+// FILE: tailwind.config.ts
+import type { Config } from "tailwindcss";
+const config: Config = {
+  darkMode: "class",
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"]
+};
+export default {
+  ...config,
+  theme: { extend: {} },
+  plugins: []
+};

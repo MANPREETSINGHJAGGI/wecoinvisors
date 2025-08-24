@@ -1,4 +1,3 @@
-// frontend/app/(main)/dashboard/charts/page.tsx
 "use client";
 
 import { useEffect, useState, useRef, Suspense } from "react";
@@ -21,18 +20,18 @@ ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip,
 interface Stock {
   symbol: string;
   name: string;
-  price: number;
-  percentChange: number;
-  volume: number;
+  price: number | null;
+  percentChange: number | null;
+  volume: number | null;
   sector: string;
-  marketCap: number;
-  peRatio: number;
-  eps: number;
+  marketCap: number | null;
+  peRatio: number | null;
+  eps: number | null;
   isGolden?: boolean;
 }
 
 const SYMBOLS = ["AAPL", "MSFT", "TSLA", "GOOGL", "META", "TCS.NS"];
-const RANGES = ["1D", "3D", "5D", "1M", "3M", "6M", "1Y", "2Y", "3Y", "4Y", "5Y"];
+const RANGES = ["1D", "3D", "5D", "1M", "3M", "6M", "1Y", "3Y", "5Y"];
 
 function ChartContent() {
   const searchParams = useSearchParams();
@@ -98,10 +97,11 @@ function ChartContent() {
     link.click();
   };
 
+  // Safe color selection
   const priceColor =
-    stockInfo?.percentChange! > 0
+    stockInfo?.percentChange && stockInfo.percentChange > 0
       ? "text-green-400"
-      : stockInfo?.percentChange! < 0
+      : stockInfo?.percentChange && stockInfo.percentChange < 0
       ? "text-red-400"
       : "text-gray-400";
 
@@ -151,8 +151,17 @@ function ChartContent() {
           <div className="mb-4">
             <h2 className="text-lg font-bold text-gold">{stockInfo.symbol}</h2>
             <p className="text-gray-300">
-              Price: {stockInfo.price.toFixed(2)} |{" "}
-              <span className={priceColor}>{stockInfo.percentChange.toFixed(2)}%</span>
+              Price:{" "}
+              {stockInfo.price !== null && stockInfo.price !== undefined
+                ? stockInfo.price.toFixed(2)
+                : "N/A"}{" "}
+              |{" "}
+              <span className={priceColor}>
+                {stockInfo.percentChange !== null && stockInfo.percentChange !== undefined
+                  ? stockInfo.percentChange.toFixed(2)
+                  : "0.00"}
+                %
+              </span>
             </p>
           </div>
         )}

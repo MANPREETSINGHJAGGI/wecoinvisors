@@ -4,6 +4,8 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 from pydantic import BaseModel
+from app.utils import stock_tracker
+
 import httpx
 import os
 import yfinance as yf

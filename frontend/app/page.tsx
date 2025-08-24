@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-
 export default function Home() {
   const [symbols, setSymbols] = useState("");
   const [mode, setMode] = useState<"default" | "custom">("default");
@@ -32,8 +31,11 @@ export default function Home() {
           Leading a Cohort of People in Stocks & Education — Live, Interactive, AI-powered 🚀
         </p>
 
-       {/* Moving ticker text */} <div className="overflow-hidden whitespace-nowrap border-t border-b border-gold py-2 mb-8 w-full"> <div className="animate-marquee inline-block"> 📈 Live Stock Data • 📚 Educational Resources • 🤖 AI Insights • 💡 Smart Investing • 📊 Real-Time Analysis
- </div> 
+        {/* Moving ticker text */}
+        <div className="overflow-hidden whitespace-nowrap border-t border-b border-gold py-2 mb-8 w-full">
+          <div className="animate-marquee inline-block">
+            📈 Live Stock Data • 📚 Educational Resources • 🤖 AI Insights • 💡 Smart Investing • 📊 Real-Time Analysis
+          </div>
         </div>
 
         {/* Mode selection */}

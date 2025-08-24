@@ -1,59 +1,82 @@
-# backend/app/routers/stocks.py
+# File: backend/app/routers/stock_data.py
+from fastapi import APIRouter, Query, HTTPException
+import httpx
+import os
+import yfinance as yf
 
-from fastapi import APIRouter, Query
-from app.utils import stock_tracker
-import json
-from pathlib import Path
+router = APIRouter()
 
-router = APIRouter(
-    prefix="/stocks",
-    tags=["Stocks"]
-)
+ALPHA_VANTAGE_KEY = os.getenv("ALPHA_VANTAGE_KEY", "")
+TWELVE_DATA_KEY = os.getenv("TWELVE_DATA_KEY", "")
 
-# Path to NSE All Stocks JSON
-DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "nse_all_stocks.json"
+@router.get("/live-stock-data")
+async def live_stock_data(symbols: str = Query(..., description="Comma separated symbols like TCS.NS,AAPL")):
+    """
+    Unified live stock data fetcher.
+    Priority:
+    - NSE stocks: yfinance or Alpha Vantage
+    - US/global: TwelveData or yfinance fallback
+    """
+    results = []
+    symbol_list = [s.strip().upper() for s in symbols.split(",") if s.strip()]
 
-@router.get("/live")
-def get_live_price(
-    symbol: str = Query(..., description="Stock symbol e.g. RELIANCE.BSE")
-):
-    """
-    Fetch live stock price from available APIs (Alpha Vantage → Twelve Data → Finnhub).
-    """
-    return stock_tracker.get_live_price(symbol)
+    async with httpx.AsyncClient(timeout=15) as client:
+        for symbol in symbol_list:
+            stock_data = None
+            try:
+                # Try yfinance first (works for NSE and US)
+                ticker = yf.Ticker(symbol)
+                hist = ticker.history(period="2d")
+                if not hist.empty:
+                    last = hist.iloc[-1]
+                    prev = hist.iloc[-2] if len(hist) > 1 else hist.iloc[-1]
+                    change = round(float(last["Close"] - prev["Close"]), 2)
+                    percent_change = round((change / prev["Close"]) * 100, 2) if prev["Close"] else 0
 
-@router.get("/history")
-def get_historical_data(
-    symbol: str = Query(..., description="Stock symbol e.g. RELIANCE.BSE"),
-    start_date: str = Query(..., description="Start date YYYY-MM-DD"),
-    end_date: str = Query(..., description="End date YYYY-MM-DD")
-):
-    """
-    Fetch historical daily stock data between start_date and end_date.
-    Uses Alpha Vantage TIME_SERIES_DAILY.
-    """
-    return stock_tracker.get_historical_data(symbol, start_date, end_date)
+                    stock_data = {
+                        "symbol": symbol,
+                        "price": round(float(last["Close"]), 2),
+                        "change": change,
+                        "percentChange": percent_change,
+                        "volume": int(last["Volume"]),
+                    }
+            except Exception as e:
+                print(f"⚠️ yfinance error for {symbol}: {e}")
 
-@router.get("/gainers-losers")
-def get_gainers_losers():
-    """
-    Get top market gainers and losers.
-    (Currently dummy data — replace with NSE/BSE API when available.)
-    """
-    return stock_tracker.get_top_gainers_losers()
+            # If still None, try Alpha Vantage (for .NS stocks)
+            if not stock_data and symbol.endswith(".NS") and ALPHA_VANTAGE_KEY:
+                try:
+                    url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={ALPHA_VANTAGE_KEY}"
+                    r = await client.get(url)
+                    d = r.json().get("Global Quote", {})
+                    if d:
+                        stock_data = {
+                            "symbol": symbol,
+                            "price": float(d.get("05. price", 0)),
+                            "change": float(d.get("09. change", 0)),
+                            "percentChange": float(d.get("10. change percent", "0%").replace("%", "")),
+                            "volume": int(d.get("06. volume", 0)),
+                        }
+                except Exception as e:
+                    print(f"⚠️ Alpha Vantage error for {symbol}: {e}")
 
-@router.get("/nse-all")
-def get_nse_all_stocks():
-    """
-    Returns all NSE stocks with sectors from the static JSON file.
-    """
-    try:
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            stocks = json.load(f)
-        return {"success": True, "data": stocks}
-    except FileNotFoundError:
-        return {"success": False, "error": "nse_all_stocks.json not found"}
-    except json.JSONDecodeError:
-        return {"success": False, "error": "Invalid JSON format in nse_all_stocks.json"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
+            # If still None, try Twelve Data (for US/global)
+            if not stock_data and TWELVE_DATA_KEY:
+                try:
+                    url = f"https://api.twelvedata.com/quote?symbol={symbol}&apikey={TWELVE_DATA_KEY}"
+                    r = await client.get(url)
+                    d = r.json()
+                    if "symbol" in d:
+                        stock_data = {
+                            "symbol": d["symbol"],
+                            "price": float(d.get("close", 0)),
+                            "change": float(d.get("change", 0)),
+                            "percentChange": float(d.get("percent_change", 0)),
+                            "volume": int(d.get("volume", 0)) if d.get("volume") else 0,
+                        }
+                except Exception as e:
+                    print(f"⚠️ TwelveData error for {symbol}: {e}")
+
+            results.append(stock_data if stock_data else {"symbol": symbol, "error": "No data found"})
+
+    return results

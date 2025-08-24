@@ -186,14 +186,14 @@ async def _from_finnhub(client: httpx.AsyncClient, symbol: str) -> Optional[Dict
 async def _from_yfinance(symbol: str) -> Optional[Dict[str, Any]]:
     """
     yfinance fallback with defensive guards against empty history:
-      - try last 2 days; if empty, try 5d; if still empty, return None
+      - try last 1 days; if empty, try 5d; if still empty, return None
     """
     if not _is_nse_symbol(symbol):
         return None
     try:
         ticker = yf.Ticker(symbol)
         # Try increasing windows
-        for period in ("2d", "5d", "10d"):
+        for period in ("1d", "5d", "10d"):
             hist = ticker.history(period=period, interval="1d")
             if hist is None or hist.empty:
                 continue
@@ -327,7 +327,7 @@ async def get_all_live_stocks(
 @router.get("/history")
 async def get_historical_data(
     symbol: str = Query(..., description="Stock symbol (e.g., RELIANCE or RELIANCE.NS)"),
-    period: str = Query("6mo", description="yfinance period (e.g., 1mo, 3mo, 6mo, 1y, 2y, 5y, max)"),
+    period: str = Query("6mo", description="yfinance period (e.g., 1mo, 3mo, 6mo, 1y, 5y, max)"),
     interval: str = Query("1d", description="yfinance interval (e.g., 1d, 1wk, 1mo)")
 ):
     """

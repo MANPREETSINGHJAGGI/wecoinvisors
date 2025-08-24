@@ -1,0 +1,46 @@
+// FILE: app/api/quote/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { provider, DATA_API_KEY } from "@/lib/providers";
+
+export const revalidate = 5;
+
+export async function GET(req: NextRequest) {
+  const symbol = req.nextUrl.searchParams.get("symbol") || "AAPL";
+  try {
+    let url: string;
+    if (provider === "alphavantage") {
+      url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${DATA_API_KEY}`;
+    } else if (provider === "polygon") {
+      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/prev?apiKey=${DATA_API_KEY}`;
+    } else {
+      url = `https://stooq.com/q/l/?s=${symbol}&f=sd2t2ohlcv&h&e=json`;
+    }
+    const r = await fetch(url, { next: { revalidate: 5 } });
+    if (!r.ok) throw new Error(`Upstream ${r.status}`);
+    const raw = await r.json();
+
+    // normalize
+    let data: any;
+    if (provider === "alphavantage") {
+      const q = raw["Global Quote"] || {};
+      data = {
+        symbol: q["01. symbol"] || symbol,
+        price: Number(q["05. price"]) || 0,
+        change: Number(q["09. change"]) || 0,
+        changePercent: Number((q["10. change percent"] || "0").replace("%", "")) || 0,
+        volume: Number(q["06. volume"]) || 0,
+        ts: Date.now()
+      };
+    } else if (provider === "polygon") {
+      const q = raw.results?.[0] || {};
+      data = { symbol, price: q.c, change: 0, changePercent: 0, volume: q.v, ts: q.t };
+    } else {
+      const q = raw?.symbols?.[0] || {};
+      data = { symbol: q.symbol, price: Number(q.close), change: 0, changePercent: 0, volume: Number(q.volume), ts: Date.now() };
+    }
+
+    return NextResponse.json({ ok: true, data });
+  } catch (e: any) {
+    return NextResponse.json({ ok: false, error: e.message }, { status: 500 });
+  }
+}
