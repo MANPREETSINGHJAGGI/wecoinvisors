@@ -32,7 +32,7 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-};
+} satisfies Config;
 
 // 💡 Ownership Prompt to be shown near dashboard explore + login/signup
 // <p className="text-center text-sm text-grayText mt-2">
