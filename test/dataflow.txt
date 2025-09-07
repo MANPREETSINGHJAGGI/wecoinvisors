@@ -1,0 +1,4 @@
+// FILE: lib/providers.ts
+export type Provider = "alphavantage" | "polygon" | "stooq";
+export const provider = (process.env.DATA_PROVIDER as Provider) || "alphavantage";
+export const DATA_API_KEY = process.env.DATA_API_KEY || "demo"; // demo for AV

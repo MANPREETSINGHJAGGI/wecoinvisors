@@ -1,0 +1,49 @@
+// FILE: app/api/candles/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { provider, DATA_API_KEY } from "@/lib/providers";
+export const revalidate = 60;
+export async function GET(req: NextRequest) {
+  const symbol = req.nextUrl.searchParams.get("symbol") || "AAPL";
+  const interval = req.nextUrl.searchParams.get("interval") || "60min"; // AV format
+  try {
+    let url: string;
+    if (provider === "alphavantage") {
+      const fn = interval === "1min" ? "TIME_SERIES_INTRADAY" : "TIME_SERIES_INTRADAY";
+      url = `https://www.alphavantage.co/query?function=${fn}&symbol=${symbol}&interval=${interval}&outputsize=compact&apikey=${DATA_API_KEY}`;
+    } else if (provider === "polygon") {
+      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/5/minute/2024-01-01/2024-12-31?apiKey=${DATA_API_KEY}`;
+    } else {
+      url = `https://stooq.com/q/d/l/?s=${symbol}&i=d`;
+      const csv = await (await fetch(url)).text();
+      const rows = csv.split("\n").slice(1).filter(Boolean).slice(-200);
+      const candles = rows.map((line) => {
+        const [date, open, high, low, close, volume] = line.split(",");
+        return { time: new Date(date).getTime() / 1000, open: +open, high: +high, low: +low, close: +close, volume: +volume };
+      });
+      return NextResponse.json({ ok: true, data: candles });
+    }
+
+    const r = await fetch(url, { next: { revalidate: 60 } });
+    if (!r.ok) throw new Error(`Upstream ${r.status}`);
+    const raw = await r.json();
+
+    // AV intraday normalize
+    const key = Object.keys(raw).find((k) => k.includes("Time Series"));
+    const series = key ? raw[key] : {};
+    const candles = Object.entries<any>(series)
+      .slice(0, 300)
+      .reverse()
+      .map(([ts, v]) => ({
+        time: Math.floor(new Date(ts).getTime() / 1000),
+        open: +v["1. open"],
+        high: +v["2. high"],
+        low: +v["3. low"],
+        close: +v["4. close"],
+        volume: +v["5. volume"] || 0
+      }));
+
+    return NextResponse.json({ ok: true, data: candles });
+  } catch (e: any) {
+    return NextResponse.json({ ok: false, error: e.message }, { status: 500 });
+  }
+}

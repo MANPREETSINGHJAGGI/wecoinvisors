@@ -1,0 +1,45 @@
+wecoinvisors/
+├── .env.local
+├── package.json
+├── tsconfig.json
+├── tailwind.config.js
+├── start_wecoinvisors.bat
+├── backend/
+│   ├── main.py
+│   ├── requirements.txt 
+│   ├── routers/
+│   │   └── stock_data.py (optional, if separated)
+│   ├── utils/
+│   │   └── stock_fetcher.py (optional, if separated)
+│   └── venv/
+│       └── (Python virtual environment)
+├── frontend/
+│   ├── app/
+│   │   ├── layout.tsx               # 🔹 Root layout (server)
+│   │   ├── page.tsx                 # 🔹 Default root landing page
+│   │   ├── (main)/                 # 🔹 Layout group for authenticated routes
+│   │   │   ├── layout.tsx         # ✅ Client layout with Navbar + AuthProvider
+│   │   │   ├── login/
+│   │   │   │   └── page.tsx       # ✅ Email login form
+│   │   │   ├── login/
+│   │   │   │   └── verify/
+│   │   │   │       └── page.tsx   # ✅ Email link verification logic
+│   │   │   ├── dashboard/
+│   │   │   │   ├── stocks/
+│   │   │   │   │   ├── page.tsx
+│   │   │   │   │   └── StocksPage.tsx
+│   │   │   │   └── charts/
+│   │   │   │       └── page.tsx
+│   │   └── api/
+│   │       └── live-stock-data/
+│   │           └── route.ts        # ✅ API proxy to FastAPI
+│   ├── components/
+│   │   ├── Navbar.tsx              # ✅ Site-wide Navbar
+│   │   └── (other components)
+│   ├── context/
+│   │   └── AuthContext.tsx         # ✅ Firebase auth context
+│   └── lib/
+│       └── firebase.ts             # ✅ Firebase config
+├── public/
+│   └── favicon.ico
+└── README.md (optional)

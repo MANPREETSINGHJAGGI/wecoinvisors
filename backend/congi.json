@@ -1,0 +1,6 @@
+from pathlib import Path
+
+# Resolve config.json path relative to this file's location
+CONFIG_PATH = Path(__file__).resolve().parents[1] / "config.json"
+with open(CONFIG_PATH, "r") as f:
+    config = json.load(f)

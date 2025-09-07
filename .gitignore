@@ -1,2 +1,9 @@
+<<<<<<< HEAD
 .env
 *.env
+=======
+.next
+MANPREETSINGHJAGGI
+node_modules
+.vercel
+>>>>>>> 3ea3280f9e8e9ef4975eb0f68f976897abda03c9
