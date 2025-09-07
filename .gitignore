@@ -1,9 +1,21 @@
-<<<<<<< HEAD
+# Ignore environment files
 .env
 *.env
-=======
-.next
-MANPREETSINGHJAGGI
+.env.local
+backend/.env.local
+
+# Ignore dependencies
 node_modules
+venv/
+backend/venv/
+
+# Ignore build outputs
+.next
 .vercel
->>>>>>> 3ea3280f9e8e9ef4975eb0f68f976897abda03c9
+__pycache__/
+*.pyc
+
+# Ignore system/IDE files
+.DS_Store
+*.log
+MANPREETSINGHJAGGI
