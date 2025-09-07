@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import StockTable from "@/components/StockTable";
 import Link from "next/link";
 
@@ -14,28 +14,6 @@ export default function StocksDashboard() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  /** Column definitions for the table */
-  const columns = [
-    { key: "symbol", label: "Symbol" },
-    { key: "company_name", label: "Company" },
-    { key: "current_price", label: "Current Price" },
-    { key: "prev_close", label: "Prev Close" },
-    { key: "price_open", label: "Open" },
-    { key: "change_pct", label: "% Change" },
-    { key: "day_high", label: "High" },
-    { key: "day_low", label: "Low" },
-    { key: "volume", label: "Volume" },
-    { key: "market_cap", label: "Market Cap (₹ Cr)" },
-    { key: "pe_ratio", label: "P/E" },
-    { key: "eps", label: "EPS" },
-    { key: "high_52", label: "52W High" },
-    { key: "low_52", label: "52W Low" },
-    { key: "change", label: "Change" },
-    { key: "shares", label: "Shares" },
-    { key: "currency", label: "Currency" },
-    { key: "sector", label: "Sector" },
-  ];
-
   /** Normalize → uppercase + NSE suffix */
   const normalizeSymbols = (input: string) => {
     return input
@@ -48,10 +26,8 @@ export default function StocksDashboard() {
 
   /** Fetch live data */
   const fetchStocks = async (query: string) => {
-    if (!query.trim()) return;
     setLoading(true);
     setError(null);
-
     try {
       const querySymbols = normalizeSymbols(query);
       const res = await fetch(
@@ -63,7 +39,7 @@ export default function StocksDashboard() {
       setStocks(backendData);
     } catch (err) {
       console.error("Fetch error", err);
-      setError("⚠ Failed to fetch stock data. Try again.");
+      setError("Failed to fetch stock data");
       setStocks([]);
     } finally {
       setLoading(false);
@@ -78,15 +54,8 @@ export default function StocksDashboard() {
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       fetchStocks(symbols);
-    }, 30000); // auto-refresh 30s
+    }, 30000);
   };
-
-  /** Cleanup interval on unmount */
-  useEffect(() => {
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, []);
 
   return (
     <main className="min-h-screen text-wecoin-blue glossy-bg">
@@ -110,7 +79,7 @@ export default function StocksDashboard() {
           <div className="flex items-center space-x-2 mb-4">
             <input
               type="text"
-              placeholder="Enter symbols (e.g., ITC, PNB)"
+              placeholder="Enter symbols: TCS, RELIANCE, AAPL"
               value={symbols}
               onChange={(e) => setSymbols(e.target.value)}
               className="bg-black border border-gold rounded px-3 py-2 text-wecoin-blue placeholder-blue-500 focus:outline-none flex-1"
@@ -119,7 +88,7 @@ export default function StocksDashboard() {
               onClick={handleSearch}
               className="bg-gold text-black px-4 py-2 rounded font-semibold hover:bg-yellow-500 transition"
             >
-              Search
+              Fetch
             </button>
           </div>
           <div className="text-sm italic text-wecoin-blue">
@@ -140,19 +109,13 @@ export default function StocksDashboard() {
             {error}
           </div>
         )}
-        {!loading && !error && stocks.length > 0 && (
+        {!loading && !error && (
           <StockTable
             stocks={stocks}
-            columns={columns}
             loading={loading}
             watchlist={watchlist}
             setWatchlist={setWatchlist}
           />
-        )}
-        {!loading && !error && stocks.length === 0 && (
-          <div className="py-6 text-center text-gray-400 italic">
-            🔍 Enter stock symbols above to see live data
-          </div>
         )}
       </section>
 
@@ -162,15 +125,9 @@ export default function StocksDashboard() {
           © {new Date().getFullYear()} WeCoinvisors Pvt Ltd. All rights reserved.
         </div>
         <div className="space-x-4 text-sm">
-          <a href="/about" className="nav-link">
-            About
-          </a>
-          <a href="/contact" className="nav-link">
-            Contact
-          </a>
-          <a href="/terms" className="nav-link">
-            Terms
-          </a>
+          <a href="/about" className="nav-link">About</a>
+          <a href="/contact" className="nav-link">Contact</a>
+          <a href="/terms" className="nav-link">Terms</a>
         </div>
       </footer>
     </main>

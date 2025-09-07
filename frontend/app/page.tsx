@@ -1,16 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
   const [symbols, setSymbols] = useState("");
   const [mode, setMode] = useState<"default" | "custom">("default");
+  const router = useRouter();
 
   const handleExplore = () => {
     const base = "/dashboard/stocks";
     if (mode === "custom" && symbols.trim()) {
-      window.location.href = `${base}?symbols=${encodeURIComponent(symbols)}`;
+      router.push(`${base}?symbols=${encodeURIComponent(symbols)}`);
     } else {
-      window.location.href = base;
+      router.push(base);
     }
   };
 

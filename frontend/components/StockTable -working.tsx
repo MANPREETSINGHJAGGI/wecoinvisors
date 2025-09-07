@@ -18,12 +18,12 @@ export default function StockTable({
   if (!stocks || stocks.length === 0) {
     return (
       <div className="text-center text-gray-400 py-6">
-        No stock data available. Try searching symbols like <b>PNB, TCS</b>.
+        No stock data available. Try searching symbols like <b>PNB,TCS</b>.
       </div>
     );
   }
 
-  // Define headers for the table
+  // Define the full set of headers you want
   const headers = [
     "Symbol",
     "Company Name",
@@ -50,34 +50,6 @@ export default function StockTable({
     "Currency",
     "Sector",
   ];
-
-  // Map frontend headers → backend API keys
-  const headerMapping: Record<string, string> = {
-    "Symbol": "symbol",
-    "Company Name": "company_name",
-    "Current Price": "current_price",
-    "PrevClose": "prev_close",
-    "PriceOpen": "price_open",
-    "ChangePct": "change_pct",
-    "High": "day_high",
-    "Low": "day_low",
-    "ExpenseRatio": "expense_ratio",
-    "MorningStarRating": "morningstar_rating",
-    "Volume": "volume",
-    "Market Cap (₹ Crore, Approx)": "market_cap",
-    "TradeTime": "trade_time",
-    "DataDelay": "data_delay",
-    "VolumeAvg": "avg_volume",
-    "PE": "pe_ratio",
-    "EPS": "eps",
-    "High52": "high_52",
-    "Low52": "low_52",
-    "Change": "change",
-    "Beta": "beta",
-    "Shares": "shares",
-    "Currency": "currency",
-    "Sector": "sector",
-  };
 
   const toggleWatchlist = (symbol: string) => {
     if (watchlist.includes(symbol)) {
@@ -112,7 +84,8 @@ export default function StockTable({
               className="hover:bg-black/40 transition text-center"
             >
               {headers.map((header) => {
-                const key = headerMapping[header];
+                // normalize keys: match object keys by lowercasing and removing spaces
+                const key = header.toLowerCase().replace(/\s+/g, "");
                 return (
                   <td
                     key={header}

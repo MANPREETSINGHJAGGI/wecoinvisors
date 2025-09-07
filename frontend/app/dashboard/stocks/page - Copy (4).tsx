@@ -14,28 +14,6 @@ export default function StocksDashboard() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  /** Column definitions for the table */
-  const columns = [
-    { key: "symbol", label: "Symbol" },
-    { key: "company_name", label: "Company" },
-    { key: "current_price", label: "Current Price" },
-    { key: "prev_close", label: "Prev Close" },
-    { key: "price_open", label: "Open" },
-    { key: "change_pct", label: "% Change" },
-    { key: "day_high", label: "High" },
-    { key: "day_low", label: "Low" },
-    { key: "volume", label: "Volume" },
-    { key: "market_cap", label: "Market Cap (₹ Cr)" },
-    { key: "pe_ratio", label: "P/E" },
-    { key: "eps", label: "EPS" },
-    { key: "high_52", label: "52W High" },
-    { key: "low_52", label: "52W Low" },
-    { key: "change", label: "Change" },
-    { key: "shares", label: "Shares" },
-    { key: "currency", label: "Currency" },
-    { key: "sector", label: "Sector" },
-  ];
-
   /** Normalize → uppercase + NSE suffix */
   const normalizeSymbols = (input: string) => {
     return input
@@ -143,7 +121,6 @@ export default function StocksDashboard() {
         {!loading && !error && stocks.length > 0 && (
           <StockTable
             stocks={stocks}
-            columns={columns}
             loading={loading}
             watchlist={watchlist}
             setWatchlist={setWatchlist}
@@ -162,15 +139,9 @@ export default function StocksDashboard() {
           © {new Date().getFullYear()} WeCoinvisors Pvt Ltd. All rights reserved.
         </div>
         <div className="space-x-4 text-sm">
-          <a href="/about" className="nav-link">
-            About
-          </a>
-          <a href="/contact" className="nav-link">
-            Contact
-          </a>
-          <a href="/terms" className="nav-link">
-            Terms
-          </a>
+          <a href="/about" className="nav-link">About</a>
+          <a href="/contact" className="nav-link">Contact</a>
+          <a href="/terms" className="nav-link">Terms</a>
         </div>
       </footer>
     </main>
