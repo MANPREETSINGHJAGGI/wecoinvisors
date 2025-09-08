@@ -906,6 +906,8 @@
 ./venv/Lib/site-packages/pip/_vendor/urllib3/__pycache__
 ./venv/Lib/site-packages/pip/_vendor/__pycache__
 ./venv/Lib/site-packages/pip/__pycache__
+./venv/Lib/site-packages/pip-25.1.1.dist-info
+./venv/Lib/site-packages/pip-25.1.1.dist-info/licenses
 ./venv/Lib/site-packages/pkg_resources
 ./venv/Lib/site-packages/pkg_resources/tests
 ./venv/Lib/site-packages/pkg_resources/tests/data
