@@ -1,0 +1,24 @@
+# Ignore backend and Python virtual environment on Vercel
+backend/
+*.py
+*.sqlite3
+venv/
+
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore IDE/editor files
+*.log
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+^T^Z
+
