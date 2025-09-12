@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
 
-export default function StocksDashboard() {
+  export default function StocksDashboard() {
   const [symbols, setSymbols] = useState("");
   const [stocks, setStocks] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -14,29 +14,7 @@ export default function StocksDashboard() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  /** Column definitions for the table */
-  const columns = [
-    { key: "symbol", label: "Symbol" },
-    { key: "company_name", label: "Company" },
-    { key: "current_price", label: "Current Price" },
-    { key: "prev_close", label: "Prev Close" },
-    { key: "price_open", label: "Open" },
-    { key: "change_pct", label: "% Change" },
-    { key: "day_high", label: "High" },
-    { key: "day_low", label: "Low" },
-    { key: "volume", label: "Volume" },
-    { key: "market_cap", label: "Market Cap (₹ Cr)" },
-    { key: "pe_ratio", label: "P/E" },
-    { key: "eps", label: "EPS" },
-    { key: "high_52", label: "52W High" },
-    { key: "low_52", label: "52W Low" },
-    { key: "change", label: "Change" },
-    { key: "shares", label: "Shares" },
-    { key: "currency", label: "Currency" },
-    { key: "sector", label: "Sector" },
-  ];
-
-  /** Normalize → uppercase + NSE suffix */
+   /** Normalize → uppercase + NSE suffix */
   const normalizeSymbols = (input: string) => {
     return input
       .split(",")
@@ -176,3 +154,5 @@ export default function StocksDashboard() {
     </main>
   );
 }
+
+				
