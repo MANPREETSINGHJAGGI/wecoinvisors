@@ -1,6 +1,10 @@
 # Ignore backend and Python virtual environment on Vercel
 backend/
 venv/
+.venv/
+
+# Ignore Node.js dependencies
+node_modules/
 
 # Ignore Python cache and compiled files
 __pycache__/
@@ -18,5 +22,3 @@ __pycache__/
 # Ignore OS-generated files
 .DS_Store
 Thumbs.db
-^T^Z
-
