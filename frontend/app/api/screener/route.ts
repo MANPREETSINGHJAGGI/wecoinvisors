@@ -1,14 +1,14 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import OpenAI from "openai";
+import { NextResponse } from "next/server";
 import axios from "axios";
+import OpenAI from "openai";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function GET() {
   const symbols = ["RELIANCE.NS", "INFY.NS", "HDFCBANK.NS"];
   let data: any[] = [];
 
-  for (let symbol of symbols) {
+  for (const symbol of symbols) {
     const resp = await axios.get(
       `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${process.env.ALPHA_KEY}`
     );
@@ -19,9 +19,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     model: "gpt-4o-mini",
     messages: [
       { role: "system", content: "You are an AI stock screener." },
-      { role: "user", content: `Analyze these stocks and rank best trades:\n${JSON.stringify(data)}` }
-    ]
+      {
+        role: "user",
+        content: `Analyze these stocks and rank best trades:\n${JSON.stringify(
+          data
+        )}`,
+      },
+    ],
   });
 
-  res.json({ screener: ai.choices[0].message?.content });
+  return NextResponse.json({ screener: ai.choices[0].message?.content });
 }
