@@ -13,7 +13,7 @@ app = FastAPI()
 # ----------------- CORS -----------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # change to ["http://localhost:3000"] in prod
+    allow_origins=["https://www.wecoinvisors.com", "https://wecoinvisors.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

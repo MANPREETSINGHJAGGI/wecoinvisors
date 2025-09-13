@@ -1,6 +1,17 @@
 import pandas as pd
 import httpx
 from fastapi import APIRouter
+import os, json
+from google.oauth2 import service_account
+
+credentials_info = {
+    "type": "service_account",
+    "client_email": os.getenv("GOOGLE_CLIENT_EMAIL"),
+    "private_key": os.getenv("GOOGLE_PRIVATE_KEY").replace("\\n", "\n"),
+    "token_uri": "https://oauth2.googleapis.com/token"
+}
+
+creds = service_account.Credentials.from_service_account_info(credentials_info)
 
 router = APIRouter()
 

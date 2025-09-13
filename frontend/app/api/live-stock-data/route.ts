@@ -6,7 +6,7 @@ export async function GET(req: Request) {
     const symbols = searchParams.get("symbols");
     const provider = searchParams.get("provider") || "backend";
 
-    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.wecoinvisors.com";
 
     // ✅ Require symbols for backend & dual
     if (!symbols) {

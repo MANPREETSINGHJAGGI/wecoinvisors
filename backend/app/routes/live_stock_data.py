@@ -32,6 +32,8 @@ COLUMN_MAPPING = {
     "sector": "sector",
 }
 
+app.include_router(live_stock_data.router, prefix="/api")
+
 router = APIRouter()
 
 # Google Sheets settings
