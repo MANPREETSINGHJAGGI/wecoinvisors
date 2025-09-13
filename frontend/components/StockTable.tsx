@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 interface StockTableProps {
   stocks: any[];
@@ -15,6 +15,12 @@ export default function StockTable({
   watchlist,
   setWatchlist,
 }: StockTableProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  if (loading) {
+    return <div className="text-center text-gray-400 py-6">Loading data...</div>;
+  }
+
   if (!stocks || stocks.length === 0) {
     return (
       <div className="text-center text-gray-400 py-6">
@@ -23,61 +29,15 @@ export default function StockTable({
     );
   }
 
-  // Define headers for the table
-  const headers = [
-    "Symbol",
-    "Company Name",
-    "Current Price",
-    "PrevClose",
-    "PriceOpen",
-    "ChangePct",
-    "High",
-    "Low",
-    "ExpenseRatio",
-    "MorningStarRating",
-    "Volume",
-    "Market Cap (₹ Crore, Approx)",
-    "TradeTime",
-    "DataDelay",
-    "VolumeAvg",
-    "PE",
-    "EPS",
-    "High52",
-    "Low52",
-    "Change",
-    "Beta",
-    "Shares",
-    "Currency",
-    "Sector",
-  ];
+  // Dynamically get all headers from the first row
+  const headers = Object.keys(stocks[0]);
 
-  // Map frontend headers → backend API keys
-  const headerMapping: Record<string, string> = {
-    "Symbol": "symbol",
-    "Company Name": "company_name",
-    "Current Price": "current_price",
-    "PrevClose": "prev_close",
-    "PriceOpen": "price_open",
-    "ChangePct": "change_pct",
-    "High": "day_high",
-    "Low": "day_low",
-    "ExpenseRatio": "expense_ratio",
-    "MorningStarRating": "morningstar_rating",
-    "Volume": "volume",
-    "Market Cap (₹ Crore, Approx)": "market_cap",
-    "TradeTime": "trade_time",
-    "DataDelay": "data_delay",
-    "VolumeAvg": "avg_volume",
-    "PE": "pe_ratio",
-    "EPS": "eps",
-    "High52": "high_52",
-    "Low52": "low_52",
-    "Change": "change",
-    "Beta": "beta",
-    "Shares": "shares",
-    "Currency": "currency",
-    "Sector": "sector",
-  };
+  // Filter stocks dynamically based on search query (all columns searchable)
+  const filteredStocks = stocks.filter((stock) =>
+    Object.values(stock).some((value) =>
+      String(value).toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
 
   const toggleWatchlist = (symbol: string) => {
     if (watchlist.includes(symbol)) {
@@ -88,52 +48,60 @@ export default function StockTable({
   };
 
   return (
-    <div className="overflow-x-auto border border-gold rounded-lg shadow-lg">
-      <table className="min-w-full border border-gold text-wecoin-blue">
-        <thead>
-          <tr>
-            {headers.map((header) => (
-              <th
-                key={header}
-                className="px-4 py-2 border border-gold bg-black/70 text-gold text-sm font-bold"
-              >
-                {header}
+    <div>
+      {/* 🔎 Search Bar */}
+      <div className="mb-4 flex justify-end">
+        <input
+          type="text"
+          placeholder="Search stocks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="px-3 py-2 border border-gold rounded-md text-sm w-64 text-wecoin-blue"
+        />
+      </div>
+
+      {/* 📊 Stock Table */}
+      <div className="overflow-x-auto border border-gold rounded-lg shadow-lg">
+        <table className="min-w-full border border-gold text-wecoin-blue">
+          <thead>
+            <tr>
+              {headers.map((header) => (
+                <th
+                  key={header}
+                  className="px-4 py-2 border border-gold bg-black/70 text-gold text-sm font-bold"
+                >
+                  {header}
+                </th>
+              ))}
+              <th className="px-4 py-2 border border-gold bg-black/70 text-gold text-sm font-bold">
+                ⭐ Watchlist
               </th>
-            ))}
-            <th className="px-4 py-2 border border-gold bg-black/70 text-gold text-sm font-bold">
-              ⭐ Watchlist
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {stocks.map((stock, idx) => (
-            <tr
-              key={idx}
-              className="hover:bg-black/40 transition text-center"
-            >
-              {headers.map((header) => {
-                const key = headerMapping[header];
-                return (
+            </tr>
+          </thead>
+          <tbody>
+            {filteredStocks.map((stock, idx) => (
+              <tr key={idx} className="hover:bg-black/40 transition text-center">
+                {headers.map((header) => (
                   <td
                     key={header}
                     className="px-4 py-2 border border-gold text-sm"
                   >
-                    {stock[key] || "-"}
+                    {stock[header] || "-"}
                   </td>
-                );
-              })}
-              <td className="px-4 py-2 border border-gold">
-                <button
-                  onClick={() => toggleWatchlist(stock.symbol)}
-                  className="text-lg"
-                >
-                  {watchlist.includes(stock.symbol) ? "⭐" : "☆"}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                ))}
+                <td className="px-4 py-2 border border-gold">
+                  <button
+                    onClick={() => toggleWatchlist(stock["Symbol"])}
+                    className="text-lg"
+                  >
+                    {watchlist.includes(stock["Symbol"]) ? "⭐" : "☆"}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
