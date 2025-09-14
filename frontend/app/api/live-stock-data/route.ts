@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
     // ✅ Backend FastAPI provider
     if (provider === "backend") {
-     const backendUrl = process.env.BACKEND_URL!;
+     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
 const res = await fetch(`${backendUrl}/api/live-stock-data?symbols=${symbols}`, {
   next: { revalidate: 10 }
 });
