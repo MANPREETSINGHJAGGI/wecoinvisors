@@ -42,7 +42,10 @@ const res = await fetch(`${backendUrl}/api/live-stock-data?symbols=${symbols}`, 
         console.error("⚠️ Yahoo fetch failed, trying backend:", err);
       }
 
-      const backendRes = await fetch(`${BACKEND_URL}/api/live-stock-data?symbols=${symbols}`);
+     // ✅ Correct
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
+const backendRes = await fetch(`${backendUrl}/api/live-stock-data?symbols=${symbols}`);
+
       if (!backendRes.ok) {
         return NextResponse.json({ error: "Both Yahoo and Backend failed" }, { status: 500 });
       }
