@@ -1,24 +1,16 @@
-# Ignore backend and Python virtual environment on Vercel
+# Ignore backend
 backend/
-venv/
-.venv/
-
-# Ignore Node.js dependencies
-node_modules/
-
-# Ignore Python cache and compiled files
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 
-# Ignore IDE/editor files
-*.log
-*.swp
-*.swo
-.vscode/
-.idea/
+# Ignore local configs
+*.venv
+*.env
+*.env.local
 
-# Ignore OS-generated files
+# Ignore system files
 .DS_Store
 Thumbs.db
+
+# Only deploy frontend
+!frontend/**
