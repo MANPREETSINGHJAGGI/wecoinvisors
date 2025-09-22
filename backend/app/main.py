@@ -1,8 +1,8 @@
 # File: backend/app/main.py
-from fastapi import FastAPI, Query, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+ ware
 import httpx
 import os
+from fastapi import FastAPI
 
 # Import routes + fetcher
 from app.routes import live_stock_data, historical_chart, screener, google_prices, google_sheet_data
@@ -20,9 +20,9 @@ app.add_middleware(
 )
 
 # ----------------- Register routes -----------------
-app.include_router(live_stock_data.router)
-app.include_router(historical_chart.router)
-app.include_router(screener.router)
+app.include_router(live_stock_data.router, prefix="/api")
+app.include_router(historical_chart.router, prefix="/api")
+app.include_router(screener.router, prefix="/api")
 app.include_router(google_prices.router, prefix="/api")
 app.include_router(google_sheet_data.router, prefix="/api")
 

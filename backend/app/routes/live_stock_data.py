@@ -32,7 +32,13 @@ COLUMN_MAPPING = {
     "sector": "sector",
 }
 
-app.include_router(live_stock_data.router, prefix="/api")
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/live-stock-data")
+async def get_live_stock_data():
+    return {"status": "ok", "data": "live stock data here"}
 
 router = APIRouter()
 
