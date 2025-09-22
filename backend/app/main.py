@@ -1,25 +1,28 @@
 # File: backend/app/main.py
- ware
-import httpx
-import os
-from fastapi import FastAPI
 
-# Import routes + fetcher
-from app.routes import live_stock_data, historical_chart, screener, google_prices, google_sheet_data
-from app.routes.yfinance_fetcher import fetch_from_yfinance
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.routes import (
+    live_stock_data,
+    historical_chart,
+    screener,
+    google_prices,
+    google_sheet_data,
+)
 
 app = FastAPI()
 
-# ----------------- CORS -----------------
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://www.wecoinvisors.com", "https://wecoinvisors.vercel.app"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ----------------- Register routes -----------------
+# Include routers
 app.include_router(live_stock_data.router, prefix="/api")
 app.include_router(historical_chart.router, prefix="/api")
 app.include_router(screener.router, prefix="/api")
