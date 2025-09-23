@@ -1,93 +1,58 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
 
-export default function AIInsightsPage() {
-  const [query, setQuery] = useState("");
-  const [response, setResponse] = useState("");
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://api.wecoinvisors.com";
+
+export default function AiAnalysis() {
+  const [prompt, setPrompt] = useState("");
+  const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleAskAI = async () => {
-    if (!query.trim()) return;
+  const analyze = async () => {
     setLoading(true);
-    setError(null);
-    setResponse("");
+    setResult("");
 
     try {
-      const res = await fetch("/api/ai-insights", {
+      const res = await fetch(`${API_BASE}/ai/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ prompt }),
       });
 
-      if (!res.ok) throw new Error("Failed to get AI response");
-
       const data = await res.json();
-      setResponse(data.answer || "No response received.");
-    } catch (err: any) {
-      console.error(err);
-      setError("Unable to fetch AI insights. Please try again later.");
+      if (data.ok) setResult(data.content);
+      else setResult("⚠ " + (data.error || "Error from backend"));
+    } catch (err) {
+      setResult("⚠ Failed to connect to backend");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">AI Stock Assistant</h1>
+    <main className="p-6">
+      <h1 className="text-2xl font-bold mb-4">🤖 AI Stock Analysis</h1>
+      <textarea
+        className="w-full p-3 border border-gold rounded mb-4 text-black"
+        rows={4}
+        placeholder="Ask AI about stocks..."
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+      />
+      <button
+        onClick={analyze}
+        className="bg-gold text-black px-4 py-2 rounded font-semibold hover:bg-yellow-500"
+      >
+        {loading ? "Analyzing..." : "Analyze"}
+      </button>
 
-      <Card className="mb-6">
-        <CardHeader>
-          <h2 className="text-lg font-medium">Ask AI about Stocks</h2>
-          <p className="text-sm text-gray-500">
-            Example: "Tell me about RELIANCE" or "Best stocks for long-term investment"
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col md:flex-row gap-4">
-            <Textarea
-              placeholder="Type your question about stocks..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="flex-1"
-              rows={3}
-            />
-            <Button onClick={handleAskAI} disabled={loading} className="w-full md:w-40">
-              {loading ? (
-                <>
-                  <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                  Thinking...
-                </>
-              ) : (
-                "Ask AI"
-              )}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-
-      {loading && !response && (
-        <div className="text-gray-500 text-center">AI is analyzing your question...</div>
+      {result && (
+        <div className="mt-6 p-4 border border-gold rounded bg-black/50 text-wecoin-blue">
+          <h2 className="font-bold mb-2">📊 AI Analysis:</h2>
+          <p>{result}</p>
+        </div>
       )}
-
-      {response && (
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">AI Insights</h3>
-          </CardHeader>
-          <CardContent>
-            <p className="whitespace-pre-line text-gray-700">{response}</p>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+    </main>
   );
 }

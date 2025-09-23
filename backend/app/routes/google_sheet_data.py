@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Query
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter
 import os
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 
-# Column normalization
+# 🔑 Column normalization
 COLUMN_MAPPING = {
     "symbol": "symbol",
     "company_name": "company_name",
@@ -34,7 +33,7 @@ COLUMN_MAPPING = {
 
 router = APIRouter()
 
-# Google Sheets service
+# 🔧 Load service account credentials from Render environment variables
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 service = None
 try:
@@ -42,6 +41,7 @@ try:
         "type": os.getenv("GOOGLE_TYPE"),
         "project_id": os.getenv("GOOGLE_PROJECT_ID"),
         "private_key_id": os.getenv("GOOGLE_PRIVATE_KEY_ID"),
+        # 🔑 Fix PEM formatting
         "private_key": os.getenv("GOOGLE_PRIVATE_KEY").replace("\\n", "\n"),
         "client_email": os.getenv("GOOGLE_CLIENT_EMAIL"),
         "client_id": os.getenv("GOOGLE_CLIENT_ID"),
