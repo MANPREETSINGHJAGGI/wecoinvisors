@@ -6,7 +6,23 @@ export async function GET(req: Request) {
     const symbols = searchParams.get("symbols");
     const provider = searchParams.get("provider") || "backend";
 
-    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.wecoinvisors.com";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || "https://wecoinvisors.onrender.com";
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const symbols = searchParams.get("symbols") || "PNB.NS,SBIN.NS";
+
+  const res = await fetch(`${BASE_URL}/api/live-stock-data?symbols=${symbols}`, {
+    cache: "no-store",
+  });
+
+  const data = await res.json();
+  return Response.json(data);
+}
+
+
+    const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
 
     // ✅ Require symbols for backend & dual
     if (!symbols) {
