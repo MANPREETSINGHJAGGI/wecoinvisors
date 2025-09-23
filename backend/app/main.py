@@ -2,6 +2,16 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+
+app = FastAPI(
+    title="WeCoinvisors API",
+    description="Backend API for WeCoinvisors project",
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+)
+
 
 from app.routes import (
     live_stock_data,

@@ -32,27 +32,30 @@ COLUMN_MAPPING = {
     "sector": "sector",
 }
 
-from fastapi import APIRouter
-
-router = APIRouter()
-
-@router.get("/live-stock-data")
-async def get_live_stock_data():
-    return {"status": "ok", "data": "live stock data here"}
-
 router = APIRouter()
 
 # Google Sheets settings
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-SERVICE_ACCOUNT_FILE = os.path.join(os.getcwd(), "credentials.json")
-
+service = None
 try:
-    creds = service_account.Credentials.from_service_account_file(
-    "credentials.json",
-    scopes=SCOPES
+    creds_dict = {
+        "type": os.getenv("GOOGLE_TYPE"),
+        "project_id": os.getenv("GOOGLE_PROJECT_ID"),
+        "private_key_id": os.getenv("GOOGLE_PRIVATE_KEY_ID"),
+        "private_key": os.getenv("GOOGLE_PRIVATE_KEY").replace("\\n", "\n"),
+        "client_email": os.getenv("GOOGLE_CLIENT_EMAIL"),
+        "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+        "auth_uri": os.getenv("GOOGLE_AUTH_URI"),
+        "token_uri": os.getenv("GOOGLE_TOKEN_URI"),
+        "auth_provider_x509_cert_url": os.getenv("GOOGLE_AUTH_PROVIDER_X509_CERT_URL"),
+        "client_x509_cert_url": os.getenv("GOOGLE_CLIENT_X509_CERT_URL"),
+    }
 
+    creds = service_account.Credentials.from_service_account_info(
+        creds_dict, scopes=SCOPES
     )
     service = build("sheets", "v4", credentials=creds)
+
 except Exception as e:
     print("Google Sheets setup failed:", e)
     service = None
@@ -79,10 +82,7 @@ async def get_live_stock_data(symbols: str = Query(..., description="Comma separ
 
         # Normalize headers: strip, lower, underscores
         raw_headers = [h.strip().lower().replace(" ", "_") for h in values[0]]
-        headers = []
-        for h in raw_headers:
-            if h and h != "":  # skip blank headers
-                headers.append(h)
+        headers = [h for h in raw_headers if h]
 
         rows = values[1:]
 
