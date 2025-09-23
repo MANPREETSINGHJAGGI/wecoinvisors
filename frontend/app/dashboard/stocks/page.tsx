@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import StockTable from "@/components/StockTable";
 import Link from "next/link";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
+NEXT_PUBLIC_API_BASE=https://api.wecoinvisors.com
 
   export default function StocksDashboard() {
   const [symbols, setSymbols] = useState("");
@@ -15,14 +15,13 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
    /** Normalize → uppercase + NSE suffix */
-  const normalizeSymbols = (input: string) => {
-    return input
-      .split(",")
-      .map((s) => s.trim().toUpperCase())
-      .filter(Boolean)
-      .map((s) => (s.includes(".") ? s : `${s}.NS`))
-      .join(",");
-  };
+ const normalizeSymbols = (input: string) => {
+  return input
+    .split(",")
+    .map((s) => s.trim().toUpperCase())
+    .filter(Boolean)
+    .join(",");
+};
 
   /** Fetch live data */
   const fetchStocks = async (query: string) => {
@@ -49,15 +48,16 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
   };
 
   /** Handle Search */
-  const handleSearch = () => {
-    if (!symbols.trim()) return;
-    fetchStocks(symbols);
+ const handleSearch = () => {
+  if (!symbols.trim()) return;
+  fetchStocks(symbols);
 
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      fetchStocks(symbols);
-    }, 30000); // auto-refresh 30s
-  };
+  if (intervalRef.current) clearInterval(intervalRef.current);
+  intervalRef.current = setInterval(() => {
+    fetchStocks(symbols);
+  }, 30000);
+};
+
 
   /** Cleanup interval on unmount */
   useEffect(() => {

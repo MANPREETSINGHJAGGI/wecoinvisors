@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse
-import httpx, os
+import os, httpx
 from .google_sheet_data import fetch_from_google_sheet
 
 router = APIRouter()
@@ -13,20 +13,24 @@ def is_indian_stock(symbol: str) -> bool:
     return symbol.upper().endswith(".NS")
 
 def parse_float(val, default=None):
-    try: return float(val)
-    except: return default
+    try:
+        return float(val)
+    except:
+        return default
 
 def parse_int(val, default=None):
-    try: return int(float(val))
-    except: return default
+    try:
+        return int(float(val))
+    except:
+        return default
 
-
-@router.get("/api/live-stock-data")
+@router.get("/live-stock-data")
 async def live_stock_data(symbols: str = Query(..., description="Comma separated stock symbols")):
     try:
         raw_symbols = [s.strip().upper() for s in symbols.split(",") if s.strip()]
+        results = []
 
-        # ✅ 1. Try Google Sheet
+        # ✅ 1. Try Google Sheet first
         try:
             sheet_data = fetch_from_google_sheet(raw_symbols)
             if sheet_data:
@@ -34,12 +38,12 @@ async def live_stock_data(symbols: str = Query(..., description="Comma separated
         except Exception as e:
             print(f"⚠️ Google Sheet fetch failed: {e}")
 
-        results = []
+        # ✅ 2. Fall back to APIs
         async with httpx.AsyncClient(timeout=15) as client:
             for symbol in raw_symbols:
                 stock_data = None
 
-                # 2️⃣ Alpha Vantage
+                # Alpha Vantage
                 if ALPHA_VANTAGE_API_KEY:
                     try:
                         url = "https://www.alphavantage.co/query"
@@ -58,7 +62,7 @@ async def live_stock_data(symbols: str = Query(..., description="Comma separated
                     except Exception as e:
                         print(f"⚠️ AlphaVantage error: {e}")
 
-                # 3️⃣ Twelve Data
+                # Twelve Data
                 if not stock_data and TWELVE_DATA_API_KEY:
                     try:
                         url = "https://api.twelvedata.com/quote"
@@ -79,7 +83,7 @@ async def live_stock_data(symbols: str = Query(..., description="Comma separated
                     except Exception as e:
                         print(f"⚠️ TwelveData error: {e}")
 
-                # 4️⃣ Finnhub
+                # Finnhub
                 if not stock_data and FINNHUB_API_KEY:
                     try:
                         url = "https://finnhub.io/api/v1/quote"

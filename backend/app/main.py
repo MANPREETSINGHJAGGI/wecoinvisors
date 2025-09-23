@@ -1,28 +1,35 @@
 # File: backend/app/main.py
-import os
-import httpx
-import yfinance as yf
-
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+import httpx
+import os
 
-# ----------------- FastAPI App -----------------
-app = FastAPI(
-    title="WeCoinvisors API",
-    description="Backend API for WeCoinvisors project",
-    version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
-)
+# Import routes + fetcher
+from app.routes import live_stock_data, historical_chart, screener, google_prices, google_sheet_data
+from app.routes.yfinance_fetcher import fetch_from_yfinance
 
-# ----------------- CORS setup -----------------
+app = FastAPI()
+
+# ----------------- CORS -----------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # change to ["http://localhost:3000"] in prod
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ----------------- Register routes -----------------
+app.include_router(live_stock_data.router)
+app.include_router(historical_chart.router)
+app.include_router(screener.router)
+app.include_router(google_prices.router, prefix="/api")
+app.include_router(google_sheet_data.router, prefix="/api")
+
+# ----------------- Root health check -----------------
+@app.get("/")
+def root():
+    return {"message": "Backend is running"}
 
 # ----------------- API KEYS -----------------
 ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY", "")
@@ -45,37 +52,6 @@ def parse_int(val, default=None):
     except (TypeError, ValueError):
         return default
 
-def fetch_from_yfinance(symbol: str):
-    """Fetch stock data using yfinance"""
-    try:
-        ticker = yf.Ticker(symbol)
-        info = ticker.history(period="1d")
-        if not info.empty:
-            price = info["Close"].iloc[-1]
-            return {
-                "symbol": symbol,
-                "resolvedSymbol": symbol,
-                "name": ticker.info.get("shortName", symbol),
-                "price": parse_float(price),
-                "change": None,
-                "percentChange": None,
-                "volume": parse_int(ticker.info.get("volume")),
-                "sector": ticker.info.get("sector", "UNKNOWN"),
-                "marketCap": parse_float(ticker.info.get("marketCap")),
-                "peRatio": parse_float(ticker.info.get("trailingPE")),
-                "eps": parse_float(ticker.info.get("trailingEps")),
-                "currency": "₹" if is_indian_stock(symbol) else "$",
-                "sparkline": [],
-            }
-    except Exception as e:
-        print(f"⚠️ yfinance fetch error for {symbol}: {e}")
-    return None
-
-# ----------------- Root health check -----------------
-@app.get("/")
-def root():
-    return {"message": "Backend is running"}
-
 # ----------------- Live stock route -----------------
 @app.get("/api/live-stock-data")
 async def get_live_stock_data(symbols: str = Query(..., description="Comma-separated stock symbols")):
@@ -89,6 +65,7 @@ async def get_live_stock_data(symbols: str = Query(..., description="Comma-separ
 
     async with httpx.AsyncClient(timeout=15) as client:
         for raw, symbol in zip(raw_symbols, symbol_list):
+            # 1️⃣ Primary Yahoo Finance fetch
             stock_data = fetch_from_yfinance(symbol)
 
             # 2️⃣ Alpha Vantage fallback
@@ -105,7 +82,7 @@ async def get_live_stock_data(symbols: str = Query(..., description="Comma-separ
                             "name": symbol,
                             "price": parse_float(av_data.get("05. price")),
                             "change": parse_float(av_data.get("09. change")),
-                            "percentChange": parse_float(av_data.get("10. change percent", "0%").replace("%", "")),
+                            "percentChange": parse_float(av_data.get("10. change percent", "0%").replace("%","")),
                             "volume": parse_int(av_data.get("06. volume")),
                             "sector": "N/A",
                             "marketCap": 0,
@@ -171,6 +148,7 @@ async def get_live_stock_data(symbols: str = Query(..., description="Comma-separ
                 except Exception as e:
                     print(f"⚠️ Finnhub fetch error for {symbol}: {e}")
 
+            # 5️⃣ If nothing found
             if not stock_data:
                 stock_data = {
                     "symbol": raw,
