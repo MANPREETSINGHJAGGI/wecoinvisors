@@ -9,20 +9,24 @@ ALPHA_VANTAGE_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY", "")
 TWELVE_DATA_API_KEY = os.getenv("TWELVE_DATA_API_KEY", "")
 FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY", "")
 
+
 def is_indian_stock(symbol: str) -> bool:
     return symbol.upper().endswith(".NS")
 
+
 def parse_float(val, default=None):
     try:
-        return float(val)
-    except:
+        return float(str(val).replace("%", "").strip())
+    except Exception:
         return default
+
 
 def parse_int(val, default=None):
     try:
         return int(float(val))
-    except:
+    except Exception:
         return default
+
 
 @router.get("/live-stock-data")
 async def live_stock_data(symbols: str = Query(..., description="Comma separated stock symbols")):
@@ -43,26 +47,33 @@ async def live_stock_data(symbols: str = Query(..., description="Comma separated
             for symbol in raw_symbols:
                 stock_data = None
 
-                # Alpha Vantage
+                # --- Alpha Vantage ---
                 if ALPHA_VANTAGE_API_KEY:
                     try:
                         url = "https://www.alphavantage.co/query"
                         params = {"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": ALPHA_VANTAGE_API_KEY}
                         r = await client.get(url, params=params)
-                        av_data = r.json().get("Global Quote", {})
+                        try:
+                            av_json = r.json()
+                        except Exception as je:
+                            results.append({"Symbol": symbol, "Error": f"AlphaVantage invalid JSON: {r.text[:200]}"})
+                            continue
+
+                        av_data = av_json.get("Global Quote", {})
                         if av_data:
                             stock_data = {
-                                "symbol": symbol,
-                                "price": parse_float(av_data.get("05. price")),
-                                "change": parse_float(av_data.get("09. change")),
-                                "percentChange": parse_float(av_data.get("10. change percent", "0%").replace("%", "")),
-                                "volume": parse_int(av_data.get("06. volume")),
-                                "sector": "N/A",
+                                "Symbol": symbol,
+                                "Price": parse_float(av_data.get("05. price")),
+                                "Change": parse_float(av_data.get("09. change")),
+                                "PercentChange": parse_float(av_data.get("10. change percent")),
+                                "Volume": parse_int(av_data.get("06. volume")),
+                                "Sector": "N/A",
+                                "Source": "AlphaVantage",
                             }
                     except Exception as e:
-                        print(f"⚠️ AlphaVantage error: {e}")
+                        print(f"⚠️ AlphaVantage error for {symbol}: {e}")
 
-                # Twelve Data
+                # --- Twelve Data ---
                 if not stock_data and TWELVE_DATA_API_KEY:
                     try:
                         url = "https://api.twelvedata.com/quote"
@@ -70,40 +81,56 @@ async def live_stock_data(symbols: str = Query(..., description="Comma separated
                         if is_indian_stock(symbol):
                             params["exchange"] = "NSE"
                         r = await client.get(url, params=params)
-                        td_data = r.json()
-                        if td_data.get("price"):
-                            stock_data = {
-                                "symbol": symbol,
-                                "price": parse_float(td_data.get("price")),
-                                "change": parse_float(td_data.get("change")),
-                                "percentChange": parse_float(td_data.get("percent_change")),
-                                "volume": parse_int(td_data.get("volume")),
-                                "sector": td_data.get("sector", "UNKNOWN"),
-                            }
-                    except Exception as e:
-                        print(f"⚠️ TwelveData error: {e}")
+                        try:
+                            td_json = r.json()
+                        except Exception:
+                            results.append({"Symbol": symbol, "Error": f"TwelveData invalid JSON: {r.text[:200]}"})
+                            continue
 
-                # Finnhub
+                        if td_json.get("price"):
+                            stock_data = {
+                                "Symbol": symbol,
+                                "Price": parse_float(td_json.get("price")),
+                                "Change": parse_float(td_json.get("change")),
+                                "PercentChange": parse_float(td_json.get("percent_change")),
+                                "Volume": parse_int(td_json.get("volume")),
+                                "Sector": td_json.get("sector", "UNKNOWN"),
+                                "Source": "TwelveData",
+                            }
+                        elif "message" in td_json:
+                            stock_data = {"Symbol": symbol, "Error": f"TwelveData: {td_json['message']}"}
+                    except Exception as e:
+                        print(f"⚠️ TwelveData error for {symbol}: {e}")
+
+                # --- Finnhub ---
                 if not stock_data and FINNHUB_API_KEY:
                     try:
                         url = "https://finnhub.io/api/v1/quote"
                         params = {"symbol": symbol, "token": FINNHUB_API_KEY}
                         r = await client.get(url, params=params)
-                        fh_data = r.json()
-                        if fh_data.get("c") is not None:
+                        try:
+                            fh_json = r.json()
+                        except Exception:
+                            results.append({"Symbol": symbol, "Error": f"Finnhub invalid JSON: {r.text[:200]}"})
+                            continue
+
+                        if fh_json.get("c") is not None:
                             stock_data = {
-                                "symbol": symbol,
-                                "price": parse_float(fh_data.get("c")),
-                                "change": parse_float(fh_data.get("d")),
-                                "percentChange": parse_float(fh_data.get("dp")),
-                                "volume": parse_int(fh_data.get("v")),
-                                "sector": "N/A",
+                                "Symbol": symbol,
+                                "Price": parse_float(fh_json.get("c")),
+                                "Change": parse_float(fh_json.get("d")),
+                                "PercentChange": parse_float(fh_json.get("dp")),
+                                "Volume": parse_int(fh_json.get("v")),
+                                "Sector": "N/A",
+                                "Source": "Finnhub",
                             }
+                        elif "error" in fh_json:
+                            stock_data = {"Symbol": symbol, "Error": f"Finnhub: {fh_json['error']}"}
                     except Exception as e:
-                        print(f"⚠️ Finnhub error: {e}")
+                        print(f"⚠️ Finnhub error for {symbol}: {e}")
 
                 if not stock_data:
-                    stock_data = {"symbol": symbol, "error": "No data found"}
+                    stock_data = {"Symbol": symbol, "Error": "No data found"}
 
                 results.append(stock_data)
 
