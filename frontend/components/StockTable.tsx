@@ -29,10 +29,22 @@ export default function StockTable({
     );
   }
 
-  // Dynamically get all headers from the first row
-  const headers = Object.keys(stocks[0]);
+  // Ensure all rows have consistent keys
+  const headers = Array.from(
+    new Set(
+      stocks.flatMap((s) => Object.keys(s))
+    )
+  );
 
-  // Filter stocks dynamically based on search query (all columns searchable)
+  // Always move Symbol first, Source last, Error last
+  const sortedHeaders = [
+    "Symbol",
+    ...headers.filter((h) => !["Symbol", "Source", "Error"].includes(h)),
+    "Source",
+    "Error",
+  ].filter((h, i, arr) => arr.indexOf(h) === i); // remove duplicates
+
+  // 🔎 Filter stocks dynamically based on search query (all columns searchable)
   const filteredStocks = stocks.filter((stock) =>
     Object.values(stock).some((value) =>
       String(value).toLowerCase().includes(searchQuery.toLowerCase())
@@ -65,7 +77,7 @@ export default function StockTable({
         <table className="min-w-full border border-gold text-wecoin-blue">
           <thead>
             <tr>
-              {headers.map((header) => (
+              {sortedHeaders.map((header) => (
                 <th
                   key={header}
                   className="px-4 py-2 border border-gold bg-black/70 text-gold text-sm font-bold"
@@ -80,19 +92,27 @@ export default function StockTable({
           </thead>
           <tbody>
             {filteredStocks.map((stock, idx) => (
-              <tr key={idx} className="hover:bg-black/40 transition text-center">
-                {headers.map((header) => (
+              <tr
+                key={idx}
+                className={`hover:bg-black/40 transition text-center ${
+                  stock["Error"] ? "text-red-400" : ""
+                }`}
+              >
+                {sortedHeaders.map((header) => (
                   <td
                     key={header}
                     className="px-4 py-2 border border-gold text-sm"
                   >
-                    {stock[header] || "-"}
+                    {stock[header] !== undefined && stock[header] !== null
+                      ? stock[header]
+                      : "-"}
                   </td>
                 ))}
                 <td className="px-4 py-2 border border-gold">
                   <button
                     onClick={() => toggleWatchlist(stock["Symbol"])}
                     className="text-lg"
+                    disabled={!!stock["Error"]}
                   >
                     {watchlist.includes(stock["Symbol"]) ? "⭐" : "☆"}
                   </button>
