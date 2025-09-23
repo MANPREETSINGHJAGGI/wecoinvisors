@@ -1,49 +1,40 @@
+// File: frontend/app/api/live-stock-data/route.ts
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const symbols = searchParams.get("symbols");
+    const symbols = searchParams.get("symbols") || "PNB.NS,SBIN.NS";
     const provider = searchParams.get("provider") || "backend";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "https://wecoinvisors.onrender.com";
+    const backendUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL || "https://wecoinvisors.onrender.com";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const symbols = searchParams.get("symbols") || "PNB.NS,SBIN.NS";
-
-  const res = await fetch(`${BASE_URL}/api/live-stock-data?symbols=${symbols}`, {
-    cache: "no-store",
-  });
-
-  const data = await res.json();
-  return Response.json(data);
-}
-
-
-    const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
-
-    // ✅ Require symbols for backend & dual
+    // ✅ Require symbols
     if (!symbols) {
-      return NextResponse.json({ error: "Missing symbols parameter" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing symbols parameter" },
+        { status: 400 }
+      );
     }
 
-    // ✅ Backend FastAPI provider
+    // ✅ Backend provider
     if (provider === "backend") {
-     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
-const res = await fetch(`${backendUrl}/api/live-stock-data?symbols=${symbols}`, {
-  next: { revalidate: 10 }
-});
+      const res = await fetch(`${backendUrl}/api/live-stock-data?symbols=${symbols}`, {
+        cache: "no-store",
+      });
 
       if (!res.ok) {
-        return NextResponse.json({ error: "Backend API failed" }, { status: res.status });
+        return NextResponse.json(
+          { error: "Backend API failed" },
+          { status: res.status }
+        );
       }
 
       return NextResponse.json(await res.json());
     }
 
-    // ✅ Dual provider (Yahoo first, fallback to backend)
+    // ✅ Dual provider (Yahoo first, backend fallback)
     if (provider === "dual") {
       try {
         const yahooRes = await fetch(
@@ -58,20 +49,29 @@ const res = await fetch(`${backendUrl}/api/live-stock-data?symbols=${symbols}`, 
         console.error("⚠️ Yahoo fetch failed, trying backend:", err);
       }
 
-     // ✅ Correct
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL!;
-const backendRes = await fetch(`${backendUrl}/api/live-stock-data?symbols=${symbols}`);
+      const backendRes = await fetch(
+        `${backendUrl}/api/live-stock-data?symbols=${symbols}`
+      );
 
       if (!backendRes.ok) {
-        return NextResponse.json({ error: "Both Yahoo and Backend failed" }, { status: 500 });
+        return NextResponse.json(
+          { error: "Both Yahoo and Backend failed" },
+          { status: 500 }
+        );
       }
 
-      return NextResponse.json({ provider: "backend", data: await backendRes.json() });
+      return NextResponse.json({
+        provider: "backend",
+        data: await backendRes.json(),
+      });
     }
 
     return NextResponse.json({ error: "Invalid provider" }, { status: 400 });
   } catch (err) {
     console.error("⚠️ Unexpected error in live-stock-data route:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
