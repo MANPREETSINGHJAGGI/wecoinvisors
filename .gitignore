@@ -1,22 +1,36 @@
-# Ignore credentials and secrets
+# ----------------------------
+# Root .gitignore for WeCoinvisors
+# ----------------------------
+# Ignore backend's Vercel config
+backend/.vercel/
+
+# === Environment & Secrets ===
+.env
+.env.*
+!.env.example
 *.json
 !package.json
 !tsconfig.json
 
-# SQLite DBs
-*.sqlite3
-
-# Env files
-.env
-.env.*
-!.env.example
-
-# Python
+# === Python / FastAPI backend ===
 __pycache__/
-*.pyc
+*.py[cod]
+*.sqlite3
 .venv/
+backend/.mypy_cache/
+backend/.pytest_cache/
 
-# Node.js
+# === Node.js / Next.js frontend ===
 node_modules/
 .next/
-.vercel/
+frontend/.next/
+frontend/node_modules/
+
+# === Vercel ===
+# Keep project.json so Vercel detects Next.js
+.vercel/cache/
+frontend/.vercel/cache/
+
+# === System files ===
+.DS_Store
+Thumbs.db
