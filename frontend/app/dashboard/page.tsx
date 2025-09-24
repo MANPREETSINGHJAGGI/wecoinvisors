@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
+import Link from "next/link";   // ✅ Fix: Add this
 import { useRouter } from "next/navigation";
 
 export default function Home() {
