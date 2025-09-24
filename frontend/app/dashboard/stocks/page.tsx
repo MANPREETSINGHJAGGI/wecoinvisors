@@ -5,7 +5,31 @@ import StockTable from "@/components/StockTable";
 import Link from "next/link";
 
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api";
+
+const fetchStocks = async (query: string) => {
+  if (!query.trim()) return;
+  setLoading(true);
+  setError(null);
+
+  try {
+    const querySymbols = normalizeSymbols(query);
+    const res = await fetch(
+      `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const backendJson = await res.json();
+    setStocks(backendJson.data || []);
+  } catch (err) {
+    console.error("Fetch error", err);
+    setError("⚠ Failed to fetch stock data. Try again.");
+    setStocks([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
 export default function StocksDashboard() {
   const [symbols, setSymbols] = useState("");
@@ -33,10 +57,9 @@ export default function StocksDashboard() {
     try {
       const querySymbols = normalizeSymbols(query);
       const res = await fetch(
-        `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(
-          querySymbols
-        )}`
-      );
+  `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`
+);
+
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const backendJson = await res.json();
       const backendData = backendJson.data || [];
