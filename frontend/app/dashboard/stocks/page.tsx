@@ -15,14 +15,14 @@ export default function StocksDashboard() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-   /** Normalize → uppercase + NSE suffix */
- const normalizeSymbols = (input: string) => {
-  return input
-    .split(",")
-    .map((s) => s.trim().toUpperCase())
-    .filter(Boolean)
-    .join(",");
-};
+  /** Normalize → uppercase + NSE suffix */
+  const normalizeSymbols = (input: string) => {
+    return input
+      .split(",")
+      .map((s) => s.trim().toUpperCase())
+      .filter(Boolean)
+      .join(",");
+  };
 
   /** Fetch live data */
   const fetchStocks = async (query: string) => {
@@ -33,7 +33,9 @@ export default function StocksDashboard() {
     try {
       const querySymbols = normalizeSymbols(query);
       const res = await fetch(
-        `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`
+        `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(
+          querySymbols
+        )}`
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const backendJson = await res.json();
@@ -49,16 +51,12 @@ export default function StocksDashboard() {
   };
 
   /** Handle Search */
- const handleSearch = () => {
-  if (!symbols.trim()) return;
-  fetchStocks(symbols);
-
-  if (intervalRef.current) clearInterval(intervalRef.current);
-  intervalRef.current = setInterval(() => {
+  const handleSearch = () => {
+    if (!symbols.trim()) return;
+    if (intervalRef.current) clearInterval(intervalRef.current); // ✅ clear first
     fetchStocks(symbols);
-  }, 30000);
-};
-
+    intervalRef.current = setInterval(() => fetchStocks(symbols), 30000);
+  };
 
   /** Cleanup interval on unmount */
   useEffect(() => {
@@ -87,14 +85,13 @@ export default function StocksDashboard() {
         </h2>
         <div className="bg-gray-900/80 border border-gold rounded-lg p-6 shadow-lg w-full max-w-2xl">
           <div className="flex items-center space-x-2 mb-4">
-            
-const handleSearch = () => {
-  if (!symbols.trim()) return;
-  if (intervalRef.current) clearInterval(intervalRef.current); // ✅ clear first
-  fetchStocks(symbols);
-  intervalRef.current = setInterval(() => fetchStocks(symbols), 30000);
-};
-
+            <input
+              type="text"
+              placeholder="Enter symbols (e.g., ITC, PNB)"
+              value={symbols}
+              onChange={(e) => setSymbols(e.target.value)}
+              className="bg-black border border-gold rounded px-3 py-2 text-wecoin-blue placeholder-blue-500 focus:outline-none flex-1"
+            />
             <button
               onClick={handleSearch}
               className="bg-gold text-black px-4 py-2 rounded font-semibold hover:bg-yellow-500 transition"
@@ -155,5 +152,3 @@ const handleSearch = () => {
     </main>
   );
 }
-
-				
