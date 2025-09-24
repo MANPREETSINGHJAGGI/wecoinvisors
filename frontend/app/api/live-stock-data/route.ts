@@ -1,14 +1,14 @@
 // File: frontend/app/api/live-stock-data/route.ts
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const symbols = searchParams.get("symbols") || "PNB.NS,SBIN.NS";
-    const provider = searchParams.get("provider") || "backend";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
 
-    const backendUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL || "https://wecoinvisors.onrender.com";
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const symbols = searchParams.get("symbols") || "ITC,PNB";
+    const provider = searchParams.get("provider") || "backend";
 
     // ✅ Require symbols
     if (!symbols) {
@@ -18,9 +18,9 @@ export async function GET(req: Request) {
       );
     }
 
-    // ✅ Backend provider
+    // ✅ Backend provider (Render backend → no `/api` prefix)
     if (provider === "backend") {
-      const res = await fetch(`${backendUrl}/api/live-stock-data?symbols=${symbols}`, {
+      const res = await fetch(`${API_BASE}/live-stock-data?symbols=${symbols}`, {
         cache: "no-store",
       });
 
@@ -34,7 +34,7 @@ export async function GET(req: Request) {
       return NextResponse.json(await res.json());
     }
 
-    // ✅ Dual provider (Yahoo first, backend fallback)
+    // ✅ Dual provider (Yahoo first, fallback to backend)
     if (provider === "dual") {
       try {
         const yahooRes = await fetch(
@@ -50,7 +50,8 @@ export async function GET(req: Request) {
       }
 
       const backendRes = await fetch(
-        `${backendUrl}/api/live-stock-data?symbols=${symbols}`
+        `${API_BASE}/live-stock-data?symbols=${symbols}`,
+        { cache: "no-store" }
       );
 
       if (!backendRes.ok) {
