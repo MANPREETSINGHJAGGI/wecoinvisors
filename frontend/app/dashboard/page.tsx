@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";   // ✅ Fix: Add this
-import { useRouter } from "next/navigation";
+import { useState } from "react";   // ✅ add useState
+import Link from "next/link";       // ✅ already needed earlier
+import { useRouter } from "next/navigation"; // ✅ for useRouter
 
 export default function Home() {
   const [symbols, setSymbols] = useState("");
