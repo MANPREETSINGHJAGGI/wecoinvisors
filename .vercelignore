@@ -11,6 +11,3 @@ __pycache__/
 # Ignore system files
 .DS_Store
 Thumbs.db
-
-# Only deploy frontend
-!frontend/**
