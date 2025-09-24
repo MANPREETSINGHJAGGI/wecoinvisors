@@ -66,23 +66,13 @@ export default function Home() {
         </div>
 
         {/* Input for custom mode */}
-        {mode === "custom" && (
-          <input
-            type="text"
-            placeholder="Enter symbols e.g. AAPL,MSFT,TSLA"
-            value={symbols}
-            onChange={(e) => setSymbols(e.target.value)}
-            className="px-4 py-2 rounded text-gray-900 w-80 shadow-inner border border-gray-300"
-          />
-        )}
+        import Link from "next/link";
 
-        {/* Explore button */}
-        <button
-          onClick={handleExplore}
-          className="mt-6 px-8 py-3 bg-gold text-black font-bold rounded-lg shadow-lg hover:bg-yellow-500 transition"
-        >
-          Explore Dashboard
-        </button>
+<nav className="flex justify-center gap-6 py-4 bg-black/80 border-b border-gold backdrop-blur">
+  <Link href="/" className="nav-link">Home</Link>
+  <Link href="/dashboard/stocks" className="nav-link">Stocks</Link>
+</nav>
+
       </section>
 
       {/* Features */}

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import StockTable from "@/components/StockTable";
 import Link from "next/link";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000;
 
   export default function StocksDashboard() {
   const [symbols, setSymbols] = useState("");
@@ -86,13 +86,14 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
         </h2>
         <div className="bg-gray-900/80 border border-gold rounded-lg p-6 shadow-lg w-full max-w-2xl">
           <div className="flex items-center space-x-2 mb-4">
-            <input
-              type="text"
-              placeholder="Enter symbols (e.g., ITC, PNB)"
-              value={symbols}
-              onChange={(e) => setSymbols(e.target.value)}
-              className="bg-black border border-gold rounded px-3 py-2 text-wecoin-blue placeholder-blue-500 focus:outline-none flex-1"
-            />
+            
+const handleSearch = () => {
+  if (!symbols.trim()) return;
+  if (intervalRef.current) clearInterval(intervalRef.current); // ✅ clear first
+  fetchStocks(symbols);
+  intervalRef.current = setInterval(() => fetchStocks(symbols), 30000);
+};
+
             <button
               onClick={handleSearch}
               className="bg-gold text-black px-4 py-2 rounded font-semibold hover:bg-yellow-500 transition"
