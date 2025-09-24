@@ -24,16 +24,18 @@ export default function StockFilters({ onFilter, sectors }: Props) {
 
   return (
     <div className="flex flex-wrap gap-4 mb-4 items-center">
+      {/* 🔍 Search */}
       <input
         type="text"
         placeholder="🔍 Search by symbol or name"
-        className="border p-2 rounded w-60"
+        className="px-3 py-2 border border-gold rounded w-60 text-wecoin-blue bg-black/70"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
 
+      {/* 📊 Sector Filter */}
       <select
-        className="border p-2 rounded"
+        className="px-3 py-2 border border-gold rounded bg-black/70 text-wecoin-blue"
         value={sector}
         onChange={(e) => setSector(e.target.value)}
       >
@@ -45,19 +47,21 @@ export default function StockFilters({ onFilter, sectors }: Props) {
         ))}
       </select>
 
+      {/* ⬇️ Sort */}
       <select
-        className="border p-2 rounded"
+        className="px-3 py-2 border border-gold rounded bg-black/70 text-wecoin-blue"
         value={sort}
         onChange={(e) => setSort(e.target.value)}
       >
         <option value="">⬇️ Sort</option>
-        <option value="price">Price</option>
-        <option value="pe">PE Ratio</option>
-        <option value="change">% Change</option>
-        <option value="marketcap">Market Cap</option>
+        <option value="current_price">Price</option>
+        <option value="pe_ratio">PE Ratio</option>
+        <option value="change_pct">% Change</option>
+        <option value="market_cap">Market Cap</option>
       </select>
 
-      <label className="flex items-center gap-2">
+      {/* ⭐ Watchlist */}
+      <label className="flex items-center gap-2 text-wecoin-blue">
         <input
           type="checkbox"
           checked={watchlistOnly}
