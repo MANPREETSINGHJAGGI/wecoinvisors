@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from
+ "react";
 import StockTable from "@/components/StockTable";
 import Link from "next/link";
 
@@ -119,7 +120,6 @@ export default function StocksDashboard() {
         {!loading && !error && stocks.length > 0 && (
           <StockTable
             stocks={stocks}
-            loading={loading}
             watchlist={watchlist}
             setWatchlist={setWatchlist}
           />
