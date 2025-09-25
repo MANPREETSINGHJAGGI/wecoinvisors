@@ -4,9 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import StockTable from "@/components/StockTable";
 import Link from "next/link";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.wecoinvisors.com";
-
 export default function StocksDashboard() {
   const [symbols, setSymbols] = useState("");
   const [stocks, setStocks] = useState<any[]>([]);
@@ -15,6 +12,7 @@ export default function StocksDashboard() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  /** Normalize → uppercase, trim spaces */
   const normalizeSymbols = (input: string) => {
     return input
       .split(",")
@@ -23,6 +21,7 @@ export default function StocksDashboard() {
       .join(",");
   };
 
+  /** Fetch stocks via Next.js API route */
   const fetchStocks = async (query: string) => {
     if (!query.trim()) return;
     setLoading(true);
@@ -30,16 +29,20 @@ export default function StocksDashboard() {
 
     try {
       const querySymbols = normalizeSymbols(query);
+
+      // ✅ Call Next.js API route, not backend directly
       const res = await fetch(
-        `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`
+        `/api/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`,
+        { cache: "no-store" }
       );
+
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      const backendJson = await res.json();
-      console.log("✅ Backend response:", backendJson);
+      const json = await res.json();
+      console.log("✅ API response:", json);
 
-      if (backendJson.data && Array.isArray(backendJson.data)) {
-        setStocks(backendJson.data); // ✅ Properly set stocks
+      if (json.data && Array.isArray(json.data)) {
+        setStocks(json.data);
       } else {
         setStocks([]);
       }
@@ -52,6 +55,7 @@ export default function StocksDashboard() {
     }
   };
 
+  /** Handle Search + Auto-refresh */
   const handleSearch = () => {
     if (!symbols.trim()) return;
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -59,6 +63,7 @@ export default function StocksDashboard() {
     intervalRef.current = setInterval(() => fetchStocks(symbols), 30000);
   };
 
+  /** Cleanup */
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
