@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from
- "react";
+import { useState, useRef, useEffect } from "react";
 import StockTable from "@/components/StockTable";
 import Link from "next/link";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.wecoinvisors.com";
-
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.wecoinvisors.com";
 
 export default function StocksDashboard() {
   const [symbols, setSymbols] = useState("");
@@ -16,7 +15,6 @@ export default function StocksDashboard() {
   const [watchlist, setWatchlist] = useState<string[]>([]);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  /** Normalize → uppercase + NSE suffix */
   const normalizeSymbols = (input: string) => {
     return input
       .split(",")
@@ -25,7 +23,6 @@ export default function StocksDashboard() {
       .join(",");
   };
 
-  /** Fetch live data */
   const fetchStocks = async (query: string) => {
     if (!query.trim()) return;
     setLoading(true);
@@ -36,11 +33,16 @@ export default function StocksDashboard() {
       const res = await fetch(
         `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`
       );
-
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
       const backendJson = await res.json();
-      const backendData = backendJson.data || [];
-      setStocks(backendData);
+      console.log("✅ Backend response:", backendJson);
+
+      if (backendJson.data && Array.isArray(backendJson.data)) {
+        setStocks(backendJson.data); // ✅ Properly set stocks
+      } else {
+        setStocks([]);
+      }
     } catch (err) {
       console.error("Fetch error", err);
       setError("⚠ Failed to fetch stock data. Try again.");
@@ -50,15 +52,13 @@ export default function StocksDashboard() {
     }
   };
 
-  /** Handle Search */
   const handleSearch = () => {
     if (!symbols.trim()) return;
-    if (intervalRef.current) clearInterval(intervalRef.current); // ✅ clear first
+    if (intervalRef.current) clearInterval(intervalRef.current);
     fetchStocks(symbols);
-    intervalRef.current = setInterval(() => fetchStocks(symbols), 30000);
+    intervalRef.current = setInterval(() => fetchStocks(symbols), 60000);
   };
 
-  /** Cleanup interval on unmount */
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -78,8 +78,8 @@ export default function StocksDashboard() {
         </Link>
       </nav>
 
-      {/* Search Section */}
-      <section className="flex flex-col items-center justify-center py-16 px-6 text-center">
+      {/* Search */}
+      <section className="flex flex-col items-center justify-center py-12 px-6 text-center">
         <h2 className="text-4xl font-extrabold mb-6 glow-text">
           Live Stock Dashboard
         </h2>
@@ -100,12 +100,12 @@ export default function StocksDashboard() {
             </button>
           </div>
           <div className="text-sm italic text-wecoin-blue">
-            Auto-refreshes every 30 seconds after fetch
+            Auto-refreshes every 60 seconds after fetch
           </div>
         </div>
       </section>
 
-      {/* Stock Table */}
+      {/* Table */}
       <section className="px-6 pb-16">
         {loading && (
           <div className="py-6 text-center animate-pulse">
@@ -130,24 +130,6 @@ export default function StocksDashboard() {
           </div>
         )}
       </section>
-
-      {/* Footer */}
-      <footer className="bg-black/80 text-center py-8 border-t border-gold backdrop-blur">
-        <div className="mb-2 text-sm">
-          © {new Date().getFullYear()} WeCoinvisors Pvt Ltd. All rights reserved.
-        </div>
-        <div className="space-x-4 text-sm">
-          <a href="/about" className="nav-link">
-            About
-          </a>
-          <a href="/contact" className="nav-link">
-            Contact
-          </a>
-          <a href="/terms" className="nav-link">
-            Terms
-          </a>
-        </div>
-      </footer>
     </main>
   );
 }
