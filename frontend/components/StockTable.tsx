@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
 
-interface Stock {
+type Stock = {
   symbol: string;
   company_name: string;
   current_price: string;
@@ -10,7 +10,15 @@ interface Stock {
   volume: string;
   sector: string;
   source: string;
-}
+  trade_time: string;
+  day_high: string;
+  day_low: string;
+  high_52: string;
+  low_52: string;
+  market_cap: string;
+  pe_ratio: string;
+  eps: string;
+};
 
 export default function StockTable({
   stocks,
@@ -21,60 +29,68 @@ export default function StockTable({
   watchlist: string[];
   setWatchlist: (w: string[]) => void;
 }) {
-  const toggleWatchlist = (symbol: string) => {
-    if (watchlist.includes(symbol)) {
-      setWatchlist(watchlist.filter((s) => s !== symbol));
-    } else {
-      setWatchlist([...watchlist, symbol]);
-    }
-  };
-
   return (
-    <div className="overflow-x-auto rounded-xl shadow-lg border border-gold bg-black/70 backdrop-blur">
-      <table className="w-full text-sm text-left text-wecoin-blue">
+    <div className="overflow-x-auto">
+      <table className="min-w-full border border-gold text-sm text-wecoin-blue bg-black/70">
         <thead className="bg-gold text-black text-xs uppercase">
           <tr>
-            <th className="px-4 py-3">Symbol</th>
-            <th className="px-4 py-3">Company</th>
-            <th className="px-4 py-3">Price (₹)</th>
-            <th className="px-4 py-3">% Change</th>
-            <th className="px-4 py-3">Volume</th>
-            <th className="px-4 py-3">Sector</th>
-            <th className="px-4 py-3">Source</th>
-            <th className="px-4 py-3">⭐ Watchlist</th>
+            <th className="px-2 py-2 border border-gold">Symbol</th>
+            <th className="px-2 py-2 border border-gold">Company</th>
+            <th className="px-2 py-2 border border-gold">Price (₹)</th>
+            <th className="px-2 py-2 border border-gold">% Change</th>
+            <th className="px-2 py-2 border border-gold">Volume</th>
+            <th className="px-2 py-2 border border-gold">Sector</th>
+            <th className="px-2 py-2 border border-gold">52W High</th>
+            <th className="px-2 py-2 border border-gold">52W Low</th>
+            <th className="px-2 py-2 border border-gold">Market Cap</th>
+            <th className="px-2 py-2 border border-gold">P/E</th>
+            <th className="px-2 py-2 border border-gold">EPS</th>
+            <th className="px-2 py-2 border border-gold">Source</th>
+            <th className="px-2 py-2 border border-gold">⭐ Watchlist</th>
           </tr>
         </thead>
         <tbody>
-          {stocks.map((stock) => (
+          {stocks.map((s) => (
             <tr
-              key={stock.symbol}
-              className="border-b border-gold/30 hover:bg-gold/10 transition"
+              key={s.symbol}
+              className="hover:bg-gold/10 transition border-b border-gold"
             >
-              <td className="px-4 py-2 font-bold">{stock.symbol}</td>
-              <td className="px-4 py-2">{stock.company_name}</td>
-              <td className="px-4 py-2">{stock.current_price}</td>
+              <td className="px-2 py-2 border border-gold">{s.symbol}</td>
+              <td className="px-2 py-2 border border-gold">{s.company_name}</td>
+              <td className="px-2 py-2 border border-gold">{s.current_price}</td>
               <td
-                className={`px-4 py-2 font-semibold ${
-                  parseFloat(stock.change_pct) >= 0
+                className={`px-2 py-2 border border-gold ${
+                  parseFloat(s.change_pct) >= 0
                     ? "text-green-400"
                     : "text-red-400"
                 }`}
               >
-                {stock.change_pct}%
+                {s.change_pct}%
               </td>
-              <td className="px-4 py-2">{stock.volume}</td>
-              <td className="px-4 py-2">{stock.sector}</td>
-              <td className="px-4 py-2">{stock.source}</td>
-              <td className="px-4 py-2">
+              <td className="px-2 py-2 border border-gold">{s.volume}</td>
+              <td className="px-2 py-2 border border-gold">{s.sector}</td>
+              <td className="px-2 py-2 border border-gold">{s.high_52}</td>
+              <td className="px-2 py-2 border border-gold">{s.low_52}</td>
+              <td className="px-2 py-2 border border-gold">{s.market_cap}</td>
+              <td className="px-2 py-2 border border-gold">{s.pe_ratio}</td>
+              <td className="px-2 py-2 border border-gold">{s.eps}</td>
+              <td className="px-2 py-2 border border-gold">{s.source}</td>
+              <td className="px-2 py-2 border border-gold text-center">
                 <button
-                  onClick={() => toggleWatchlist(stock.symbol)}
+                  onClick={() => {
+                    if (watchlist.includes(s.symbol)) {
+                      setWatchlist(watchlist.filter((w) => w !== s.symbol));
+                    } else {
+                      setWatchlist([...watchlist, s.symbol]);
+                    }
+                  }}
                   className={`px-2 py-1 rounded ${
-                    watchlist.includes(stock.symbol)
-                      ? "bg-yellow-400 text-black"
-                      : "bg-gray-800 text-white"
+                    watchlist.includes(s.symbol)
+                      ? "bg-gold text-black"
+                      : "bg-gray-700 text-white"
                   }`}
                 >
-                  {watchlist.includes(stock.symbol) ? "★" : "☆"}
+                  {watchlist.includes(s.symbol) ? "★" : "☆"}
                 </button>
               </td>
             </tr>
