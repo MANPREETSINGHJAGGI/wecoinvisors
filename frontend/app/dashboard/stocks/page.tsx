@@ -32,7 +32,7 @@ export default function StocksDashboard() {
 
       // ✅ Call Next.js API route, not backend directly
       const res = await fetch(
-        `/api/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`,
+        `/app/api/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`,
         { cache: "no-store" }
       );
 
