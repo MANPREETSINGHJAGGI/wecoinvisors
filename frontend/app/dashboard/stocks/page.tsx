@@ -29,35 +29,36 @@ export default function StocksDashboard() {
     setError(null);
 
     try {
-     const querySymbols = normalizeSymbols(query).split(",");
-      const backendData = backendJson.data || [];
-// keep API order as-is
-// const orderedData = backendData;
+  const querySymbols = normalizeSymbols(query).split(",");
 
-// enforce query order
-const orderedData = querySymbols.map((sym) =>
-  backendData.find((d: any) => d.symbol.toUpperCase() === sym.toUpperCase())
-).filter(Boolean);
-setStocks(orderedData);
-      const res = await fetch(
-        `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`
-      );
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const res = await fetch(
+    `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(
+      querySymbols.join(",")
+    )}`
+  );
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      const backendJson = await res.json();
-if (backendJson.data && Array.isArray(backendJson.data)) {
-  setStocks(backendJson.data); // ✅ assigns the array
-} else {
+  const backendJson = await res.json();
+  const backendData = backendJson.data || [];
+
+  // enforce query order
+  const orderedData = querySymbols
+    .map((sym) =>
+      backendData.find(
+        (d: any) => d.symbol.toUpperCase() === sym.toUpperCase()
+      )
+    )
+    .filter(Boolean);
+
+  setStocks(orderedData);
+} catch (err) {
+  console.error("Fetch error", err);
+  setError("⚠ Failed to fetch stock data. Try again.");
   setStocks([]);
+} finally {
+  setLoading(false);
 }
 
-    } catch (err) {
-      console.error("Fetch error", err);
-      setError("⚠ Failed to fetch stock data. Try again.");
-      setStocks([]);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleSearch = () => {
