@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import StockTable from "@/components/StockTable";
 import Link from "next/link";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.wecoinvisors.com";
+
 
 export default function StocksDashboard() {
   const [symbols, setSymbols] = useState("");
