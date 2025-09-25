@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import StockTable from "@/frontend/components/StockTable";
+import StockTable from "@/components/StockTable";
 import Link from "next/link";
 
 const API_BASE =
