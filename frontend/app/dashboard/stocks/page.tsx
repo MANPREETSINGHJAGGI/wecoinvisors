@@ -29,7 +29,16 @@ export default function StocksDashboard() {
     setError(null);
 
     try {
-      const querySymbols = normalizeSymbols(query);
+     const querySymbols = normalizeSymbols(query).split(",");
+      const backendData = backendJson.data || [];
+// keep API order as-is
+// const orderedData = backendData;
+
+// enforce query order
+const orderedData = querySymbols.map((sym) =>
+  backendData.find((d: any) => d.symbol.toUpperCase() === sym.toUpperCase())
+).filter(Boolean);
+setStocks(orderedData);
       const res = await fetch(
         `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`
       );
