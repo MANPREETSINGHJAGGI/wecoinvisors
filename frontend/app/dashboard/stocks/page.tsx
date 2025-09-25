@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import StockTable from "@/components/StockTable";
+import StockTable from "@/frontend/components/StockTable";
 import Link from "next/link";
 
 const API_BASE =
@@ -29,43 +29,34 @@ export default function StocksDashboard() {
     setError(null);
 
     try {
-  const querySymbols = normalizeSymbols(query).split(",");
+      const querySymbols = normalizeSymbols(query);
+      const res = await fetch(
+        `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-  const res = await fetch(
-    `${API_BASE}/live-stock-data?symbols=${encodeURIComponent(
-      querySymbols.join(",")
-    )}`
-  );
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const backendJson = await res.json();
+      console.log("✅ Backend response:", backendJson);
 
-  const backendJson = await res.json();
-  const backendData = backendJson.data || [];
-
-  // enforce query order
-  const orderedData = querySymbols
-    .map((sym) =>
-      backendData.find(
-        (d: any) => d.symbol.toUpperCase() === sym.toUpperCase()
-      )
-    )
-    .filter(Boolean);
-
-  setStocks(orderedData);
-} catch (err) {
-  console.error("Fetch error", err);
-  setError("⚠ Failed to fetch stock data. Try again.");
-  setStocks([]);
-} finally {
-  setLoading(false);
-}
-
+      if (backendJson.data && Array.isArray(backendJson.data)) {
+        setStocks(backendJson.data); // ✅ Properly set stocks
+      } else {
+        setStocks([]);
+      }
+    } catch (err) {
+      console.error("Fetch error", err);
+      setError("⚠ Failed to fetch stock data. Try again.");
+      setStocks([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSearch = () => {
     if (!symbols.trim()) return;
     if (intervalRef.current) clearInterval(intervalRef.current);
     fetchStocks(symbols);
-    intervalRef.current = setInterval(() => fetchStocks(symbols), 60000);
+    intervalRef.current = setInterval(() => fetchStocks(symbols), 30000);
   };
 
   useEffect(() => {
@@ -109,7 +100,7 @@ export default function StocksDashboard() {
             </button>
           </div>
           <div className="text-sm italic text-wecoin-blue">
-            Auto-refreshes every 60 seconds after fetch
+            Auto-refreshes every 30 seconds after fetch
           </div>
         </div>
       </section>
