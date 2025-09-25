@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.wecoinvisors.com";
 
 export async function GET(request: Request) {
   try {
@@ -10,15 +10,15 @@ export async function GET(request: Request) {
     const symbols = searchParams.get("symbols") || "ITC,PNB";
     const provider = searchParams.get("provider") || "backend";
 
-    // ✅ Require symbols
+    // ✅ Always require symbols
     if (!symbols) {
       return NextResponse.json(
-        { error: "Missing symbols parameter" },
+        { error: "Missing symbols parameter", data: [] },
         { status: 400 }
       );
     }
 
-    // ✅ Backend provider (Render backend → no `/api` prefix)
+    // ✅ Backend only
     if (provider === "backend") {
       const res = await fetch(`${API_BASE}/live-stock-data?symbols=${symbols}`, {
         cache: "no-store",
@@ -26,15 +26,16 @@ export async function GET(request: Request) {
 
       if (!res.ok) {
         return NextResponse.json(
-          { error: "Backend API failed" },
+          { error: "Backend API failed", data: [] },
           { status: res.status }
         );
       }
 
-      return NextResponse.json(await res.json());
+      const backendJson = await res.json();
+      return NextResponse.json({ data: backendJson.data || [] });
     }
 
-    // ✅ Dual provider (Yahoo first, fallback to backend)
+    // ✅ Dual provider (Yahoo → fallback Backend)
     if (provider === "dual") {
       try {
         const yahooRes = await fetch(
@@ -43,7 +44,7 @@ export async function GET(request: Request) {
 
         if (yahooRes.ok) {
           const data = await yahooRes.json();
-          return NextResponse.json({ provider: "yahoo", data });
+          return NextResponse.json({ provider: "yahoo", data: data.chart?.result || [] });
         }
       } catch (err) {
         console.error("⚠️ Yahoo fetch failed, trying backend:", err);
@@ -56,23 +57,21 @@ export async function GET(request: Request) {
 
       if (!backendRes.ok) {
         return NextResponse.json(
-          { error: "Both Yahoo and Backend failed" },
+          { error: "Both Yahoo and Backend failed", data: [] },
           { status: 500 }
         );
       }
 
+      const backendJson = await backendRes.json();
       return NextResponse.json({
         provider: "backend",
-        data: await backendRes.json(),
+        data: backendJson.data || [],
       });
     }
 
-    return NextResponse.json({ error: "Invalid provider" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid provider", data: [] }, { status: 400 });
   } catch (err) {
     console.error("⚠️ Unexpected error in live-stock-data route:", err);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error", data: [] }, { status: 500 });
   }
 }

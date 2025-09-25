@@ -23,37 +23,32 @@ export default function StocksDashboard() {
 
   /** Fetch stocks via Next.js API route */
   const fetchStocks = async (query: string) => {
-    if (!query.trim()) return;
-    setLoading(true);
-    setError(null);
+  if (!query.trim()) return;
+  setLoading(true);
+  setError(null);
 
-    try {
-      const querySymbols = normalizeSymbols(query);
+  try {
+    const querySymbols = normalizeSymbols(query);
+    const res = await fetch(
+      `/api/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`,
+      { cache: "no-store" }
+    );
 
-      // ✅ Call Next.js API route, not backend directly
-      const res = await fetch(
-        `/app/api/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`,
-        { cache: "no-store" }
-      );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    console.log("✅ API route response:", json);
 
-      const json = await res.json();
-      console.log("✅ API response:", json);
+    setStocks(json.data || []);
+  } catch (err) {
+    console.error("Fetch error", err);
+    setError("⚠ Failed to fetch stock data. Try again.");
+    setStocks([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
-      if (json.data && Array.isArray(json.data)) {
-        setStocks(json.data);
-      } else {
-        setStocks([]);
-      }
-    } catch (err) {
-      console.error("Fetch error", err);
-      setError("⚠ Failed to fetch stock data. Try again.");
-      setStocks([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   /** Handle Search + Auto-refresh */
   const handleSearch = () => {
