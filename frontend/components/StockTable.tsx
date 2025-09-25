@@ -9,88 +9,81 @@ type Stock = {
   change_pct: string;
   volume: string;
   sector: string;
-  source: string;
-  trade_time: string;
-  day_high: string;
-  day_low: string;
   high_52: string;
   low_52: string;
   market_cap: string;
   pe_ratio: string;
   eps: string;
+  source: string;
 };
 
-export default function StockTable({
-  stocks,
-  watchlist,
-  setWatchlist,
-}: {
+interface Props {
   stocks: Stock[];
   watchlist: string[];
   setWatchlist: (w: string[]) => void;
-}) {
+}
+
+export default function StockTable({ stocks, watchlist, setWatchlist }: Props) {
+  const toggleWatchlist = (symbol: string) => {
+    if (watchlist.includes(symbol)) {
+      setWatchlist(watchlist.filter((s) => s !== symbol));
+    } else {
+      setWatchlist([...watchlist, symbol]);
+    }
+  };
+
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border border-gold text-sm text-wecoin-blue bg-black/70">
-        <thead className="bg-gold text-black text-xs uppercase">
+    <div className="overflow-x-auto bg-black/70 border border-gold rounded-lg shadow-lg">
+      <table className="min-w-full border-collapse text-sm text-wecoin-blue">
+        <thead className="bg-black/80 border-b border-gold text-gold">
           <tr>
-            <th className="px-2 py-2 border border-gold">Symbol</th>
-            <th className="px-2 py-2 border border-gold">Company</th>
-            <th className="px-2 py-2 border border-gold">Price (₹)</th>
-            <th className="px-2 py-2 border border-gold">% Change</th>
-            <th className="px-2 py-2 border border-gold">Volume</th>
-            <th className="px-2 py-2 border border-gold">Sector</th>
-            <th className="px-2 py-2 border border-gold">52W High</th>
-            <th className="px-2 py-2 border border-gold">52W Low</th>
-            <th className="px-2 py-2 border border-gold">Market Cap</th>
-            <th className="px-2 py-2 border border-gold">P/E</th>
-            <th className="px-2 py-2 border border-gold">EPS</th>
-            <th className="px-2 py-2 border border-gold">Source</th>
-            <th className="px-2 py-2 border border-gold">⭐ Watchlist</th>
+            <th className="px-4 py-2 text-left">Symbol</th>
+            <th className="px-4 py-2 text-left">Company</th>
+            <th className="px-4 py-2 text-right">Price (₹)</th>
+            <th className="px-4 py-2 text-right">% Change</th>
+            <th className="px-4 py-2 text-right">Volume</th>
+            <th className="px-4 py-2 text-left">Sector</th>
+            <th className="px-4 py-2 text-right">52W High</th>
+            <th className="px-4 py-2 text-right">52W Low</th>
+            <th className="px-4 py-2 text-right">Market Cap</th>
+            <th className="px-4 py-2 text-right">P/E</th>
+            <th className="px-4 py-2 text-right">EPS</th>
+            <th className="px-4 py-2 text-left">Source</th>
+            <th className="px-4 py-2 text-center">⭐ Watchlist</th>
           </tr>
         </thead>
         <tbody>
-          {stocks.map((s) => (
+          {stocks.map((stock, idx) => (
             <tr
-              key={s.symbol}
-              className="hover:bg-gold/10 transition border-b border-gold"
+              key={idx}
+              className="border-b border-gold hover:bg-gold/10 transition"
             >
-              <td className="px-2 py-2 border border-gold">{s.symbol}</td>
-              <td className="px-2 py-2 border border-gold">{s.company_name}</td>
-              <td className="px-2 py-2 border border-gold">{s.current_price}</td>
+              <td className="px-4 py-2">{stock.symbol}</td>
+              <td className="px-4 py-2">{stock.company_name}</td>
+              <td className="px-4 py-2 text-right">{stock.current_price}</td>
               <td
-                className={`px-2 py-2 border border-gold ${
-                  parseFloat(s.change_pct) >= 0
+                className={`px-4 py-2 text-right ${
+                  parseFloat(stock.change_pct) >= 0
                     ? "text-green-400"
                     : "text-red-400"
                 }`}
               >
-                {s.change_pct}%
+                {stock.change_pct}%
               </td>
-              <td className="px-2 py-2 border border-gold">{s.volume}</td>
-              <td className="px-2 py-2 border border-gold">{s.sector}</td>
-              <td className="px-2 py-2 border border-gold">{s.high_52}</td>
-              <td className="px-2 py-2 border border-gold">{s.low_52}</td>
-              <td className="px-2 py-2 border border-gold">{s.market_cap}</td>
-              <td className="px-2 py-2 border border-gold">{s.pe_ratio}</td>
-              <td className="px-2 py-2 border border-gold">{s.eps}</td>
-              <td className="px-2 py-2 border border-gold">{s.source}</td>
-              <td className="px-2 py-2 border border-gold text-center">
+              <td className="px-4 py-2 text-right">{stock.volume}</td>
+              <td className="px-4 py-2">{stock.sector}</td>
+              <td className="px-4 py-2 text-right">{stock.high_52}</td>
+              <td className="px-4 py-2 text-right">{stock.low_52}</td>
+              <td className="px-4 py-2 text-right">{stock.market_cap}</td>
+              <td className="px-4 py-2 text-right">{stock.pe_ratio}</td>
+              <td className="px-4 py-2 text-right">{stock.eps}</td>
+              <td className="px-4 py-2">{stock.source}</td>
+              <td className="px-4 py-2 text-center">
                 <button
-                  onClick={() => {
-                    if (watchlist.includes(s.symbol)) {
-                      setWatchlist(watchlist.filter((w) => w !== s.symbol));
-                    } else {
-                      setWatchlist([...watchlist, s.symbol]);
-                    }
-                  }}
-                  className={`px-2 py-1 rounded ${
-                    watchlist.includes(s.symbol)
-                      ? "bg-gold text-black"
-                      : "bg-gray-700 text-white"
-                  }`}
+                  onClick={() => toggleWatchlist(stock.symbol)}
+                  className="text-lg"
                 >
-                  {watchlist.includes(s.symbol) ? "★" : "☆"}
+                  {watchlist.includes(stock.symbol) ? "★" : "☆"}
                 </button>
               </td>
             </tr>

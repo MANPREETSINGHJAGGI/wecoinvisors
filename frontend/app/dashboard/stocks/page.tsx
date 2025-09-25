@@ -36,13 +36,12 @@ export default function StocksDashboard() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const backendJson = await res.json();
-      console.log("✅ Backend response:", backendJson);
+if (backendJson.data && Array.isArray(backendJson.data)) {
+  setStocks(backendJson.data); // ✅ assigns the array
+} else {
+  setStocks([]);
+}
 
-      if (backendJson.data && Array.isArray(backendJson.data)) {
-        setStocks(backendJson.data); // ✅ Properly set stocks
-      } else {
-        setStocks([]);
-      }
     } catch (err) {
       console.error("Fetch error", err);
       setError("⚠ Failed to fetch stock data. Try again.");
