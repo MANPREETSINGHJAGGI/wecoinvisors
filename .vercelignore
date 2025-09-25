@@ -1,4 +1,4 @@
-# Ignore backend
+# Ignore backend completely (Render handles it)
 backend/
 __pycache__/
 *.py[cod]
@@ -11,3 +11,6 @@ __pycache__/
 # Ignore system files
 .DS_Store
 Thumbs.db
+
+# Only deploy frontend
+!frontend/**

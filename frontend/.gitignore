@@ -1,34 +1,21 @@
-# ----------------------------
-# Root .gitignore for WeCoinvisors
-# ----------------------------
+# Dependencies
+node_modules/
 
-# === Environment & Secrets ===
+# Build outputs
+.next/
+dist/
+out/
+
+# Local env
 .env
 .env.*
 !.env.example
-*.json
-!package.json
-!tsconfig.json
 
-# === Python / FastAPI backend ===
-__pycache__/
-*.py[cod]
-*.sqlite3
-.venv/
-backend/.mypy_cache/
-backend/.pytest_cache/
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# === Node.js / Next.js frontend ===
-node_modules/
-.next/
-frontend/.next/
-frontend/node_modules/
-
-# === Vercel ===
-# Keep project.json so Vercel detects Next.js
-.vercel/cache/
-frontend/.vercel/cache/
-
-# === System files ===
+# OS junk
 .DS_Store
 Thumbs.db
