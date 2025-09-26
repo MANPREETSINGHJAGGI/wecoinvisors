@@ -21,7 +21,11 @@ export async function GET(request: Request) {
     }
 
     const backendJson = await res.json();
-    const data = backendJson.data || backendJson || [];
+
+    // ✅ Always unwrap to { data: [...] }
+    const data = Array.isArray(backendJson.data)
+      ? backendJson.data
+      : backendJson;
 
     return NextResponse.json({ data });
   } catch (err) {
