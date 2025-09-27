@@ -21,40 +21,39 @@ export default function StocksDashboard() {
       .join(",");
   };
 
-  /** Fetch stocks via Next.js API route */
+   /** Fetch stocks via Next.js API route */
   const fetchStocks = async (query: string) => {
-  if (!query.trim()) return;
-  setLoading(true);
-  setError(null);
+    if (!query.trim()) return;
+    setLoading(true);
+    setError(null);
 
-  try {
-    const querySymbols = normalizeSymbols(query);
-    const res = await fetch(
-      `/api/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`,
-      { cache: "no-store" }
-    );
+    try {
+      const querySymbols = normalizeSymbols(query);
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const res = await fetch(
+        `/api/live-stock-data?symbols=${encodeURIComponent(querySymbols)}`,
+        { cache: "no-store" }
+      );
 
-    const json = await res.json();
-console.log("✅ API response:", json);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-let stocksData: any[] = [];
+      const json = await res.json();
+      console.log("✅ API response:", json);
 
-// case 1: { data: [...] }
-if (json.data && Array.isArray(json.data)) {
-  stocksData = json.data;
-}
-// case 2: { provider: "backend", data: { data: [...] } }
-else if (json.data && json.data.data && Array.isArray(json.data.data)) {
-  stocksData = json.data.data;
-}
-
-setStocks(stocksData);
-
-
-};
-
+      const stocksData = json?.data || json?.data?.data || [];
+      if (Array.isArray(stocksData)) {
+        setStocks(stocksData);
+      } else {
+        setStocks([]);
+      }
+    } catch (err) {
+      console.error("Fetch error", err);
+      setError("⚠ Failed to fetch stock data. Try again.");
+      setStocks([]);
+    } finally {
+      setLoading(false);
+    }
+  }; // ✅ correct closure
 
   /** Handle Search + Auto-refresh */
   const handleSearch = () => {
