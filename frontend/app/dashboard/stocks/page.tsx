@@ -37,16 +37,21 @@ export default function StocksDashboard() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const json = await res.json();
-    console.log("✅ API route response:", json);
+console.log("✅ API response:", json);
 
-    setStocks(json.data || []);
-  } catch (err) {
-    console.error("Fetch error", err);
-    setError("⚠ Failed to fetch stock data. Try again.");
-    setStocks([]);
-  } finally {
-    setLoading(false);
-  }
+let stocksData: any[] = [];
+
+// case 1: { data: [...] }
+if (json.data && Array.isArray(json.data)) {
+  stocksData = json.data;
+}
+// case 2: { provider: "backend", data: { data: [...] } }
+else if (json.data && json.data.data && Array.isArray(json.data.data)) {
+  stocksData = json.data.data;
+}
+
+setStocks(stocksData);
+
 };
 
 
