@@ -1,8 +1,10 @@
 // File: frontend/app/api/live-stock-data/route.ts
 import { NextResponse } from "next/server";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.wecoinvisors.com";
+const isVercel = !!process.env.VERCEL;
+const API_BASE = isVercel
+  ? "https://api.wecoinvisors.com" // production
+  : "http://127.0.0.1:8000";       // local FastAPI backend
 
 export async function GET(request: Request) {
   try {
@@ -20,16 +22,18 @@ export async function GET(request: Request) {
       );
     }
 
-    const backendJson = await res.json();
+    const data = await res.json();
 
-    // ✅ Always unwrap to { data: [...] }
-    const data = Array.isArray(backendJson.data)
-      ? backendJson.data
-      : backendJson;
-
-    return NextResponse.json({ data });
+    // Always return unified shape { data: [...] }
+    if (Array.isArray(data.data)) {
+      return NextResponse.json({ data: data.data });
+    }
+    return NextResponse.json({ data: [] });
   } catch (err) {
     console.error("⚠️ Error in live-stock-data route:", err);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

@@ -52,6 +52,7 @@ else if (json.data && json.data.data && Array.isArray(json.data.data)) {
 
 setStocks(stocksData);
 
+
 };
 
 
