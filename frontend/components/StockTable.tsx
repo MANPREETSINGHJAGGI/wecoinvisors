@@ -87,7 +87,7 @@ export default function StockTable({
             ].map((key) => (
               <th
                 key={key}
-                className="px-3 py-2 cursor-pointer select-none hover:bg-gold/20 text-center"
+                className="px-3 py-2 cursor-pointer select-none hover:bg-gold/20 text-left"
                 onClick={() => handleSort(key as SortKey)}
               >
                 {key.replace("_", " ").toUpperCase()}
@@ -103,10 +103,13 @@ export default function StockTable({
           {sortedStocks.map((stock) => (
             <tr
               key={stock.symbol}
-              className="border-b border-gold/30 hover:bg-black/50 transition text-center"
+              className="border-b border-gold/30 hover:bg-black/50 transition"
             >
-              <td className="px-3 py-2 font-semibold">{stock.symbol}</td>
-              <td className="px-3 py-2">{stock.company_name}</td>
+              {/* Text fields → left aligned */}
+              <td className="px-3 py-2 font-semibold text-left">{stock.symbol}</td>
+              <td className="px-3 py-2 text-left">{stock.company_name}</td>
+
+              {/* Numbers → right aligned */}
               <td className="px-3 py-2 text-right">{stock.current_price}</td>
               <td
                 className={`px-3 py-2 text-right font-bold ${
@@ -120,15 +123,23 @@ export default function StockTable({
                 {stock.change_pct}%
               </td>
               <td className="px-3 py-2 text-right">{stock.volume}</td>
-              <td className="px-3 py-2">{stock.sector}</td>
+
+              {/* Text field */}
+              <td className="px-3 py-2 text-left">{stock.sector}</td>
+
+              {/* Numbers */}
               <td className="px-3 py-2 text-right">{stock.high_52}</td>
               <td className="px-3 py-2 text-right">{stock.low_52}</td>
               <td className="px-3 py-2 text-right">{stock.market_cap}</td>
               <td className="px-3 py-2 text-right">{stock.pe_ratio}</td>
               <td className="px-3 py-2 text-right">{stock.eps}</td>
-              <td className="px-3 py-2 underline text-blue-400">
+
+              {/* Source → link style */}
+              <td className="px-3 py-2 text-left underline text-blue-400">
                 {stock.source}
               </td>
+
+              {/* Star → center */}
               <td
                 className="px-3 py-2 text-center cursor-pointer text-lg"
                 onClick={() => toggleWatchlist(stock.symbol)}
