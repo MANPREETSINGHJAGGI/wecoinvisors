@@ -1,5 +1,6 @@
 // File: frontend/components/StockTable.tsx
 "use client";
+import { useState } from "react";
 
 interface Stock {
   symbol: string;
@@ -16,6 +17,8 @@ interface Stock {
   source: string;
 }
 
+type SortKey = keyof Stock;
+
 export default function StockTable({
   stocks,
   watchlist,
@@ -23,8 +26,11 @@ export default function StockTable({
 }: {
   stocks: Stock[];
   watchlist: string[];
-  setWatchlist: (w: string[]) => void;
+  setWatchlist: (s: string[]) => void;
 }) {
+  const [sortKey, setSortKey] = useState<SortKey>("symbol");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
   const toggleWatchlist = (symbol: string) => {
     if (watchlist.includes(symbol)) {
       setWatchlist(watchlist.filter((s) => s !== symbol));
@@ -33,52 +39,97 @@ export default function StockTable({
     }
   };
 
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortOrder("asc");
+    }
+  };
+
+  const sortedStocks = [...stocks].sort((a, b) => {
+    const valA = a[sortKey] ?? "";
+    const valB = b[sortKey] ?? "";
+
+    // Try numeric compare first
+    const numA = parseFloat(valA as string);
+    const numB = parseFloat(valB as string);
+    if (!isNaN(numA) && !isNaN(numB)) {
+      return sortOrder === "asc" ? numA - numB : numB - numA;
+    }
+
+    // Fallback to string compare
+    return sortOrder === "asc"
+      ? String(valA).localeCompare(String(valB))
+      : String(valB).localeCompare(String(valA));
+  });
+
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-sm border border-gold text-wecoin-blue">
-        <thead className="bg-black/70 border-b border-gold text-gold">
+    <div className="overflow-x-auto border border-gold rounded-lg shadow-lg">
+      <table className="min-w-full text-sm text-wecoin-blue">
+        <thead className="sticky top-0 bg-black border-b border-gold text-gold">
           <tr>
-            <th className="px-3 py-2 text-left">Symbol</th>
-            <th className="px-3 py-2 text-left">Company</th>
-            <th className="px-3 py-2">Price (₹)</th>
-            <th className="px-3 py-2">% Change</th>
-            <th className="px-3 py-2">Volume</th>
-            <th className="px-3 py-2">Sector</th>
-            <th className="px-3 py-2">52W High</th>
-            <th className="px-3 py-2">52W Low</th>
-            <th className="px-3 py-2">Market Cap</th>
-            <th className="px-3 py-2">P/E</th>
-            <th className="px-3 py-2">EPS</th>
-            <th className="px-3 py-2">Source</th>
-            <th className="px-3 py-2">⭐</th>
+            {[
+              "symbol",
+              "company_name",
+              "current_price",
+              "change_pct",
+              "volume",
+              "sector",
+              "high_52",
+              "low_52",
+              "market_cap",
+              "pe_ratio",
+              "eps",
+              "source",
+            ].map((key) => (
+              <th
+                key={key}
+                className="px-3 py-2 cursor-pointer select-none hover:bg-gold/20"
+                onClick={() => handleSort(key as SortKey)}
+              >
+                {key.replace("_", " ").toUpperCase()}
+                {sortKey === key ? (sortOrder === "asc" ? " ▲" : " ▼") : ""}
+              </th>
+            ))}
+            <th className="px-3 py-2 text-center">⭐</th>
           </tr>
         </thead>
+
         <tbody>
-          {stocks.map((s) => (
-            <tr key={s.symbol} className="border-b border-gray-800 hover:bg-black/40">
-              <td className="px-3 py-2">{s.symbol}</td>
-              <td className="px-3 py-2">{s.company_name}</td>
-              <td className="px-3 py-2 font-bold">{s.current_price}</td>
+          {sortedStocks.map((stock) => (
+            <tr
+              key={stock.symbol}
+              className="border-b border-gold/30 hover:bg-black/50 transition"
+            >
+              <td className="px-3 py-2">{stock.symbol}</td>
+              <td className="px-3 py-2">{stock.company_name}</td>
+              <td className="px-3 py-2 text-right">{stock.current_price}</td>
               <td
-                className={`px-3 py-2 ${
-                  parseFloat(s.change_pct) >= 0 ? "text-green-400" : "text-red-400"
+                className={`px-3 py-2 text-right font-bold ${
+                  parseFloat(stock.change_pct) > 0
+                    ? "text-green-400"
+                    : parseFloat(stock.change_pct) < 0
+                    ? "text-red-400"
+                    : "text-gray-300"
                 }`}
               >
-                {s.change_pct}%
+                {stock.change_pct}%
               </td>
-              <td className="px-3 py-2">{s.volume}</td>
-              <td className="px-3 py-2">{s.sector}</td>
-              <td className="px-3 py-2">{s.high_52}</td>
-              <td className="px-3 py-2">{s.low_52}</td>
-              <td className="px-3 py-2">{s.market_cap}</td>
-              <td className="px-3 py-2">{s.pe_ratio}</td>
-              <td className="px-3 py-2">{s.eps}</td>
-              <td className="px-3 py-2">{s.source}</td>
+              <td className="px-3 py-2 text-right">{stock.volume}</td>
+              <td className="px-3 py-2">{stock.sector}</td>
+              <td className="px-3 py-2 text-right">{stock.high_52}</td>
+              <td className="px-3 py-2 text-right">{stock.low_52}</td>
+              <td className="px-3 py-2 text-right">{stock.market_cap}</td>
+              <td className="px-3 py-2 text-right">{stock.pe_ratio}</td>
+              <td className="px-3 py-2 text-right">{stock.eps}</td>
+              <td className="px-3 py-2">{stock.source}</td>
               <td
-                className="px-3 py-2 cursor-pointer"
-                onClick={() => toggleWatchlist(s.symbol)}
+                className="px-3 py-2 text-center cursor-pointer"
+                onClick={() => toggleWatchlist(stock.symbol)}
               >
-                {watchlist.includes(s.symbol) ? "★" : "☆"}
+                {watchlist.includes(stock.symbol) ? "★" : "☆"}
               </td>
             </tr>
           ))}
