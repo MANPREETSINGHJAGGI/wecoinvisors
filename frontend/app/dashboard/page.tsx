@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";   // ✅ add useState
-import Link from "next/link";       // ✅ already needed earlier
-import { useRouter } from "next/navigation"; // ✅ for useRouter
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [symbols, setSymbols] = useState("");
@@ -22,8 +22,8 @@ export default function Home() {
     <main className="min-h-screen text-wecoin-blue glossy-bg">
       {/* Navbar */}
       <nav className="flex justify-center gap-6 py-4 bg-black/80 border-b border-gold backdrop-blur">
-        <a href="/" className="nav-link">Home</a>
-        <a href="/dashboard/stocks" className="nav-link">Stocks</a>
+        <Link href="/" className="nav-link">Home</Link>
+        <Link href="/dashboard/stocks" className="nav-link">Stocks</Link>
       </nav>
 
       {/* Hero Section */}
@@ -67,13 +67,24 @@ export default function Home() {
         </div>
 
         {/* Input for custom mode */}
-        import Link from "next/link";
+        {mode === "custom" && (
+          <div className="flex items-center gap-2 max-w-md w-full mb-6">
+            <input
+              type="text"
+              placeholder="Enter symbols (e.g. ITC, PNB, TCS)"
+              value={symbols}
+              onChange={(e) => setSymbols(e.target.value)}
+              className="flex-1 px-3 py-2 border border-gold rounded bg-black text-wecoin-blue placeholder-blue-400"
+            />
+          </div>
+        )}
 
-<nav className="flex justify-center gap-6 py-4 bg-black/80 border-b border-gold backdrop-blur">
-  <Link href="/" className="nav-link">Home</Link>
-  <Link href="/dashboard/stocks" className="nav-link">Stocks</Link>
-</nav>
-
+        <button
+          onClick={handleExplore}
+          className="px-6 py-3 bg-gold text-black font-bold rounded shadow hover:bg-yellow-500 transition"
+        >
+          🚀 Explore Stocks
+        </button>
       </section>
 
       {/* Features */}
@@ -120,9 +131,9 @@ export default function Home() {
           © {new Date().getFullYear()} WeCoinvisors Pvt Ltd. All rights reserved.
         </div>
         <div className="space-x-4 text-sm">
-          <a href="/about" className="nav-link">About</a>
-          <a href="/contact" className="nav-link">Contact</a>
-          <a href="/terms" className="nav-link">Terms</a>
+          <Link href="/about" className="nav-link">About</Link>
+          <Link href="/contact" className="nav-link">Contact</Link>
+          <Link href="/terms" className="nav-link">Terms</Link>
         </div>
       </footer>
     </main>
