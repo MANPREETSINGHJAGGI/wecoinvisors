@@ -68,7 +68,8 @@ export default function StockTable({
   return (
     <div className="overflow-x-auto border border-gold rounded-lg shadow-lg">
       <table className="min-w-full text-sm text-wecoin-blue">
-        <thead className="sticky top-0 bg-black border-b border-gold text-gold">
+        {/* Table Header */}
+        <thead className="sticky top-0 bg-black border-b border-gold text-gold text-xs uppercase tracking-wide">
           <tr>
             {[
               "symbol",
@@ -86,7 +87,7 @@ export default function StockTable({
             ].map((key) => (
               <th
                 key={key}
-                className="px-3 py-2 cursor-pointer select-none hover:bg-gold/20"
+                className="px-3 py-2 cursor-pointer select-none hover:bg-gold/20 text-center"
                 onClick={() => handleSort(key as SortKey)}
               >
                 {key.replace("_", " ").toUpperCase()}
@@ -97,13 +98,14 @@ export default function StockTable({
           </tr>
         </thead>
 
+        {/* Table Body */}
         <tbody>
           {sortedStocks.map((stock) => (
             <tr
               key={stock.symbol}
-              className="border-b border-gold/30 hover:bg-black/50 transition"
+              className="border-b border-gold/30 hover:bg-black/50 transition text-center"
             >
-              <td className="px-3 py-2">{stock.symbol}</td>
+              <td className="px-3 py-2 font-semibold">{stock.symbol}</td>
               <td className="px-3 py-2">{stock.company_name}</td>
               <td className="px-3 py-2 text-right">{stock.current_price}</td>
               <td
@@ -124,9 +126,11 @@ export default function StockTable({
               <td className="px-3 py-2 text-right">{stock.market_cap}</td>
               <td className="px-3 py-2 text-right">{stock.pe_ratio}</td>
               <td className="px-3 py-2 text-right">{stock.eps}</td>
-              <td className="px-3 py-2">{stock.source}</td>
+              <td className="px-3 py-2 underline text-blue-400">
+                {stock.source}
+              </td>
               <td
-                className="px-3 py-2 text-center cursor-pointer"
+                className="px-3 py-2 text-center cursor-pointer text-lg"
                 onClick={() => toggleWatchlist(stock.symbol)}
               >
                 {watchlist.includes(stock.symbol) ? "★" : "☆"}
