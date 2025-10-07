@@ -1,4 +1,5 @@
 // File: frontend/components/StockTable.tsx
+
 "use client";
 import { useState } from "react";
 
