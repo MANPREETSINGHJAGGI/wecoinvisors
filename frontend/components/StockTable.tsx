@@ -7,6 +7,7 @@ interface Stock {
   symbol: string;
   company_name: string;
   current_price: string;
+  prev_close?: string;
   change_pct: string;
   volume: string;
   sector: string;
@@ -15,10 +16,11 @@ interface Stock {
   market_cap: string;
   pe_ratio: string;
   eps: string;
+  shares?: string;
   source: string;
 }
 
-type SortKey = keyof Stock;
+type SortKey = keyof Stock | "amount_change" | "market_cap_cr" | "shares_cr";
 
 export default function StockTable({
   stocks,
@@ -41,26 +43,30 @@ export default function StockTable({
   };
 
   const handleSort = (key: SortKey) => {
-    if (sortKey === key) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
+    if (sortKey === key) setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    else {
       setSortKey(key);
       setSortOrder("asc");
     }
   };
 
-  const sortedStocks = [...stocks].sort((a, b) => {
+  // Derived calculated fields
+  const processedStocks = stocks.map((s) => {
+    const prev = parseFloat(s.prev_close ?? "0");
+    const curr = parseFloat(s.current_price ?? "0");
+    const mcapCr = parseFloat(s.market_cap ?? "0") / 100; // ₹ crore approx
+    const amountChange = prev ? curr - prev : 0;
+    const sharesCr = parseFloat(s.shares ?? "0") / 1e7; // from raw to crore
+    return { ...s, amount_change: amountChange, market_cap_cr: mcapCr, shares_cr: sharesCr };
+  });
+
+  const sortedStocks = [...processedStocks].sort((a, b) => {
     const valA = a[sortKey] ?? "";
     const valB = b[sortKey] ?? "";
-
-    // Try numeric compare first
     const numA = parseFloat(valA as string);
     const numB = parseFloat(valB as string);
-    if (!isNaN(numA) && !isNaN(numB)) {
+    if (!isNaN(numA) && !isNaN(numB))
       return sortOrder === "asc" ? numA - numB : numB - numA;
-    }
-
-    // Fallback to string compare
     return sortOrder === "asc"
       ? String(valA).localeCompare(String(valB))
       : String(valB).localeCompare(String(valA));
@@ -68,30 +74,32 @@ export default function StockTable({
 
   return (
     <div className="overflow-x-auto border border-gold rounded-lg shadow-lg">
-      <table className="min-w-full text-sm text-wecoin-blue">
+      <table className="min-w-full text-sm text-wecoin-blue table-fixed">
         {/* Table Header */}
         <thead className="sticky top-0 bg-black border-b border-gold text-gold text-xs uppercase tracking-wide">
           <tr>
             {[
-              "symbol",
-              "company_name",
-              "current_price",
-              "change_pct",
-              "volume",
-              "sector",
-              "high_52",
-              "low_52",
-              "market_cap",
-              "pe_ratio",
-              "eps",
-              "source",
-            ].map((key) => (
+              { key: "symbol", label: "Symbol" },
+              { key: "company_name", label: "Company Name" },
+              { key: "current_price", label: "Price (₹)" },
+              { key: "amount_change", label: "Amount (+/-)" },
+              { key: "change_pct", label: "% Change" },
+              { key: "volume", label: "Volume" },
+              { key: "sector", label: "Sector" },
+              { key: "high_52", label: "52W High" },
+              { key: "low_52", label: "52W Low" },
+              { key: "market_cap_cr", label: "Market Cap (₹ Cr)" },
+              { key: "shares_cr", label: "Shares (Cr)" },
+              { key: "pe_ratio", label: "P/E" },
+              { key: "eps", label: "EPS" },
+              { key: "source", label: "Source" },
+            ].map(({ key, label }) => (
               <th
                 key={key}
-                className="px-3 py-2 cursor-pointer select-none hover:bg-gold/20 text-left"
+                className="px-3 py-2 text-left cursor-pointer select-none hover:bg-gold/20"
                 onClick={() => handleSort(key as SortKey)}
               >
-                {key.replace("_", " ").toUpperCase()}
+                {label}
                 {sortKey === key ? (sortOrder === "asc" ? " ▲" : " ▼") : ""}
               </th>
             ))}
@@ -101,51 +109,52 @@ export default function StockTable({
 
         {/* Table Body */}
         <tbody>
-          {sortedStocks.map((stock) => (
+          {sortedStocks.map((s) => (
             <tr
-              key={stock.symbol}
+              key={s.symbol}
               className="border-b border-gold/30 hover:bg-black/50 transition"
             >
-              {/* Text fields → left aligned */}
-              <td className="px-3 py-2 font-semibold text-left">{stock.symbol}</td>
-              <td className="px-3 py-2 text-left">{stock.company_name}</td>
-
-              {/* Numbers → right aligned */}
-              <td className="px-3 py-2 text-right">{stock.current_price}</td>
+              <td className="px-3 py-2 font-semibold">{s.symbol}</td>
+              <td className="px-3 py-2">{s.company_name}</td>
+              <td className="px-3 py-2 text-right">{s.current_price}</td>
               <td
-                className={`px-3 py-2 text-right font-bold ${
-                  parseFloat(stock.change_pct) > 0
+                className={`px-3 py-2 text-right ${
+                  s.amount_change > 0
                     ? "text-green-400"
-                    : parseFloat(stock.change_pct) < 0
+                    : s.amount_change < 0
                     ? "text-red-400"
                     : "text-gray-300"
                 }`}
               >
-                {stock.change_pct}%
+                {s.amount_change.toFixed(2)}
               </td>
-              <td className="px-3 py-2 text-right">{stock.volume}</td>
-
-              {/* Text field */}
-              <td className="px-3 py-2 text-left">{stock.sector}</td>
-
-              {/* Numbers */}
-              <td className="px-3 py-2 text-right">{stock.high_52}</td>
-              <td className="px-3 py-2 text-right">{stock.low_52}</td>
-              <td className="px-3 py-2 text-right">{stock.market_cap}</td>
-              <td className="px-3 py-2 text-right">{stock.pe_ratio}</td>
-              <td className="px-3 py-2 text-right">{stock.eps}</td>
-
-              {/* Source → link style */}
+              <td
+                className={`px-3 py-2 text-right font-bold ${
+                  parseFloat(s.change_pct) > 0
+                    ? "text-green-400"
+                    : parseFloat(s.change_pct) < 0
+                    ? "text-red-400"
+                    : "text-gray-300"
+                }`}
+              >
+                {s.change_pct}%
+              </td>
+              <td className="px-3 py-2 text-right">{s.volume}</td>
+              <td className="px-3 py-2">{s.sector}</td>
+              <td className="px-3 py-2 text-right">{s.high_52}</td>
+              <td className="px-3 py-2 text-right">{s.low_52}</td>
+              <td className="px-3 py-2 text-right">{s.market_cap_cr.toFixed(2)}</td>
+              <td className="px-3 py-2 text-right">{s.shares_cr.toFixed(2)}</td>
+              <td className="px-3 py-2 text-right">{s.pe_ratio}</td>
+              <td className="px-3 py-2 text-right">{s.eps}</td>
               <td className="px-3 py-2 text-left underline text-blue-400">
-                {stock.source}
+                {s.source}
               </td>
-
-              {/* Star → center */}
               <td
                 className="px-3 py-2 text-center cursor-pointer text-lg"
-                onClick={() => toggleWatchlist(stock.symbol)}
+                onClick={() => toggleWatchlist(s.symbol)}
               >
-                {watchlist.includes(stock.symbol) ? "★" : "☆"}
+                {watchlist.includes(s.symbol) ? "★" : "☆"}
               </td>
             </tr>
           ))}
