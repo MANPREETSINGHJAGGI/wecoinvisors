@@ -109,57 +109,55 @@ export default function StockTable({
 
         {/* Table Body */}
         <tbody>
-          {sortedStocks.map((s) => (
-            <tr
-              key={s.symbol}
-              className="border-b border-gold/30 hover:bg-black/50 transition"
-            >
-              <td className="px-3 py-2 font-semibold">{s.symbol}</td>
-              <td className="px-3 py-2">{s.company_name}</td>
-              <td className="px-3 py-2 text-right">{s.current_price}</td>
-              <td
-                className={`px-3 py-2 text-right ${
-                  s.amount_change > 0
-                    ? "text-green-400"
-                    : s.amount_change < 0
-                    ? "text-red-400"
-                    : "text-gray-300"
-                }`}
-              >
-                {s.amount_change.toFixed(2)}
-              </td>
-              <td
-                className={`px-3 py-2 text-right font-bold ${
-                  parseFloat(s.change_pct) > 0
-                    ? "text-green-400"
-                    : parseFloat(s.change_pct) < 0
-                    ? "text-red-400"
-                    : "text-gray-300"
-                }`}
-              >
-                {s.change_pct}%
-              </td>
-              <td className="px-3 py-2 text-right">{s.volume}</td>
-              <td className="px-3 py-2">{s.sector}</td>
-              <td className="px-3 py-2 text-right">{s.high_52}</td>
-              <td className="px-3 py-2 text-right">{s.low_52}</td>
-              <td className="px-3 py-2 text-right">{s.market_cap_cr.toFixed(2)}</td>
-              <td className="px-3 py-2 text-right">{s.shares_cr.toFixed(2)}</td>
-              <td className="px-3 py-2 text-right">{s.pe_ratio}</td>
-              <td className="px-3 py-2 text-right">{s.eps}</td>
-              <td className="px-3 py-2 text-left underline text-blue-400">
-                {s.source}
-              </td>
-              <td
-                className="px-3 py-2 text-center cursor-pointer text-lg"
-                onClick={() => toggleWatchlist(s.symbol)}
-              >
-                {watchlist.includes(s.symbol) ? "★" : "☆"}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+  {sortedStocks.map((s) => (
+    <tr
+      key={s.symbol}
+      className="border-b border-gold/30 hover:bg-black/50 transition"
+    >
+      <td className="px-3 py-2 font-semibold">{s.symbol}</td>
+      <td className="px-3 py-2">{s.company_name}</td>
+      <td className="px-3 py-2 text-left">{s.current_price}</td>
+      <td
+        className={`px-3 py-2 text-left ${
+          s.amount_change > 0
+            ? "text-green-400"
+            : s.amount_change < 0
+            ? "text-red-400"
+            : "text-gray-300"
+        }`}
+      >
+        {s.amount_change.toFixed(2)}
+      </td>
+      <td
+        className={`px-3 py-2 text-left font-bold ${
+          parseFloat(s.change_pct) > 0
+            ? "text-green-400"
+            : parseFloat(s.change_pct) < 0
+            ? "text-red-400"
+            : "text-gray-300"
+        }`}
+      >
+        {s.change_pct}%
+      </td>
+      <td className="px-3 py-2 text-left">{s.volume}</td>
+      <td className="px-3 py-2">{s.sector}</td>
+      <td className="px-3 py-2 text-left">{s.high_52}</td>
+      <td className="px-3 py-2 text-left">{s.low_52}</td>
+      <td className="px-3 py-2 text-left">{s.market_cap_cr.toFixed(2)}</td>
+      <td className="px-3 py-2 text-left">{s.shares_cr.toFixed(2)}</td>
+      <td className="px-3 py-2 text-left">{s.pe_ratio}</td>
+      <td className="px-3 py-2 text-left">{s.eps}</td>
+      <td className="px-3 py-2 underline text-blue-400">{s.source}</td>
+      <td
+        className="px-3 py-2 text-center cursor-pointer text-lg"
+        onClick={() => toggleWatchlist(s.symbol)}
+      >
+        {watchlist.includes(s.symbol) ? "★" : "☆"}
+      </td>
+    </tr>
+  ))}
+      </tbody>
+    </table>
+   </div>
   );
 }
